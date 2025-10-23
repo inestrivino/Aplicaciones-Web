@@ -16,8 +16,18 @@
   </head>
 
   <body>
+    <!--Revisar que los aria label estén correctos-->
+    <!--Implementar atajos de teclado (como alt+r para reservas)-->
+    <!--Añadir un botón que cambie la hoja de estilos a una con contraste alto (más que cambiar de hoja se trataría de cambiar de tema dentro del mismo CSS, el cual debe ser accesible e integrado con Bootstrap)-->
+    <!--Añadir comentarios a los documentos que expliquen la función-->
+
+    <!--Crear un formulario de registro-->
     <header>
       <h1>Gestión de Flota de Vehículos Eléctricos</h1>
+      <nav>
+        <!--Debemos tener un menú accesible y navegable para recorrer la página-->
+        <!--Añadir selector de idioma que realmente cambie el idioma de los elementos usando json-->
+      </nav>
     </header>
     <main>
       <h2>Plataforma de movilidad sostenible</h2>
@@ -26,6 +36,8 @@
         diseñada para manejar el uso de <em>vehículos eléctricos</em> de la
         organización.
       </p>
+
+      <!--Insertar vídeo de movilidad sostenible que tenga subtítulos-->
 
       <h3>Beneficios de los vehículos eléctricos</h3>
       <ol>
@@ -112,25 +124,38 @@
 
       <section id="reservas" class="mt-4">
         <h2>Formulario de reservas</h2>
-        <form class="row g-3 needs-validation">
+        <form
+          class="row g-3 needs-validation"
+          aria-label="Formulario de reserva"
+        >
           <fieldset class="border p-3">
-            <legend>Datos del usuario</legend>
+            <legend aria-label="Datos de usuario">Datos del usuario</legend>
 
             <!-- Campo nombre (obligatorio) -->
             <div class="col-md-6">
-              <label for="nombre" class="form-label">Nombre completo</label>
+              <label
+                for="nombre"
+                class="form-label"
+                aria-label="Nombre completo"
+                >Nombre completo</label
+              >
               <input type="text" class="form-control" id="nombre" required />
             </div>
 
             <!-- Campo email (obligatorio) -->
             <div class="col-md-6">
-              <label for="email" class="form-label">Correo electrónico</label>
+              <label
+                for="email"
+                class="form-label"
+                aria-label="Correo electrónico"
+                >Correo electrónico</label
+              >
               <input type="email" class="form-control" id="email" required />
             </div>
 
             <!-- Campo teléfono (opcional, con validación) -->
             <div class="col-md-6">
-              <label for="telefono" class="form-label"
+              <label for="telefono" class="form-label" aria-label="Teléfono"
                 >Teléfono (opcional)</label
               >
               <input
@@ -145,11 +170,16 @@
           </fieldset>
 
           <fieldset class="border p-3 mt-3">
-            <legend>Detalles de la reserva</legend>
+            <legend aria-label="Detalles de la reserva">
+              Detalles de la reserva
+            </legend>
 
             <!-- Lista desplegable de vehículos (obligatorio) -->
+            <!--Debemos añadir antes de esto un selector de vehículo-->
             <div class="col-md-6">
-              <label for="vehiculo" class="form-label">Vehículo</label>
+              <label for="vehiculo" class="form-label" aria-label="Vehículo"
+                >Vehículo</label
+              >
               <select class="form-select" id="vehiculo" required>
                 <option selected disabled value="">
                   Selecciona un vehículo
@@ -162,7 +192,12 @@
 
             <!-- Fecha y hora de inicio (obligatorio) -->
             <div class="col-md-6">
-              <label for="inicio" class="form-label">Inicio de reserva</label>
+              <label
+                for="inicio"
+                class="form-label"
+                aria-label="Inicio de reserva"
+                >Inicio de reserva</label
+              >
               <input
                 type="datetime-local"
                 class="form-control"
@@ -173,13 +208,17 @@
 
             <!-- Fecha y hora de fin (obligatorio) -->
             <div class="col-md-6">
-              <label for="fin" class="form-label">Fin de reserva</label>
+              <label for="fin" class="form-label" aria-label="Fin de reserva"
+                >Fin de reserva</label
+              >
               <input
                 type="datetime-local"
                 class="form-control"
                 id="fin"
                 required
               />
+
+              <!--Añadir campo duración de reserva que solo acepte números positivos-->
             </div>
           </fieldset>
 
@@ -193,17 +232,28 @@
                 required
               />
               <label class="form-check-label" for="condiciones">
-                Acepto las <a href="#">condiciones de uso</a>
+                Acepto las
+                <a href="#" aria-label="Condiciones de uso"
+                  >condiciones de uso</a
+                >
               </label>
             </div>
           </div>
 
           <!-- Botones -->
           <div class="col-12 mt-3">
-            <button type="submit" class="btn btn-primary">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              aria-label="Enviar reserva"
+            >
               Enviar reserva
             </button>
-            <button type="reset" class="btn btn-secondary">
+            <button
+              type="reset"
+              class="btn btn-secondary"
+              aria-label="Limpiar formulario"
+            >
               Limpiar formulario
             </button>
           </div>
@@ -213,10 +263,13 @@
     <footer>
       <p>
         Este proyecto está desarrollado por estudiantes de la
-        <a href="https://www.ucm.es/" target="_blank"
+        <a
+          aria-label="Universidad Complutense de Madrid"
+          href="https://www.ucm.es/"
+          target="_blank"
           >Universidad Complutense de Madrid</a
         >. Para más información, visita nuestra página de
-        <a href="contacto.html">contacto</a>.
+        <a aria-label="Contacto" href="contacto.html">contacto</a>.
       </p>
     </footer>
 
