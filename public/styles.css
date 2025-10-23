@@ -1,0 +1,8 @@
+*{
+    margin: 10px;
+    padding: 0px;
+}
+
+p a, p strong, p em{
+    margin: 0px;
+}
