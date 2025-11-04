@@ -1,20 +1,308 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión de Flota de Vehículos Eléctricos</title>
 
-    <!--Links de estilos-->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="styles.css"/>
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>EcoMóvil - Gestión de Flota de Vehículos Eléctricos</title>
+  <meta name="description"
+    content="EcoMóvil es una empresa de vehículos eléctricos disponibles para prestamo. Esta página permite a nuestros empleados gestionar nuestra flota." />
+  <meta name="keywords"
+    content="transporte ecológico, vehículos eléctricos, movilidad sostenible, EcoMóvil, soluciones de transporte, movilidad verde" />
+  <meta name="author" content="EcoMóvil" />
+  <meta name="robots" content="index, follow" />
+  <!-- Favicon TODO-->
+  <link rel="icon" href="img/Logo.svg" type="image/x-icon" />
+
+  <!-- Enlaces a las hojas de estilo -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<!--Añadir descripciones textuales y alt a todas las imágenes-->
+<!--Añadir aria-label en botones, formularios y enlaces de navegación-->
+<!--Añadir aria-label en botones, formularios y enlaces de navegación-->
+<!--Implementar atajos de teclado (ejemplo: tecla Alt+R para ir a Reservas).-->
+<!--Insertar este vídeo: https://www.youtube.com/watch?v=7gO6iNFyiG8-->
+<!--Añadir un modo alto contraste con CSS alternativo (botón que cambie la hoja de estilos).-->
+<!--Implementar un selector de idioma (español/inglés) en el menú principal. El contenido puede ser mínimo, pero debe usar el atributo lang-->
+<!--Documentar bien el código con comentarios-->
+
+<body>
+
   <body>
+    <style>
+      @media (max-width: 767.98px) {
+        .navbar-collapse {
+          background-color: rgba(255, 255, 255, 0.95);
+          /* Light background for visibility */
+          padding: 10px;
+          border-radius: 5px;
+          margin-top: 5px;
+        }
 
+        .navbar-nav .nav-link {
+          color: #333;
+          /* Dark text for contrast */
+          padding: 8px 15px;
+        }
+      }
+    </style>
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top" style="z-index: 100000; height: 60px;">
+      <div class="container-fluid">
+        <a href="index.html" class="navbar-brand d-flex align-items-center">
+          <img src="img/Logo.svg" alt="Logo de EcoMóvil" style="height: 40px; width: auto;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+          aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a href="#inicio" class="nav-link">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a href="#vehiculos" class="nav-link">Vehículos</a>
+            </li>
+            <li class="nav-item">
+              <a href="#reservas" class="nav-link">Reservas</a>
+            </li>
+            <li class="nav-item">
+              <a href="#contacto" class="nav-link">Contacto</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   </body>
+
+
+
+  <!--
+        <li class="nav-item">
+          <a class="nav-link">Accesibilidad</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Panel</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Mi perfil</a>
+        </li>
+        -->
+
+  <header>
+
+  </header>
+
+  <main>
+
+    <section id="inicio">
+      <div class="position-relative w-100" style="height: 66vh;">
+        <div style="
+        background: url('img/vehiculos/vehiculo-electrico.jpg') no-repeat center center;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;"></div>
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.85;"></div>
+        <div
+          class="position-relative text-white h-100 d-flex flex-column justify-content-center align-items-center text-center">
+          <h1 class="display-4 fw-bold">EcoMóvil: Gestión de Flota de Vehículos Eléctricos</h1>
+          <h2>Plataforma de movilidad sostenible</h2>
+          <p>
+            Bienvenidos a nuestra <strong>plataforma de gestión de flota</strong>,
+            diseñada para manejar el uso de <em>vehículos eléctricos</em> de la
+            organización.
+          </p>
+        </div>
+      </div>
+      <h3>Beneficios de los vehículos eléctricos</h3>
+      <ol>
+        <li>Reducción del 100% en emisiones directas de CO₂</li>
+        <li>
+          Ahorro del 70% en costes de mantenimiento frente a vehículos de
+          combustión
+        </li>
+        <li>Acceso a zonas de bajas emisiones y bonificaciones fiscales</li>
+      </ol>
+
+      <h3>Servicios de nuestra plataforma</h3>
+      <ul>
+        <li>Monitorización en tiempo real de la flota</li>
+        <li>Gestión de puntos de carga</li>
+        <li>Generación de informes de sostenibilidad</li>
+        <li>Alertas automáticas de mantenimiento</li>
+      </ul>
+
+      <h3>Tecnologías utilizadas</h3>
+      <dl>
+        <dt>HTML</dt>
+        <dd>Lenguaje de marcado para estructurar el contenido de la web</dd>
+        <dt>CSS</dt>
+        <dd>
+          Lenguaje para definir el estilo y presentación de los documentos HTML
+        </dd>
+        <dt>JSON</dt>
+        <dd>
+          Formato ligero para intercambio de datos entre servidor y cliente
+        </dd>
+      </dl>
+    </section>
+
+
+    <section id="vehiculos">
+      <!--Vehículos-->
+      <h2>Catálogo de vehículos</h2>
+      <table class="table table-striped">
+        <caption>
+          Vehículos disponibles
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Autonomía (km)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1234ABC</td>
+            <td>Tesla Model 3</td>
+            <td>450</td>
+          </tr>
+          <tr>
+            <td>5678DEF</td>
+            <td>Renault Zoe</td>
+            <td>395</td>
+          </tr>
+          <tr>
+            <td>9012GHI</td>
+            <td>Nissan Leaf</td>
+            <td>270</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <section id="reservas">
+      <!--Reservas-->
+      <h2>Reservar vehículos</h2>
+      <form class="needs-validation" aria-label="Formulario de reserva">
+        <fieldset class="border">
+          <legend aria-label="Datos de usuario">Datos del usuario</legend>
+
+          <div>
+            <label for="nombre" class="form-label" aria-label="Nombre completo">Nombre completo</label>
+            <input type="text" class="form-control" id="nombre" aria-required="true" required />
+          </div>
+
+          <div>
+            <label for="email" class="form-label" aria-label="Correo electrónico">Correo electrónico</label>
+            <input type="email" class="form-control" id="email" aria-required="true" required />
+          </div>
+
+          <div>
+            <label for="telefono" class="form-label" aria-label="Teléfono">Teléfono (opcional)</label>
+            <input type="tel" class="form-control" id="telefono" pattern="[0-9]{9}"
+              title="Introduce 9 dígitos sin espacios ni guiones" />
+            <div class="form-text">Formato: 123456789</div>
+          </div>
+        </fieldset>
+
+        <fieldset class="border">
+          <legend aria-label="Detalles de la reserva">
+            Detalles de la reserva
+          </legend>
+
+          <div>
+            <label for="vehiculo" class="form-label" aria-label="Vehículo">Vehículo</label>
+            <select class="form-select" id="vehiculo" aria-required="true" required>
+              <option selected disabled value="">
+                Seleccione un vehículo
+              </option>
+              <option value="1234ABC">Tesla Model 3 (1234ABC)</option>
+              <option value="5678DEF">Renault Zoe (5678DEF)</option>
+              <option value="9012GHI">Nissan Leaf (9012GHI)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="inicio" class="form-label" aria-label="Inicio de reserva">Inicio de reserva</label>
+            <input type="datetime-local" class="form-control" id="inicio" aria-required="true" required />
+          </div>
+
+          <div>
+            <label for="fin" class="form-label" aria-label="Fin de reserva">Fin de reserva</label>
+            <input type="datetime-local" class="form-control" id="fin" aria-required="true" required />
+          </div>
+        </fieldset>
+
+        <div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="condiciones" aria-required="true" required />
+            <label class="form-check-label" for="condiciones">
+              Acepto las condiciones de uso
+            </label>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div>
+          <button type="submit" class="btn btn-primary" aria-label="Enviar reserva">
+            Enviar reserva
+          </button>
+          <button type="reset" class="btn btn-secondary" aria-label="Limpiar formulario">
+            Limpiar formulario
+          </button>
+        </div>
+      </form>
+    </section>
+
+
+    <section id="contacto">
+      <!--Contacto-->
+      <form>
+        <div class="form-group">
+          <label for="nombre" class="form-label">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Nombre" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" id="email" name="email" required placeholder="Email" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="mensaje" class="form-label">Mensaje:</label>
+          <textarea id="mensaje" name="mensaje" rows="4" required placeholder="Escribe tu mensaje..."
+            class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
+    </section>
+
+
+  </main>
+
+
+  <footer>
+    <p>
+      Este proyecto está desarrollado por estudiantes de la
+      <a aria-label="Universidad Complutense de Madrid" href="https://www.ucm.es/" target="_blank">Universidad
+        Complutense de Madrid</a>.
+      <br>
+      Todos los derechos reservados &copy; 2025.
+    </p>
+  </footer>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </html>
