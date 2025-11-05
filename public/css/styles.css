@@ -1,187 +1,230 @@
+/* Define variables for both themes */
+
+:root {
+  /* Light Mode (default theme) */
+  --background-color: #f8f9fa;
+  --text-color: #333;
+  --navbar-link-color: #333;
+  --navbar-link-hover-color: #007bff;
+  --header-background: rgba(0, 0, 0, 0.7);
+  --footer-background: #24303b;
+  --footer-text-color: white;
+  --fieldset-background: #fff;
+  --fieldset-border: rgba(0, 0, 0, 0.1);
+}
+
+/* High Contrast Mode */
+[data-theme="high-contrast"] {
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --navbar-link-color: #ffffff;
+  --navbar-link-hover-color: #ffbf00;
+  --header-background: rgba(0, 0, 0, 0.9);
+  --footer-background: #1a1a1a;
+  --footer-text-color: yellow;
+  --fieldset-background: #444;
+  --fieldset-border: #ffbf00;
+}
+
+/* General body styles */
 body {
-    line-height: 1.6;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  transition: background-color 0.3s ease, color 0.3s ease; /* smooth transition */
 }
 
 /* Navbar Styles */
 .navbar {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* reduced sharpness of the shadow */
+  padding: 0.5rem 1rem;
+  transition: box-shadow 0.3s ease;
 }
 
 .navbar-brand img {
-    height: 40px;
-    width: auto;
-    margin-left: 1rem;
+  height: 40px;
+  width: auto;
+  margin-left: 1rem;
 }
 
 .navbar-nav .nav-link {
-    padding: 0.5rem 1rem;
-    font-weight: 500;
+  color: var(--navbar-link-color);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--navbar-link-hover-color);
 }
 
 /* Header Styles */
 header {
-    height: 66vh;
-    position: relative;
-    overflow: hidden;
+  height: 66vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .header-image {
-    background: url('../img/vehiculos/vehiculo-electrico.jpg') no-repeat center center;
-    background-size: cover;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+  background: url('../img/vehiculos/vehiculo-electrico.jpg') no-repeat center center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .header-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--header-background);
+  z-index: 1;
 }
 
 header div {
-    z-index: 2;
-    padding: 0 2rem;
+  z-index: 2;
+  padding: 0 2rem;
+}
+
+header h1, header h2, header p {
+  color: var(--text-color);
 }
 
 header h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
 
 header h2 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
 }
 
 header p {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
+}
+
+header h1, header h2, header p{
+    color: white;
 }
 
 /* Main Content Styles */
 main {
-    padding: 4rem 1.5rem 1.5rem;
-    margin: 0 auto;
-    max-width: 1200px;
+  padding: 4rem 1.5rem 1.5rem;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 section {
-    margin-bottom: 1rem;
-    padding: 2rem;
+  margin-bottom: 1rem;
+  padding: 2rem;
 }
 
-section h2,
-section h3 {
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #eee;
+section h2, section h3 {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
+  color: var(--text-color);
 }
 
-section ol,
-section ul {
-    padding-left: 2rem;
-    margin-bottom: 1.5rem;
+section ol, section ul {
+  padding-left: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 section li {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 section table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-section th,
-section td {
-    padding: 0.75rem;
-    text-align: left;
+section th, section td {
+  padding: 0.75rem;
+  text-align: left;
+  color: var(--text-color);
 }
 
 /* Form Styles */
-.form-control,
-.form-select {
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
+.form-control, .form-select {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-check {
-    margin: 1rem 0;
+  margin: 1rem 0;
 }
 
 .btn {
-    padding: 0.5rem 1.5rem;
-    margin-right: 0.5rem;
-    border-radius: 4px;
+  padding: 0.5rem 1.5rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
 }
 
 fieldset {
-    border: none;
-    padding: 2rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin: 1rem auto;
+  border: 2px solid var(--fieldset-border);
+  padding: 2rem;
+  background-color: var(--fieldset-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 1rem auto;
+  transition: background-color 0.3s ease, border 0.3s ease;
 }
 
 /* Footer Styles */
 footer {
-    background-color: #24303b;
-    color: white;
-    text-align: center;
-    padding: 2rem;
-    margin-top: 2rem;
+  background-color: var(--footer-background);
+  color: var(--footer-text-color);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 2rem;
 }
 
 footer a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Scroll margin for fixed navbar */
 :target {
-    scroll-margin-top: 70px;
+  scroll-margin-top: 70px;
 }
 
 /* Responsive Styles */
 @media (max-width: 767.98px) {
-    .navbar-collapse {
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 5px;
-    }
+  .navbar-collapse {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
 
-    .navbar-nav .nav-link {
-        color: #333;
-        padding: 8px 15px;
-    }
+  .navbar-nav .nav-link {
+    color: var(--text-color);
+    padding: 8px 15px;
+  }
 
-    header h1 {
-        font-size: 2rem;
-    }
+  header h1 {
+    font-size: 2rem;
+  }
 
-    header h2 {
-        font-size: 1.4rem;
-    }
+  header h2 {
+    font-size: 1.4rem;
+  }
 
-    section,
-    form {
-        margin-bottom: 2rem;
-        padding: 0;
-    }
+  section, form {
+    margin-bottom: 2rem;
+    padding: 0;
+  }
 
-    figure iframe{
-        width: 100%;
-    }
+  figure iframe {
+    width: 100%;
+  }
 }

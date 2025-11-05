@@ -85,4 +85,90 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Por favor, complete ambas fechas.");
         }
     })
+
+    //PARA NAVEGAR CON TECLADO
+    let altPressed = false;
+
+    document.addEventListener('keydown', function (event) {
+        // Detectar si la tecla Alt está presionada
+        if (event.key === "Alt") {
+            altPressed = true;
+        }
+        if (altPressed) {
+            switch (event.key) {
+                case 'I': // Alt + I para "Inicio"
+                    document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'i': // Alt + I para "Inicio"
+                    document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'V': // Alt + V para "Vehículos"
+                    document.getElementById('vehiculos').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'v': // Alt + V para "Vehículos"
+                    document.getElementById('vehiculos').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'R': // Alt + R para "Reservas"
+                    document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'r': // Alt + R para "Reservas"
+                    document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'C': // Alt + C para "Contacto"
+                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'c': // Alt + C para "Contacto"
+                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+
+    document.addEventListener('keyup', function (event) {
+        // Verificar si la tecla Alt se ha soltado
+        if (event.key === "Control") {
+            altPressed = false;
+        }
+    })
+
+    //PARA EL CAMBIO DE TEMA
+    // Seleccionar el botón para cambiar el tema
+    const themeToggleButton = document.getElementById('toggleThemeBtn');
+
+    // Función para aplicar el cambio de tema
+    themeToggleButton.addEventListener('click', function () {
+        // Cambiar el tema entre 'default' y 'high-contrast'
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'high-contrast' ? 'default' : 'high-contrast';
+
+        // Cambiar el atributo data-theme en el HTML
+        document.documentElement.setAttribute('data-theme', newTheme);
+
+        // Actualizar la clase de la navbar
+        const navbar = document.querySelector('.navbar');
+        if (newTheme === 'high-contrast') {
+            navbar.classList.remove('navbar-light', 'bg-light');
+            navbar.classList.add('navbar-dark', 'bg-dark');
+        } else {
+            navbar.classList.remove('navbar-dark', 'bg-dark');
+            navbar.classList.add('navbar-light', 'bg-light');
+        }
+
+        // Cambiar las tablas (alternar entre 'table-dark' y 'table-striped')
+        const tables = document.querySelectorAll('.table');
+        tables.forEach(table => {
+            if (newTheme === 'high-contrast') {
+                table.classList.remove('table-striped');
+                table.classList.add('table-dark');
+            } else {
+                table.classList.remove('table-dark');
+                table.classList.add('table-striped');
+            }
+        });
+
+        // Cambiar el texto del botón de cambio de tema
+        themeToggleButton.textContent = newTheme === 'high-contrast' ? 'Activar modo claro' : 'Activar alto contraste';
+    });
 });
