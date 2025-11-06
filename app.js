@@ -1,47 +1,23 @@
+"use strict";
+const express = require("express");
+const app = express(); 
+app.use(express.static("public"));
 
-const express = require('express');
-const path = require('path');
-const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
+app.get("/", function(request, response){
+    response.redirect("./public/index.html");
+});
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+app.get("/users" , function(request, response){
+    response.json([
+        {name: "Juan", age: 25},
+        {name: "Ana", age: 28},
+        {name: "Pedro", age: 30}
+    ]);
+});
 
-// Middleware
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(session({
-    secret: 'ecomarket-exam',
-    resave: false,
-    saveUninitialized: false
-}));
-
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// View engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-// Simulated database (in-memory)
-const usuarios = [
-    { username: 'admin', password: 'admin' }
-];
-app.locals.usuarios = usuarios;
-
-const productos = require('./data/productos.json');
-const productosDetalle = require('./data/productos_detalle.json');
-app.locals.productos = productos;
-app.locals.productosDetalle = productosDetalle;
-
-// Routes
-const mainRoutes = require('./routes/index');
-app.use('/', mainRoutes);
-
-// Server
-app.listen(PORT, () => {
-    console.log(`EcoMarket EXAM app running at http://localhost:${PORT}`);
+app.listen(3000, function(error){
+    if(error)
+        console.log("error");
+    else
+        console.log("Servidos en 3000");
 });
