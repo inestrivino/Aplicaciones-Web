@@ -90,40 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let altPressed = false;
 
     document.addEventListener('keydown', function (event) {
-        // Detectar si la tecla Alt está presionada
-        if (event.key === "Alt") {
-            altPressed = true;
-        }
-        if (altPressed) {
-            switch (event.key) {
-                case 'I': // Alt + I para "Inicio"
-                    document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'i': // Alt + I para "Inicio"
-                    document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'V': // Alt + V para "Vehículos"
-                    document.getElementById('vehiculos').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'v': // Alt + V para "Vehículos"
-                    document.getElementById('vehiculos').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'R': // Alt + R para "Reservas"
-                    document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'r': // Alt + R para "Reservas"
-                    document.getElementById('reservas').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'C': // Alt + C para "Contacto"
-                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 'c': // Alt + C para "Contacto"
-                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
-                    break;
-                default:
-                    break;
-            }
-        }
+        
     });
 
     document.addEventListener('keyup', function (event) {
