@@ -62,21 +62,53 @@
         </button>
       </div>
     </div>
+  </div>
+  <div>
+    <button id="usuarioBtn" class="btn p-0" aria-label="Abrir modal de usuario" data-bs-toggle="modal"
+      data-bs-target="#usuarioModal">
+      <img src="img/personas_1/Blank.jpeg" alt="Foto de perfil" class="rounded-circle" width="40" height="40">
+    </button>
+  </div>
 </nav>
 
 <header class="position-relative w-100" aria-label="Encabezado de la página">
   <div class="header-image" aria-hidden="true"></div>
-  <div
-    class="position-relative text-white h-100 d-flex flex-column">
-    <h1 class="display-4 fw-bold">EcoMóvil: Gestión de Flota de Vehículos Eléctricos</h1>
-    <h2>Plataforma de movilidad sostenible</h2>
-    <p>
-      Bienvenidos a nuestra <strong>plataforma de gestión de flota</strong>,
-      diseñada para manejar el uso de <em>vehículos eléctricos</em> de la
-      organización.
-    </p>
+  <!-- Text content -->
+  <div class="position-relative text-white h-100 d-flex align-items-center">
+    <div class="container text-start">
+      <h1 class="display-3 fw-bold">
+        EcoMóvil: Gestión de Flota de Vehículos Eléctricos
+      </h1>
+      <h2>Plataforma de movilidad sostenible</h2>
+      <p>
+        Bienvenidos a nuestra <strong>plataforma de gestión de flota</strong>,
+        diseñada para manejar el uso de <em>vehículos eléctricos</em> de la
+        organización.
+      </p>
+    </div>
   </div>
 </header>
+
+<!-- Modal -->
+<!-- TODO: Una vez esté hecho, copia y pega en las otras páginas -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="usuarioModalLabel">Nombre del usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Información y ajustes</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 
 <main aria-label="Contenido principal de la página">
   <h3>Beneficios de los vehículos eléctricos</h3>

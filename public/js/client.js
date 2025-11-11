@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-    //PARA EL LANGUAGE TOGGLE
+function inicializarLanguageToggle() {
     const languageDropdownItems = document.querySelectorAll('[data-lang]');
     const selectedLanguageSpan = document.getElementById('selectedLanguage');
 
@@ -17,12 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+}
 
-    //PARA QUE EL FORMULARIO DE RESERVAS TENGA SENTIDO LÓGICO
+function inicializarFormularioReservas() {
     const inicioInput = document.getElementById("inicioFecha");
     const finInput = document.getElementById("finFecha");
 
-    // Obtener la fecha y hora actual en formato YYYY-MM-DDTHH:MM
+    // Obtener la fecha y hora actual en formato correcto
     const ahora = new Date();
     const fechaActual = ahora.toISOString().slice(0, 16);
 
@@ -85,12 +85,13 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Por favor, complete ambas fechas.");
         }
     })
+}
 
-    //PARA NAVEGAR CON TECLADO
+function inicializarKeyShortcuts() {
     let altPressed = false;
 
     document.addEventListener('keydown', function (event) {
-        
+        //TODO
     });
 
     document.addEventListener('keyup', function (event) {
@@ -99,8 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
             altPressed = false;
         }
     })
+}
 
-    //PARA EL CAMBIO DE TEMA
+function inicializarCambioTema() {
     // Seleccionar el botón para cambiar el tema
     const themeToggleButton = document.getElementById('toggleThemeBtn');
 
@@ -138,4 +140,21 @@ document.addEventListener("DOMContentLoaded", function () {
         // Cambiar el texto del botón de cambio de tema
         themeToggleButton.textContent = newTheme === 'high-contrast' ? 'Activar modo claro' : 'Activar alto contraste';
     });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    //PARA EL LANGUAGE TOGGLE
+    inicializarLanguageToggle();
+
+    //PARA NAVEGAR CON TECLADO
+    inicializarKeyShortcuts();
+
+    //PARA EL CAMBIO DE TEMA
+    inicializarCambioTema();
+
+    //PARA QUE EL FORMULARIO DE RESERVAS TENGA SENTIDO LÓGICO
+    const path = window.location.pathname;
+    if (path.includes("reservas.html")) {
+        inicializarFormularioReservas();
+    }
 });
