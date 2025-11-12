@@ -198,13 +198,9 @@ footer a:hover {
   text-decoration: underline;
 }
 
-/* Scroll margin for fixed navbar */
-:target {
-  scroll-margin-top: 70px;
-}
-
 /* Responsive Styles */
 @media (max-width: 767.98px) {
+
   .navbar-collapse {
     padding: 10px;
     border-radius: 5px;

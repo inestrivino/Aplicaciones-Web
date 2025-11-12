@@ -29,10 +29,12 @@
             aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar menú de navegación">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link" aria-label="Ir a la sección de Inicio" accesskey="I">Inicio</a>
+                    <a href="index.html" class="nav-link" aria-label="Ir a la sección de Inicio"
+                        accesskey="I">Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a href="vehiculos.html" class="nav-link" aria-label="Ir a la sección de Vehículos"
@@ -63,8 +65,37 @@
                     Activar alto contraste
                 </button>
             </div>
+
+            <div class="navbar-profile">
+                <button id="usuarioBtn" class="btn p-0 d-flex align-items-center" aria-label="Abrir modal de usuario"
+                    data-bs-toggle="modal" data-bs-target="#usuarioModal">
+                    <img src="img/personas_1/Blank.jpeg" alt="Foto de perfil" class="rounded-circle me-2" width="40"
+                        height="40">
+                    <p class="d-block d-md-none mb-0">Mi perfil</p>
+                </button>
+            </div>
         </div>
+    </div>
 </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="usuarioModalLabel">Mi cuenta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Aún no has iniciado sesión.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <main aria-label="Contenido principal de la página">
     <h1>Catálogo de vehículos</h1>
@@ -98,6 +129,7 @@
         </tbody>
     </table>
 </main>
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
