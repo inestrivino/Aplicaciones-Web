@@ -82,45 +82,129 @@
         </div>
     </nav>
 
-    <main class="container" aria-label="Contenido principal de la página">
+    <main class="container mt-5 pt-5" aria-label="Contenido principal de la página">
         <h1>Catálogo de vehículos</h1>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col">
-                <div class="card h-100">
-                    <img src="img/vehiculos/byd_seal1.png" class="card-img-top img-fluid" alt="Tesla Model 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tesla Model 3</h5>
-                        <p class="card-text">Matrícula: 1234ABC</p>
-                        <p class="card-text">Autonomía: 450 km</p>
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary" onclick="reserveCar('1234ABC')">Reservar</button>
+        <!-- Filtro de Vehículos y Catálogo -->
+        <div class="row">
+            <!-- Columna de filtros (izquierda) -->
+            <div class="col-md-3 filter-column">
+                <div class="filter-container">
+                    <h3>Filtrar Vehículos</h3>
+                    <form>
+                        <!-- Filtro por Marca -->
+                        <div class="mb-3">
+                            <label for="marcaSelect" class="form-label">Marca</label>
+                            <select id="marcaSelect" class="form-select">
+                                <option value="">Seleccione una marca</option>
+                                <option value="Tesla">Tesla</option>
+                                <option value="Renault">Renault</option>
+                                <option value="Nissan">Nissan</option>
+                            </select>
                         </div>
-                    </div>
+
+                        <!-- Filtro por Autonomía -->
+                        <div class="mb-3">
+                            <label for="autonomiaSelect" class="form-label">Autonomía (km)</label>
+                            <select id="autonomiaSelect" class="form-select">
+                                <option value="">Seleccione autonomía</option>
+                                <option value="500">Más de 500 km</option>
+                                <option value="400">400 - 499 km</option>
+                                <option value="300">300 - 399 km</option>
+                                <option value="200">Menos de 300 km</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Tipo -->
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de vehículo</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="eléctrico" id="tipoElectrico">
+                                <label class="form-check-label" for="tipoElectrico">Eléctrico</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="híbrido" id="tipoHibrido">
+                                <label class="form-check-label" for="tipoHibrido">Híbrido</label>
+                            </div>
+                        </div>
+
+                        <!-- Botón de aplicar filtro -->
+                        <button type="submit" class="btn btn-primary filter-btn">Aplicar filtros</button>
+                    </form>
                 </div>
             </div>
-            <div class="col">
-                <div class="card h-100">
-                    <img src="img/vehiculos/byd_seal2.png" class="card-img-top img-fluid" alt="Renault Zoe">
-                    <div class="card-body">
-                        <h5 class="card-title">Renault Zoe</h5>
-                        <p class="card-text">Matrícula: 5678DEF</p>
-                        <p class="card-text">Autonomía: 395 km</p>
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary" onclick="reserveCar('5678DEF')">Reservar</button>
+
+            <!-- Columna de vehículos (derecha) -->
+            <div class="col-md-9">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="img/vehiculos/byd_seal1.png" class="card-img-top img-fluid" alt="Tesla Model 3"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Tesla Model 3</h5>
+                                <p class="card-text">Matrícula: 1234ABC</p>
+                                <p class="card-text">Autonomía: 450 km</p>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary" onclick="reserveCar('1234ABC')">Reservar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card h-100">
-                    <img src="img/vehiculos/byd_seal3.png" class="card-img-top img-fluid" alt="Nissan Leaf">
-                    <div class="card-body">
-                        <h5 class="card-title">Nissan Leaf</h5>
-                        <p class="card-text">Matrícula: 9012GHI</p>
-                        <p class="card-text">Autonomía: 270 km</p>
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary" onclick="reserveCar('9012GHI')">Reservar</button>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="img/vehiculos/byd_seal2.png" class="card-img-top img-fluid" alt="Renault Zoe"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Renault Zoe</h5>
+                                <p class="card-text">Matrícula: 5678DEF</p>
+                                <p class="card-text">Autonomía: 395 km</p>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary" onclick="reserveCar('5678DEF')">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="img/vehiculos/byd_seal3.png" class="card-img-top img-fluid" alt="Nissan Leaf"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Nissan Leaf</h5>
+                                <p class="card-text">Matrícula: 9012GHI</p>
+                                <p class="card-text">Autonomía: 270 km</p>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary" onclick="reserveCar('9012GHI')">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="img/vehiculos/byd_seal3.png" class="card-img-top img-fluid" alt="Nissan Leaf"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Nissan Leaf</h5>
+                                <p class="card-text">Matrícula: 9012GHI</p>
+                                <p class="card-text">Autonomía: 270 km</p>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary" onclick="reserveCar('9012GHI')">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="img/vehiculos/byd_seal3.png" class="card-img-top img-fluid" alt="Nissan Leaf"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Nissan Leaf</h5>
+                                <p class="card-text">Matrícula: 9012GHI</p>
+                                <p class="card-text">Autonomía: 270 km</p>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary" onclick="reserveCar('9012GHI')">Reservar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
