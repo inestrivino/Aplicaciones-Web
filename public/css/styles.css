@@ -136,6 +136,11 @@ section {
   padding: 2rem;
 }
 
+.modal section{
+  margin-bottom: 0rem;
+  padding: 1rem;
+}
+
 section h2,
 section h3 {
   margin-bottom: 1.5rem;
