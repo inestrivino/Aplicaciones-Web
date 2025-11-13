@@ -1,7 +1,7 @@
 /* Define variables for both themes */
 
+/* Light theme (default) */
 :root {
-  /* Light Mode (default theme) */
   --background-color: #f8f9fa;
   --text-color: #333;
   --navbar-link-color: #333;
@@ -13,18 +13,32 @@
   --fieldset-border: rgba(0, 0, 0, 0.1);
 }
 
-/* High Contrast Mode */
+/* High Contrast Theme */
 [data-theme="high-contrast"] {
-  --background-color: #000000;
-  --text-color: #ffffff;
-  --navbar-link-color: #ffffff;
-  --navbar-link-hover-color: #ffbf00;
-  --header-background: rgba(0, 0, 0, 0.9);
-  --footer-background: #1a1a1a;
-  --footer-text-color: yellow;
-  --fieldset-background: #444;
-  --fieldset-border: #ffbf00;
+  --background-color: #000;
+  --text-color: #fff;
+  --navbar-link-color: #ffcc00;
+  --navbar-link-hover-color: #ff0000;
+  --header-background: #fff;
+  --footer-background: #111;
+  --footer-text-color: #ffcc00;
+  --fieldset-background: #333;
+  --fieldset-border: #fff;
 }
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --navbar-link-color: #bbb;
+  --navbar-link-hover-color: #1a73e8;
+  --header-background: #181818;
+  --footer-background: #212121;
+  --footer-text-color: #e0e0e0;
+  --fieldset-background: #333;
+  --fieldset-border: rgba(255, 255, 255, 0.1);
+}
+
 
 /* General body styles */
 body {

@@ -1,20 +1,30 @@
 function inicializarLanguageToggle() {
-    const languageDropdownItems = document.querySelectorAll('[data-lang]');
-    const selectedLanguageSpan = document.getElementById('selectedLanguage');
+    const idiomaSeleccionado = document.getElementById("idiomaSeleccionado");
+    const languageLinks = document.querySelectorAll('.dropdown-item');
 
-    languageDropdownItems.forEach(item => {
-        item.addEventListener('click', function (e) {
+    // Load previously saved language
+    const savedLang = sessionStorage.getItem("lang") || "es";
+    document.documentElement.lang = savedLang;
+    idiomaSeleccionado.textContent = savedLang === "en" ? "English" : "Español";
+
+    let tempSelectedLang = savedLang;
+
+    languageLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
             e.preventDefault();
-            const lang = this.getAttribute('data-lang');
-            document.documentElement.lang = lang;
-
-            // Actualizar el texto del botón del dropdown
-            if (lang === 'es') {
-                selectedLanguageSpan.textContent = 'Español';
-            } else if (lang === 'en') {
-                selectedLanguageSpan.textContent = 'English';
-            }
+            tempSelectedLang = link.getAttribute("data-lang");
+            idiomaSeleccionado.textContent = tempSelectedLang === "en" ? "English" : "Español";
         });
+    });
+
+    // When "Guardar cambios" is clicked
+    document.getElementById("guardarCambios").addEventListener("click", () => {
+        sessionStorage.setItem("lang", tempSelectedLang);
+        document.documentElement.lang = tempSelectedLang;
+
+        // Close the modal after saving
+        const modal = bootstrap.Modal.getInstance(document.getElementById('ajustesModal'));
+        modal.hide();
     });
 }
 
@@ -22,57 +32,45 @@ function inicializarFormularioReservas() {
     const inicioInput = document.getElementById("inicioFecha");
     const finInput = document.getElementById("finFecha");
 
-    // Obtener la fecha y hora actual en formato correcto
     const ahora = new Date();
     const fechaActual = ahora.toISOString().slice(0, 16);
-
-    // Establecer la fecha mínima para el inicio (hoy)
     inicioInput.min = fechaActual;
 
-    // Establecer la fecha máxima para el inicio (dentro de un año)
     const unAnoDespues = new Date();
     unAnoDespues.setFullYear(ahora.getFullYear() + 1);
     const fechaMaxima = unAnoDespues.toISOString().slice(0, 16);
     inicioInput.max = fechaMaxima;
 
-    // Cuando se seleccione una fecha de inicio, establecerla como mínima para la fecha de fin y la fecha 3 meses después como máximo
     inicioInput.addEventListener("change", function () {
         finInput.min = this.value;
 
-        // Si la fecha de fin ya estaba seleccionada y es anterior a la nueva fecha de inicio, limpiarla
         if (finInput.value && finInput.value < this.value) {
             finInput.value = "";
         }
 
-        // Establecer la fecha máxima para la fecha de fin (3 meses después de la fecha de inicio)
         const fechaMaxFin = new Date(this.value);
         fechaMaxFin.setMonth(fechaMaxFin.getMonth() + 3);
         finInput.max = fechaMaxFin.toISOString().slice(0, 16);
     });
 
-    // Validar que la fecha de fin no sea anterior a la de inicio al enviar el formulario
     const form = document.querySelector("form");
     form.addEventListener("submit", function (e) {
-        // Verificar que ambas fechas estén llenas
         const fechaInicio = new Date(inicioInput.value);
         const fechaFin = new Date(finInput.value);
 
         if (inicioInput.value && finInput.value) {
-            // Validar que la fecha de fin no sea anterior a la de inicio
             if (fechaFin < fechaInicio) {
                 e.preventDefault();
                 alert("La fecha de devolución no puede ser anterior a la fecha de inicio.");
                 return;
             }
 
-            // Validar que la fecha de inicio no sea anterior a hoy ni posterior a un año desde hoy
             if (fechaInicio < ahora || fechaInicio > unAnoDespues) {
                 e.preventDefault();
                 alert("La fecha de inicio no puede ser anterior a la fecha actual ni posterior a un año desde hoy.");
                 return;
             }
 
-            // Validar que la fecha de fin no sea más de 3 meses después de la fecha de inicio
             const fechaMaxFin = new Date(fechaInicio);
             fechaMaxFin.setMonth(fechaInicio.getMonth() + 3);
             if (fechaFin > fechaMaxFin) {
@@ -84,75 +82,14 @@ function inicializarFormularioReservas() {
             e.preventDefault();
             alert("Por favor, complete ambas fechas.");
         }
-    })
-}
-
-function inicializarKeyShortcuts() {
-    let altPressed = false;
-
-    document.addEventListener('keydown', function (event) {
-        //TODO
-    });
-
-    document.addEventListener('keyup', function (event) {
-        // Verificar si la tecla Alt se ha soltado
-        if (event.key === "Control") {
-            altPressed = false;
-        }
-    })
-}
-
-function inicializarCambioTema() {
-    // Seleccionar el botón para cambiar el tema
-    const themeToggleButton = document.getElementById('toggleThemeBtn');
-
-    // Función para aplicar el cambio de tema
-    themeToggleButton.addEventListener('click', function () {
-        // Cambiar el tema entre 'default' y 'high-contrast'
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'high-contrast' ? 'default' : 'high-contrast';
-
-        // Cambiar el atributo data-theme en el HTML
-        document.documentElement.setAttribute('data-theme', newTheme);
-
-        // Actualizar la clase de la navbar
-        const navbar = document.querySelector('.navbar');
-        if (newTheme === 'high-contrast') {
-            navbar.classList.remove('navbar-light', 'bg-light');
-            navbar.classList.add('navbar-dark', 'bg-dark');
-        } else {
-            navbar.classList.remove('navbar-dark', 'bg-dark');
-            navbar.classList.add('navbar-light', 'bg-light');
-        }
-
-        // Cambiar las tablas (alternar entre 'table-dark' y 'table-striped')
-        const tables = document.querySelectorAll('.table');
-        tables.forEach(table => {
-            if (newTheme === 'high-contrast') {
-                table.classList.remove('table-striped');
-                table.classList.add('table-dark');
-            } else {
-                table.classList.remove('table-dark');
-                table.classList.add('table-striped');
-            }
-        });
-
-        // Cambiar el texto del botón de cambio de tema
-        themeToggleButton.textContent = newTheme === 'high-contrast' ? 'Activar modo claro' : 'Activar alto contraste';
     });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    //PARA EL LANGUAGE TOGGLE
+    // Initialize language toggle functionality
     inicializarLanguageToggle();
 
-    //PARA NAVEGAR CON TECLADO
-    inicializarKeyShortcuts();
-
-    //PARA EL CAMBIO DE TEMA
-    inicializarCambioTema();
-
-    //PARA QUE EL FORMULARIO DE RESERVAS TENGA SENTIDO LÓGICO
+    // Initialize the reservation form if we are on the 'reservas.html' page
     const path = window.location.pathname;
     if (path.includes("reservas.html")) {
         inicializarFormularioReservas();
