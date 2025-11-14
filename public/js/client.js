@@ -141,14 +141,84 @@ function inicializarTema() {
     });
 }
 
+function reserveCar(matricula) {
+    // Envía al usuario a reservas.html con ?car=MAT
+    window.location.href = `reservas.html?car=${encodeURIComponent(matricula)}`;
+}
+
+function inicializarTamanoLetra() {
+    const fontSizeRange = document.getElementById("fontSizeRange");
+    const fontSizeValue = document.getElementById("fontSizeValue");
+    const guardarCambiosBtn = document.getElementById("guardarCambios");
+
+    // Función para aplicar tamaño de fuente
+    function aplicarTamañoFuente(valor) {
+        const baseSize = parseFloat(valor);
+
+        fontSizeValue.textContent = `${baseSize}rem`;
+
+        // Elementos de texto normales
+        const textoNormal = document.querySelectorAll("p, li, a, span, label, button");
+        textoNormal.forEach(el => {
+            el.style.fontSize = `${baseSize}rem`;
+        });
+
+        // Elementos tipográficos jerárquicos
+        const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6, strong, b");
+        headings.forEach(el => {
+            let factor;
+            switch (el.tagName.toLowerCase()) {
+                case "h1": factor = 2.5; break;
+                case "h2": factor = 2; break;
+                case "h3": factor = 1.75; break;
+                case "h4": factor = 1.5; break;
+                case "h5": factor = 1.25; break;
+                case "h6": factor = 1.1; break;
+                case "strong":
+                case "b":
+                    factor = 1.05; break;
+                default:
+                    factor = 1;
+            }
+            el.style.fontSize = `${(baseSize * factor).toFixed(2)}rem`;
+        });
+    }
+
+    // Aplicar al mover el slider en tiempo real
+    fontSizeRange.addEventListener("input", function () {
+        aplicarTamañoFuente(this.value);
+    });
+
+    // Guardar cambios en sessionStorage
+    guardarCambiosBtn.addEventListener("click", function () {
+        const valor = fontSizeRange.value;
+        aplicarTamañoFuente(valor);
+        sessionStorage.setItem("fontSize", valor);
+    });
+
+    // Al cargar la página, aplicar valor guardado en sessionStorage
+    const fontSizeGuardado = sessionStorage.getItem("fontSize");
+    if (fontSizeGuardado) {
+        fontSizeRange.value = fontSizeGuardado;
+        aplicarTamañoFuente(fontSizeGuardado);
+    }
+}
+
 // Inicializar todo al cargar
 document.addEventListener("DOMContentLoaded", function () {
     inicializarLanguageToggle();
     inicializarTema();
+    inicializarTamanoLetra();
 
     const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
     if (path.includes("reservas.html")) {
+        const matricula = params.get("car");
         inicializarFormularioReservas();
+        if (matricula) {
+            const selectVehiculo = document.getElementById("vehiculo");
+            selectVehiculo.value = matricula;
+        }
     }
 });
 
