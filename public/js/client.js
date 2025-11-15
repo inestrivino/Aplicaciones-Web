@@ -143,29 +143,30 @@ function inicializarTema() {
 
 function reserveCar(matricula) {
     // Envía al usuario a reservas.html con ?car=MAT
-    window.location.href = `reservas.html?car=${encodeURIComponent(matricula)}`;
+    window.location.href = `../public/reservas.html?car=${encodeURIComponent(matricula)}`;
 }
 
 function inicializarTamanoLetra() {
+    const ajustesModal = document.getElementById("ajustesModal");
     const fontSizeRange = document.getElementById("fontSizeRange");
     const fontSizeValue = document.getElementById("fontSizeValue");
     const guardarCambiosBtn = document.getElementById("guardarCambios");
 
-    // Función para aplicar tamaño de fuente
-    function aplicarTamañoFuente(valor) {
-        const baseSize = parseFloat(valor);
+    let tamanoOriginal = null;
+    let cambiosGuardados = false;
 
+    // Aplicamos el tamaño nuevo según el slider
+    function aplicarTamanoFuente(valor) {
+        const baseSize = parseFloat(valor);
         fontSizeValue.textContent = `${baseSize}rem`;
 
-        // Elementos de texto normales
-        const textoNormal = document.querySelectorAll("p, li, a, span, label, button");
-        textoNormal.forEach(el => {
+        // Elementos normales
+        document.querySelectorAll("p, li, a, span, label, button").forEach(el => {
             el.style.fontSize = `${baseSize}rem`;
         });
 
-        // Elementos tipográficos jerárquicos
-        const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6, strong, b");
-        headings.forEach(el => {
+        // Encabezados
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6, strong, b").forEach(el => {
             let factor;
             switch (el.tagName.toLowerCase()) {
                 case "h1": factor = 2.5; break;
@@ -175,32 +176,56 @@ function inicializarTamanoLetra() {
                 case "h5": factor = 1.25; break;
                 case "h6": factor = 1.1; break;
                 case "strong":
-                case "b":
-                    factor = 1.05; break;
-                default:
-                    factor = 1;
+                case "b": factor = 1.05; break;
+                default: factor = 1;
             }
             el.style.fontSize = `${(baseSize * factor).toFixed(2)}rem`;
         });
     }
 
-    // Aplicar al mover el slider en tiempo real
-    fontSizeRange.addEventListener("input", function () {
-        aplicarTamañoFuente(this.value);
+    // Restauramos el tamaño original
+    function restaurarTamanoOriginal() {
+        aplicarTamanoFuente(tamanoOriginal);
+        fontSizeRange.value = tamanoOriginal;
+    }
+
+    // Guardamos el valor al abrir el modal
+    ajustesModal.addEventListener("show.bs.modal", () => {
+        tamanoOriginal = parseFloat(fontSizeRange.value);
+        cambiosGuardados = false;
     });
 
-    // Guardar cambios en sessionStorage
-    guardarCambiosBtn.addEventListener("click", function () {
+    // Cambiamos el tamaño de la letra como vista previa
+    fontSizeRange.addEventListener("input", () => {
+        aplicarTamanoFuente(fontSizeRange.value);
+    });
+
+    // Guardamos los cambios si son definitivos
+    guardarCambiosBtn.addEventListener("click", () => {
+        cambiosGuardados = true;
         const valor = fontSizeRange.value;
-        aplicarTamañoFuente(valor);
+        aplicarTamanoFuente(valor);
         sessionStorage.setItem("fontSize", valor);
+
+        // cerrar modal con bootstrap
+        const modal = bootstrap.Modal.getInstance(ajustesModal);
+        modal.hide();
     });
 
-    // Al cargar la página, aplicar valor guardado en sessionStorage
+    // Pero si se cierra sin guardar entonces los revertimos
+    ajustesModal.addEventListener("hidden.bs.modal", () => {
+        if (!cambiosGuardados) {
+            restaurarTamanoOriginal();
+        }
+    });
+    
     const fontSizeGuardado = sessionStorage.getItem("fontSize");
     if (fontSizeGuardado) {
         fontSizeRange.value = fontSizeGuardado;
-        aplicarTamañoFuente(fontSizeGuardado);
+        aplicarTamanoFuente(fontSizeGuardado);
+    } else {
+        // aplicar valor del slider por defecto
+        aplicarTamanoFuente(fontSizeRange.value);
     }
 }
 
