@@ -153,16 +153,56 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <p>Aún no has iniciado sesión.</p>
+          <!-- Formulario inicio de sesión-->
+          <div id="signInForm" class="auth-form">
+            <form>
+              <div>
+                <label for="signInEmail" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="signInEmail" placeholder="Correo electrónico">
+              </div>
+              <div>
+                <label for="signInPassword" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="signInPassword" placeholder="Contraseña" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+            </form>
+            <p>¿Aún no tienes cuenta? <button class="btn btn-link" id="signUpBtn">Registrarse</button></p>
+          </div>
+
+          <!-- Formulario de registro -->
+          <div id="signUpForm" class="auth-form" style="display: none;">
+            <form>
+              <div>
+                <label for="signUpName" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="signUpName" placeholder="Nombre completo">
+              </div>
+              <div>
+                <label for="signUpEmail" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="signUpEmail" placeholder="Correo electrónico">
+              </div>
+              <div>
+                <label for="signUpPassword" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="signUpPassword" placeholder="Contraseña" minlength="8">
+                <div class="invalid-feedback">
+                  La contraseña debe tener al menos 8 caracteres.
+                </div>
+              </div>
+              <div>
+                <label for="signUpConfirmPassword" class="form-label">Confirmar contraseña</label>
+                <input type="password" class="form-control" id="signUpConfirmPassword"
+                  placeholder="Confirmar contraseña">
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </form>
+            <p>¿Ya tienes cuenta? <button class="btn btn-link" id="signInBtn">Iniciar sesión</button></p>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary">Guardar cambios</button>
         </div>
       </div>
     </div>
   </div>
-
 
   <header class="position-relative w-100" aria-label="Encabezado de la página">
     <div class="header-image" aria-hidden="true"></div>

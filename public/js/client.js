@@ -218,7 +218,7 @@ function inicializarTamanoLetra() {
             restaurarTamanoOriginal();
         }
     });
-    
+
     const fontSizeGuardado = sessionStorage.getItem("fontSize");
     if (fontSizeGuardado) {
         fontSizeRange.value = fontSizeGuardado;
@@ -229,11 +229,24 @@ function inicializarTamanoLetra() {
     }
 }
 
+function inicializarSignInUp() {
+    document.getElementById('signInBtn').addEventListener('click', function () {
+        document.getElementById('signInForm').style.display = 'block';
+        document.getElementById('signUpForm').style.display = 'none';
+    });
+
+    document.getElementById('signUpBtn').addEventListener('click', function () {
+        document.getElementById('signInForm').style.display = 'none';
+        document.getElementById('signUpForm').style.display = 'block';
+    });
+}
+
 // Inicializar todo al cargar
 document.addEventListener("DOMContentLoaded", function () {
     inicializarLanguageToggle();
     inicializarTema();
     inicializarTamanoLetra();
+    inicializarSignInUp();
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
