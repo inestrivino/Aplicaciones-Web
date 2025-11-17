@@ -1,3 +1,4 @@
+<!-- BARRA DE NAVEGACION -->
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
   <div class="container-fluid">
     <!-- Logo -->
@@ -48,11 +49,132 @@
       <div class="navbar-profile ms-2">
         <button id="usuarioBtn" class="btn p-0 d-flex align-items-center" aria-label="Abrir modal de usuario"
           data-bs-toggle="modal" data-bs-target="#usuarioModal" accesskey="u">
-          <img src="img/personas_1/Blank.jpeg" alt="Foto de perfil" class="rounded-circle me-2" width="40"
-            height="40">
+          <img src="/img/personas_1/Blank.jpeg" alt="Foto de perfil" class="rounded-circle me-2" width="40" height="40">
           <p class="d-block d-md-none">Mi perfil</p>
         </button>
       </div>
     </div>
   </div>
 </nav>
+
+<!-- MODAL DE AJUSTES -->
+<div class="modal fade" id="ajustesModal" tabindex="-1" aria-labelledby="ajustesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ajustesModalLabel">Ajustes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Sección: Idioma -->
+        <section>
+          <h6>Idioma</h6>
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownIdioma"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <span id="idiomaSeleccionado">Español</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownIdioma">
+              <li><a class="dropdown-item" href="#" data-lang="es">Español</a></li>
+              <li><a class="dropdown-item" href="#" data-lang="en">English</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Sección: Tema -->
+        <section>
+          <h6>Tema visual</h6>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="tema" id="temaClaro" value="claro" checked>
+            <label class="form-check-label" for="temaClaro">Claro</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="tema" id="temaOscuro" value="oscuro">
+            <label class="form-check-label" for="temaOscuro">Oscuro</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="tema" id="temaAltoContraste" value="alto-contraste">
+            <label class="form-check-label" for="temaAltoContraste">Alto contraste</label>
+          </div>
+        </section>
+
+        <!-- Sección: Tamaño de letra -->
+        <section>
+          <h6>Tamaño de letra</h6>
+          <label for="fontSizeRange" class="form-label small text-muted">
+            Selecciona el tamaño del texto
+          </label>
+          <input type="range" class="form-range" id="fontSizeRange" min="1" max="1.4" step="0.05" value="1.2">
+          <p>Tamaño actual: <span id="fontSizeValue">1.2rem</span></p>
+        </section>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="guardarCambios">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE USUARIO -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="usuarioModalLabel">Mi cuenta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulario inicio de sesión-->
+        <div id="signInForm" class="auth-form">
+          <form>
+            <div>
+              <label for="signInEmail" class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" id="signInEmail" placeholder="Correo electrónico">
+            </div>
+            <div>
+              <label for="signInPassword" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="signInPassword" placeholder="Contraseña" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+          </form>
+          <p>¿Aún no tienes cuenta? <button class="btn btn-link" id="signUpBtn">Registrarse</button></p>
+        </div>
+
+        <!-- Formulario de registro -->
+        <div id="signUpForm" class="auth-form" style="display: none;">
+          <form>
+            <div>
+              <label for="signUpName" class="form-label">Nombre completo</label>
+              <input type="text" class="form-control" id="signUpName" placeholder="Nombre completo">
+            </div>
+            <div>
+              <label for="signUpEmail" class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" id="signUpEmail" placeholder="Correo electrónico">
+            </div>
+            <div>
+              <label for="signUpPassword" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="signUpPassword" placeholder="Contraseña" minlength="8">
+              <div class="invalid-feedback">
+                La contraseña debe tener al menos 8 caracteres.
+              </div>
+            </div>
+            <div>
+              <label for="signUpConfirmPassword" class="form-label">Confirmar contraseña</label>
+              <input type="password" class="form-control" id="signUpConfirmPassword" placeholder="Confirmar contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+          </form>
+          <p>¿Ya tienes cuenta? <button class="btn btn-link" id="signInBtn">Iniciar sesión</button></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
