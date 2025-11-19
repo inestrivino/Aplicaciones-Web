@@ -4,33 +4,47 @@ const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+const ejs = require("ejs");
+
+//OTROS IMPORTS
+const renderHeader = require("./services/renderHeader");
 
 //CONFIGURACIONES
 const app = express(); 
 app.use(express.static("public"));
-app.use(morgan("dev"));
+app.use(morgan("dev")); //no se si hace falta esto
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+const middlewareSession = session({
+    saveUninitialized: false,
+    secret: "secreto12345",
+    resave: false
+});
+app.use(middlewareSession);
 
 //MIDDLEWARES
 
 
 //RUTAS 
-app.get("/a", function(request, response){
-    try {
-        throw new Error("Error de prueba");
-    } catch (error) {
-        next(error);
-    }
-    response.redirect("/index.html");
+app.get("/", async function(request, response){
+    const htmlHeader = await renderHeader();
+    response.render("inicio", {header: htmlHeader});
 });
 app.use("/reserva", require("./routes/reserva"));
 app.use("/vehiculos", require("./routes/vehiculos"));
+app.use("/user", require("./routes/user"));
+app.use("/contacto", require("./routes/contacto"));
 
 //ERRORES
+/*try {
+        throw new Error("Error de prueba");
+    } catch (error) {
+        next(error);
+    }*/
 app.use(function(err, request, response, next){
+    console.error(err.stack);
     response.render("error500");
 });
 app.use(function(request, response, next){

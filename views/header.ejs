@@ -2,8 +2,8 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
   <div class="container-fluid">
     <!-- Logo -->
-    <a href="index.html" class="navbar-brand align-items-center" aria-label="Ir a la página de inicio de EcoMóvil">
-      <img src="img/Logo.svg" alt="Logo de EcoMóvil">
+    <a href="/" class="navbar-brand align-items-center" aria-label="Ir a la página de inicio de EcoMóvil">    
+      <img src="/img/Logo.svg" alt="Logo de EcoMóvil">
     </a>
 
     <!-- Toggler -->
@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a href="index.html" class="nav-link" aria-label="Ir a inicio" accesskey="i">
+          <a href="/" class="nav-link" aria-label="Ir a inicio" accesskey="i">
             Inicio <span class="visually-hidden">(Alt + I)</span>
           </a>
         </li>
@@ -31,7 +31,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="contacto.html" class="nav-link" aria-label="Ir a Contacto" accesskey="c">
+          <a href="contacto" class="nav-link" aria-label="Ir a Contacto" accesskey="c">
             Contacto <span class="visually-hidden">(Alt + C)</span>
           </a>
         </li>
@@ -131,14 +131,14 @@
       <div class="modal-body">
         <!-- Formulario inicio de sesión-->
         <div id="signInForm" class="auth-form">
-          <form>
+          <form action="/user/login" method="POST">
             <div>
               <label for="signInEmail" class="form-label">Correo electrónico</label>
-              <input type="email" class="form-control" id="signInEmail" placeholder="Correo electrónico">
+              <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Correo electrónico">
             </div>
             <div>
               <label for="signInPassword" class="form-label">Contraseña</label>
-              <input type="password" class="form-control" id="signInPassword" placeholder="Contraseña" required>
+              <input type="password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Contraseña" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
           </form>
@@ -147,25 +147,25 @@
 
         <!-- Formulario de registro -->
         <div id="signUpForm" class="auth-form" style="display: none;">
-          <form>
+          <form action="/user/register" method="POST">
             <div>
               <label for="signUpName" class="form-label">Nombre completo</label>
-              <input type="text" class="form-control" id="signUpName" placeholder="Nombre completo">
+              <input type="text" class="form-control" name="signUpName" id="signUpName" placeholder="Nombre completo">
             </div>
             <div>
               <label for="signUpEmail" class="form-label">Correo electrónico</label>
-              <input type="email" class="form-control" id="signUpEmail" placeholder="Correo electrónico">
+              <input type="email" class="form-control" name="signUpEmail" id="signUpEmail" placeholder="Correo electrónico">
             </div>
             <div>
               <label for="signUpPassword" class="form-label">Contraseña</label>
-              <input type="password" class="form-control" id="signUpPassword" placeholder="Contraseña" minlength="8">
+              <input type="password" class="form-control" name="signUpPassword" id="signUpPassword" placeholder="Contraseña" minlength="8">
               <div class="invalid-feedback">
                 La contraseña debe tener al menos 8 caracteres.
               </div>
             </div>
             <div>
               <label for="signUpConfirmPassword" class="form-label">Confirmar contraseña</label>
-              <input type="password" class="form-control" id="signUpConfirmPassword" placeholder="Confirmar contraseña">
+              <input type="password" class="form-control" name="signUpConfirmPassword" id="signUpConfirmPassword" placeholder="Confirmar contraseña">
             </div>
             <button type="submit" class="btn btn-primary w-100">Registrarse</button>
           </form>

@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const renderHeader = require("../services/renderHeader");
 
-router.get("/", function(request, response){
-    response.render("reserva");
+router.get("/", async function(request, response){
+    const htmlHeader = await renderHeader();
+    response.render("reserva", {header: htmlHeader});
 });
 
-router.post("/", function(request, response){
+router.post("/", async function(request, response){
     console.log(request.body);
-    response.render("reserva");
+    const htmlHeader = await ejs.renderFile("../views/header.ejs", );
+    response.render("reserva", {header: htmlHeader});
 });
 
 module.exports = router;
