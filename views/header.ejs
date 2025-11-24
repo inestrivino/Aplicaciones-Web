@@ -27,7 +27,7 @@
         </li>
         <li class="nav-item">
           <a href="/reserva" class="nav-link" aria-label="Ir a Reservas" accesskey="r">
-            Reservas <span class="visually-hidden">(Alt + R)</span>
+            Reservar <span class="visually-hidden">(Alt + R)</span>
           </a>
         </li>
         <li class="nav-item">
@@ -129,6 +129,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
+        <% if (user) { %>
+          <p> Bienvenido <%= user %></p>
+        <% } else { %>
         <!-- Formulario inicio de sesión-->
         <div id="signInForm" class="auth-form">
           <form action="/user/login" method="POST">
@@ -171,9 +174,15 @@
           </form>
           <p>¿Ya tienes cuenta? <button class="btn btn-link" id="signInBtn">Iniciar sesión</button></p>
         </div>
+        <% } %>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <% if (user) { %>
+          <a href="/user/logout" class="btn btn-danger">
+            Cerrar Sesión
+          </a>
+        <% } %>
       </div>
     </div>
   </div>

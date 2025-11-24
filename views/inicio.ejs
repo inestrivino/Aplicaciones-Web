@@ -24,6 +24,32 @@
   <!-- NAVBAR -->
   <%- header %>
 
+  <!-- mensaje de error -->
+  <% if (error) { %>
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usuarioModalLabel">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p><%= error %></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const modal = new bootstrap.Modal(document.getElementById("errorModal"));
+      modal.show();
+    });
+  </script>
+  <% } %>
+
   <header class="position-relative w-100" aria-label="Encabezado de la página">
     <div class="header-image" aria-hidden="true"></div>
     <div class="position-relative text-white h-100 d-flex align-items-center">

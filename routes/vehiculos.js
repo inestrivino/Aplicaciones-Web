@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const renderHeader = require("../services/renderHeader");
+const ejs = require("ejs");
 
 //DATOS TEMPORALES
 const vehiculos = [
@@ -31,7 +31,7 @@ const vehiculos = [
 ];
 
 router.get("/" , async function(request, response){
-    const htmlHeader = await renderHeader();
+    const htmlHeader = await ejs.renderFile("./views/header.ejs", {user: request.session.user});
     response.render("vehiculos", {vehiculos: vehiculos, header: htmlHeader});
 });
 

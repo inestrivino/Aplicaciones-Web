@@ -7,9 +7,6 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const ejs = require("ejs");
 
-//OTROS IMPORTS
-const renderHeader = require("./services/renderHeader");
-
 //CONFIGURACIONES
 const app = express(); 
 app.use(express.static("public"));
@@ -29,8 +26,13 @@ app.use(middlewareSession);
 
 //RUTAS 
 app.get("/", async function(request, response){
-    const htmlHeader = await renderHeader();
-    response.render("inicio", {header: htmlHeader});
+    const htmlHeader = await ejs.renderFile("./views/header.ejs", {user: request.session.user});
+    let error = undefined;
+    if(request.session.error){
+        error = request.session.error;
+        request.session.error = undefined;
+    }
+    response.render("inicio", {error: error, header: htmlHeader});
 });
 app.use("/reserva", require("./routes/reserva"));
 app.use("/vehiculos", require("./routes/vehiculos"));
