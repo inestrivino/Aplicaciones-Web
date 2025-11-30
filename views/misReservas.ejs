@@ -15,20 +15,55 @@
   <link rel="icon" href="img/Logo.svg" type="image/x-icon" />
 
   <!-- Enlaces a las hojas de estilo -->
-  <link rel="stylesheet" href="css/bootstrap.min.css" />
+   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
 <body>
   <!-- NAVBAR -->
-  <% header %>
+  <%- header %>
 
     <main aria-label="Contenido principal">
       <h1>Mis Reservas de Vehículos</h1>
 
       <!-- Contenedor para las reservas -->
-      <div class="reservation-list row" id="reservationList"></div>
+      <div class="reservation-list ow row-cols-1 row-cols-lg-3 g-4" id="reservationList">
+        <% if (reservas && reservas.length> 0) { %>
+          <% for (let i=0; i < reservas.length; i++) { %>
+            <div class="col">
+              <div class="card h-100">
+                <img src="<%= reservas[i].vehiculo.imagen %>" class="card-img-top img-fluid"
+                  alt="<%= reservas[i].vehiculo.nombre %>" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= reservas[i].vehiculo.nombre %>
+                  </h5>
+                  <h6>
+                    <%= reservas[i].fechaIni %> - <%= reservas[i].fechaFin %>
+                  </h6>
+                  <!-- Detalles del vehículo -->
+                  <ul class="list-unstyled">
+                    <li><strong>Matrícula:</strong>
+                      <%= reservas[i].vehiculo.matricula %>
+                    </li>
+                    <li><strong>Autonomía:</strong>
+                      <%= reservas[i].vehiculo.autonomia %> km
+                    </li>
+                    <li><strong>Plazas:</strong>
+                      <%= reservas[i].vehiculo.plazas %>
+                    </li>
+                    <li><strong>Concesionario:</strong>
+                      <%= reservas[i].vehiculo.concesionario %>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <% } %>
+              <% } else { %>
+                <p>No tienes reservas de vehículos en este momento.</p>
+                <% } %>
       </div>
     </main>
 
