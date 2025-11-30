@@ -153,15 +153,15 @@
           <form action="/user/register" method="POST">
             <div>
               <label for="signUpName" class="form-label">Nombre completo</label>
-              <input type="text" class="form-control" name="signUpName" id="signUpName" placeholder="Nombre completo">
+              <input type="text" class="form-control" name="signUpName" id="signUpName" placeholder="Nombre completo" required maxlength="15">
             </div>
             <div>
               <label for="signUpEmail" class="form-label">Correo electrónico</label>
-              <input type="email" class="form-control" name="signUpEmail" id="signUpEmail" placeholder="Correo electrónico">
+              <input type="email" class="form-control" name="signUpEmail" id="signUpEmail" placeholder="Correo electrónico" required maxlength="100">
             </div>
             <div>
               <label for="signUpPassword" class="form-label">Contraseña</label>
-              <input type="password" class="form-control" name="signUpPassword" id="signUpPassword" placeholder="Contraseña" minlength="8">
+              <input type="password" class="form-control" name="signUpPassword" id="signUpPassword" placeholder="Contraseña" minlength="8" maxlength="30" required>
               <div class="invalid-feedback">
                 La contraseña debe tener al menos 8 caracteres.
               </div>
