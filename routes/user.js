@@ -20,7 +20,7 @@ function validarEmail(campo) {
         }
         const texto3 = /^[^@]+@[^@]+$/.test(request.body[campo]);
         if (!texto3) {
-            request.session.error = "El email debe serguir el formato usuario@dominio.";
+            request.session.error = "El email debe serguir el formato usuario@ucm.";
             return response.redirect("/");
         }
         if (request.body[campo].length > 50) {

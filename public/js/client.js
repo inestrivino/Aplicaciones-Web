@@ -241,6 +241,19 @@ function inicializarSignInUp() {
     });
 }
 
+function validateEmailSignUp() {
+    const email = document.getElementById("signUpEmail").value;
+    const emailError = document.getElementById("signUpEmailError");
+
+    if (!(email.endsWith("@ucm.com")||email.endsWith("@ucm.es"))) {
+      emailError.style.display = "block";
+      return false;
+    } else {
+      emailError.style.display = "none"; 
+      return true; 
+    }
+  }
+
 // Inicializar todo al cargar
 document.addEventListener("DOMContentLoaded", function () {
     inicializarLanguageToggle();
