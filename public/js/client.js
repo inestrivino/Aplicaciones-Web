@@ -265,11 +265,150 @@ function validateEmailSignUp() {
     }
 }
 
+function inicializarAtajosTeclado() {
+    //TO DO : AÑADIR ELEMENTOS PARA EL PANEL
+
+    // Verificar que los elementos del DOM existen antes de acceder a ellos
+    const shortcutInicioElement = document.getElementById('shortcutInicio');
+    const shortcutVehiculosElement = document.getElementById('shortcutVehiculos');
+    const shortcutReservarElement = document.getElementById('shortcutReservar');
+    const shortcutMisReservasElement = document.getElementById('shortcutMisReservas');
+    const shortcutContactoElement = document.getElementById('shortcutContacto');
+
+    const guardarCambiosBtn = document.getElementById("guardarCambios");
+    const modal = document.getElementById('ajustesModal');
+
+    const shortcutInicio = (sessionStorage.getItem('shortcutInicio') || 'i').toLowerCase();
+    const shortcutVehiculos = (sessionStorage.getItem('shortcutVehiculos') || 'v').toLowerCase();
+    const shortcutReservar = (sessionStorage.getItem('shortcutReservar') || 'r').toLowerCase();
+    const shortcutMisReservas = (sessionStorage.getItem('shortcutMisReservas') || 'm').toLowerCase();
+    const shortcutContacto = (sessionStorage.getItem('shortcutContacto') || 'c').toLowerCase();
+
+    let initialShortcuts = {
+        inicio: shortcutInicio,
+        vehiculos: shortcutVehiculos,
+        reservar: shortcutReservar,
+        misReservas: shortcutMisReservas,
+        contacto: shortcutContacto
+    };
+
+    if (shortcutInicioElement) document.getElementById('shortcutInicio').value = initialShortcuts.inicio;
+    if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
+    if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
+    if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
+    if (shortcutContactoElement) document.getElementById('shortcutContacto').value = initialShortcuts.contacto;
+
+    const linkInicio = document.querySelector('a[aria-label="Ir a inicio"]');
+    const linkVehiculos = document.querySelector('a[aria-label="Ir a Vehículos"]');
+    const linkReservar = document.querySelector('a[aria-label="Ir a Reservas"]');
+    const linkMisReservas = document.querySelector('a[aria-label="Ir a Mis Reservas"]');
+    const linkContacto = document.querySelector('a[aria-label="Ir a Contacto"]');
+
+    function actualizarAtajos() {
+        if (linkInicio) linkInicio.setAttribute('accesskey', shortcutInicio);
+        if (linkVehiculos) linkVehiculos.setAttribute('accesskey', shortcutVehiculos);
+        if (linkReservar) linkReservar.setAttribute('accesskey', shortcutReservar);
+        if (linkMisReservas) linkMisReservas.setAttribute('accesskey', shortcutMisReservas);
+        if (linkContacto) linkContacto.setAttribute('accesskey', shortcutContacto);
+    }
+
+    function verificarAtajosDuplicados() {
+        const atajos = [
+        ];
+
+        if (shortcutInicioElement) {
+            const nuevoShortcutInicio = document.getElementById('shortcutInicio').value.toLowerCase();
+            atajos.push(nuevoShortcutInicio);
+        }
+        if (shortcutVehiculosElement) {
+            const nuevoShortcutVehiculos = document.getElementById('shortcutVehiculos').value.toLowerCase();
+            atajos.push(nuevoShortcutVehiculos);
+        }
+        if (shortcutReservarElement) {
+            const nuevoShortcutReservar = document.getElementById('shortcutReservar').value.toLowerCase();
+            atajos.push(nuevoShortcutReservar);
+        }
+        if (shortcutMisReservasElement) {
+            const nuevoShortcutMisReservas = document.getElementById('shortcutMisReservas').value.toLowerCase();
+            atajos.push(nuevoShortcutMisReservas);
+        }
+        if (shortcutContactoElement) {
+            const nuevoShortcutContacto = document.getElementById('shortcutContacto').value.toLowerCase();
+            atajos.push(nuevoShortcutContacto);
+        }
+
+        const atajosUnicos = new Set(atajos);
+        return atajosUnicos.size !== atajos.length; // true entonces hay duplicados
+    }
+
+    actualizarAtajos();
+
+    function reactivarAtajos() {
+        document.removeEventListener('keydown', onKeyDown);
+        document.addEventListener('keydown', onKeyDown);
+
+        function onKeyDown(event) {
+            if (!event.altKey) return;
+            const key = event.key.toLowerCase();
+            if (key === shortcutInicio) {
+                event.preventDefault();
+                window.location.href = "/";
+            } else if (key === shortcutVehiculos) {
+                event.preventDefault();
+                window.location.href = "/vehiculos";
+            } else if (key === shortcutReservar) {
+                event.preventDefault();
+                window.location.href = "/reserva";
+            } else if (key === shortcutMisReservas) {
+                event.preventDefault();
+                window.location.href = "/misReservas";
+            } else if (key === shortcutContacto) {
+                event.preventDefault();
+                window.location.href = "/contacto";
+            }
+        }
+    }
+
+    guardarCambiosBtn.addEventListener("click", () => {
+        // Verificar si los atajos son duplicados
+        if (verificarAtajosDuplicados()) {
+            alert("No puedes asignar la misma tecla a varios atajos. Por favor, elige teclas diferentes.");
+            return; // Evitar que continúe si hay duplicados
+        }
+
+        if(shortcutInicioElement)sessionStorage.setItem('shortcutInicio', shortcutInicioElement.value.toLowerCase());
+        if(shortcutVehiculosElement)sessionStorage.setItem('shortcutVehiculos', shortcutVehiculosElement.value.toLowerCase());
+        if(shortcutReservarElement)sessionStorage.setItem('shortcutReservar', shortcutReservarElement.value.toLowerCase());
+        if(shortcutMisReservasElement)sessionStorage.setItem('shortcutMisReservas', shortcutMisReservasElement.value.toLowerCase());
+        if(shortcutContactoElement)sessionStorage.setItem('shortcutContacto', shortcutContactoElement.value.toLowerCase());
+        actualizarAtajos();
+        reactivarAtajos();
+
+        // Cerrar el modal
+        if (modal) {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+        }
+        location.reload();
+    });
+
+    modal.addEventListener('hidden.bs.modal', () => {
+        if (shortcutInicioElement) document.getElementById('shortcutInicio').value = initialShortcuts.inicio;
+        if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
+        if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
+        if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
+        if (shortcutContactoElement) document.getElementById('shortcutContacto').value = initialShortcuts.contacto;
+    });
+    reactivarAtajos();
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+    inicializarAtajosTeclado();
     inicializarLanguageToggle();
     inicializarTema();
     inicializarTamanoLetra();
     inicializarSignInUp();
+
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);

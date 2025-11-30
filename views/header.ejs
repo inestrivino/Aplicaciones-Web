@@ -36,6 +36,11 @@
               Mis Reservas <span class="visually-hidden">(Alt + M)</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="/adminPanel.ejs" class="nav-link" aria-label="Ir al Panel de Administrador" accesskey="m">
+              Panel <span class="visually-hidden">(Alt + P)</span>
+            </a>
+          </li>
           <% } %>
             <li class="nav-item">
               <a href="contacto" class="nav-link" aria-label="Ir a Contacto" accesskey="c">
@@ -117,6 +122,37 @@
           <p>Tamaño actual: <span id="fontSizeValue">1.2rem</span></p>
         </section>
 
+        <!-- Sección: Configuración de Atajos de Teclado -->
+        <section>
+          <h6>Atajos de Teclado</h6>
+          <div class="mb-3">
+            <label for="shortcutInicio" class="form-label">Inicio (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutInicio" value="i">
+          </div>
+          <div class="mb-3">
+            <label for="shortcutContacto" class="form-label">Contacto (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutContacto" value="c">
+          </div>
+          <% if (user) { %>
+          <div class="mb-3">
+            <label for="shortcutVehiculos" class="form-label">Vehículos (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutVehiculos" value="v">
+          </div>
+          <div class="mb-3">
+            <label for="shortcutReservar" class="form-label">Reservar (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutReservar" value="r">
+          </div>
+          <div class="mb-3">
+            <label for="shortcutMisReservas" class="form-label">Mis Reservas (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutMisReservas" value="m">
+          </div>
+          <div class="mb-3">
+            <label for="shortcutPanel" class="form-label">Panel (Alt + )</label>
+            <input type="text" class="form-control" id="shortcutContacto" value="p">
+          </div>
+          <% } %>
+        </section>
+
       </div>
 
       <div class="modal-footer">
@@ -126,6 +162,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- MODAL DE USUARIO -->
 <div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
