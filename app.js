@@ -38,7 +38,7 @@ app.use("/reserva", require("./routes/reserva"));
 app.use("/vehiculos", require("./routes/vehiculos"));
 app.use("/user", require("./routes/user"));
 app.use("/contacto", require("./routes/contacto"));
-app.use("/contacto", require("./routes/misReservas"));
+app.use("/misReservas", require("./routes/misReservas"));
 
 //ERRORES
 /*try {
