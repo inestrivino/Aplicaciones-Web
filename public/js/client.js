@@ -139,7 +139,7 @@ function inicializarTema() {
 
 function reserveCar(matricula) {
     // Envía al usuario a reservas.html con ?car=MAT
-    window.location.href = `../public/reservas.html?car=${encodeURIComponent(matricula)}`;
+    window.location.href = `../reserva?car=${encodeURIComponent(matricula)}`;
 }
 
 function inicializarTamanoLetra() {
@@ -409,10 +409,9 @@ document.addEventListener("DOMContentLoaded", function () {
     inicializarTamanoLetra();
     inicializarSignInUp();
 
-
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
-    if (path.includes("reservas.html")) {
+    if (path.includes("reserva")) {
         const matricula = params.get("car");
         inicializarFormularioReservas();
         if (matricula) {
