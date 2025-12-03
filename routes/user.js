@@ -1,13 +1,12 @@
 const e = require('express');
 const express = require('express');
 const router = express.Router();
-
-//USUARIOS
-let users = {};
+const userDb = require("../db/userDb.js");
+const bcrypt = require("bcrypt");
 
 //validar correo
 function validarEmail(campo) {
-    return function(request, response, next) {
+    return function (request, response, next) {
         const texto1 = !/[._-]{2,}/.test(request.body[campo]);
         if (!texto1) {
             request.session.error = "El email no puede contener caracteres especiales (._-) repetidos.";
@@ -31,7 +30,7 @@ function validarEmail(campo) {
     };
 }
 function validarPassword(campo) {
-    return function(request, response, next) {
+    return function (request, response, next) {
         const texto1 = /['\/]/.test(request.body[campo]);
         if (texto1) {
             request.session.error = "La contraseña no puede contener los caracteres ' o /.";
@@ -73,25 +72,36 @@ router.use(["/register"], validarPassword("signUpPassword"));
 router.use(["/login"], validarPassword("signInPassword"));
 router.use(["/register"], validarNombre);
 
-router.post("/register", async function(request, response) {
+router.post("/register", async function (request, response, next) {
     if (request.body.signUpPassword !== request.body.signUpConfirmPassword) {
         request.session.error = "Las contraseñas no coinciden.";
         return response.redirect("/");
     }
-    if (users[request.body.signUpEmail]) {
+    /*if (users[request.body.signUpEmail]) {
         request.session.error = "El correo ya está registrado.";
         return response.redirect("/");
+    }*/
+
+    //crear hash de la contraseña
+    const hash = await bcrypt.hash(request.body.signUpPassword, 10);
+
+    try {
+        //guardar en la base de datos
+        userDb.createUser({
+            email: request.body.signUpEmail,
+            name: request.body.signUpName,
+            password: hash
+        });
+        request.session.user = request.body.signUpName;
+    } catch (error) {
+        next(error);
+        return;
     }
-    request.session.user = request.body.signUpName;
-    users[request.body.signUpEmail] = {
-        email: request.body.signUpEmail,
-        name: request.body.signUpName,
-        password: request.body.signUpPassword
-    };
+
     response.redirect("/");
 });
 
-router.post("/login", function(request, response) {
+router.post("/login", function (request, response) {
     if (!users[request.body.signInEmail]) {
         request.session.error = "El correo no está registrado.";
         return response.redirect("/");
@@ -104,7 +114,7 @@ router.post("/login", function(request, response) {
     response.redirect("/");
 });
 
-router.get("/logout", function(request, response) {
+router.get("/logout", function (request, response) {
     request.session.destroy();
     response.redirect("/");
 });
