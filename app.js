@@ -8,7 +8,7 @@ const session = require("express-session");
 const ejs = require("ejs");
 
 //CONFIGURACIONES
-const app = express(); 
+const app = express();
 app.use(express.static("public"));
 app.use(morgan("dev")); //no se si hace falta esto
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,22 +25,28 @@ app.use(middlewareSession);
 
 
 //RUTAS 
-app.get("/a", function(request, response) {
-    
+app.get("/a", function (request, response) {
+
 });
 
-app.get("/", async function(request, response) {
-    const htmlHeader = await ejs.renderFile("./views/header.ejs", {user: request.session.user});
-    let error = undefined;
-    if(request.session.error){
-        error = request.session.error;
-        request.session.error = undefined;
-    }
-    response.render("inicio", {error: error, header: htmlHeader});
+app.get("/", async function (request, response, next) {
+    ejs.renderFile("./views/header.ejs", { user: request.session.user }, (err, htmlHeader) => {
+        if (err) {
+            console.error(err);
+            next(err);
+            return;
+        }
+        let error = undefined;
+        if (request.session.error) {
+            error = request.session.error;
+            request.session.error = undefined;
+        }
+        response.render("inicio", { error: error, header: htmlHeader });
+    });
 });
-app.get("/admin", async function(request, response) {
-    const htmlHeader = await ejs.renderFile("./views/header.ejs", {user: request.session.user});
-    response.render("admin", {header: htmlHeader}); 
+app.get("/admin", async function (request, response) {
+    const htmlHeader = await ejs.renderFile("./views/header.ejs", { user: request.session.user });
+    response.render("admin", { header: htmlHeader });
 });
 app.use("/reserva", require("./routes/reserva"));
 app.use("/vehiculos", require("./routes/vehiculos"));
@@ -55,18 +61,18 @@ app.use("/adminPanel", require("./routes/adminPanel"));
     } catch (error) {
         next(error);
     }*/
-app.use(function(err, request, response, next) {
+app.use(function (err, request, response, next) {
     console.error(err.stack);
     response.render("error500");
 });
-app.use(function(request, response, next) {
+app.use(function (request, response, next) {
     response.status(404);
     response.render("error404");
 });
 
 //SERVIDOR
-app.listen(3000, function(error) {
-    if(error)
+app.listen(3000, function (error) {
+    if (error)
         console.log("error");
     else
         console.log("Servidos en 3000");

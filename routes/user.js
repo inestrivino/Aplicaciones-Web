@@ -72,7 +72,7 @@ router.use(["/register"], validarPassword("signUpPassword"));
 router.use(["/login"], validarPassword("signInPassword"));
 router.use(["/register"], validarNombre);
 
-router.post("/register", async function (request, response, next) {
+router.post("/register", function (request, response, next) {
     if (request.body.signUpPassword !== request.body.signUpConfirmPassword) {
         request.session.error = "Las contraseñas no coinciden.";
         return response.redirect("/");
@@ -83,22 +83,22 @@ router.post("/register", async function (request, response, next) {
     }*/
 
     //crear hash de la contraseña
-    const hash = await bcrypt.hash(request.body.signUpPassword, 10);
-
-    try {
+    bcrypt.hash(request.body.signUpPassword, 10).then(hash => {
         //guardar en la base de datos
         userDb.createUser({
             email: request.body.signUpEmail,
             name: request.body.signUpName,
             password: hash
+        })
+        .then(() => {
+            request.session.user = request.body.signUpName;
+            response.redirect("/");
+        })
+        .catch(err => {
+            next(err);
+            return;
         });
-        request.session.user = request.body.signUpName;
-    } catch (error) {
-        next(error);
-        return;
-    }
-
-    response.redirect("/");
+    });
 });
 
 router.post("/login", function (request, response) {
