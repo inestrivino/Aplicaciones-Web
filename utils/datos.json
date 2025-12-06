@@ -1,0 +1,96 @@
+{
+    "concesionarios": [
+        {
+            "nombre": "Concesionario Central",
+            "ciudad": "Ciudad City",
+            "direccion": "Calle Random 123",
+            "telefono": "123456789"
+        },
+        {
+            "nombre": "AutoPlus Norte",
+            "ciudad": "Ciudad Norte",
+            "direccion": "Avenida Norte 45",
+            "telefono": "987654321"
+        },
+        {
+            "nombre": "Motorama Sur",
+            "ciudad": "Ciudad Sur",
+            "direccion": "Boulevard Sur 78",
+            "telefono": "555123456"
+        },
+        {
+            "nombre": "Ruedas del Este",
+            "ciudad": "Ciudad Este",
+            "direccion": "Calle Este 12",
+            "telefono": "444987654"
+        },
+        {
+            "nombre": "Garage Oeste",
+            "ciudad": "Ciudad Oeste",
+            "direccion": "Avenida Oeste 99",
+            "telefono": "333567890"
+        }
+    ],
+    "vehiculos": [
+        {
+            "matricula": "1234ABC",
+            "marca": "Tesla",
+            "modelo": "Model 67",
+            "fecha": "2022-05-10",
+            "plazas": 5,
+            "autonomia": 450,
+            "color": "Blanco",
+            "imagen": "/img/vehiculos/byd_seal1.png",
+            "estado": "disponible",
+            "id_concesionario": 1
+        },
+        {
+            "matricula": "12345ABC",
+            "marca": "Tesla",
+            "modelo": "Tesla model 777",
+            "fecha": "2022-05-10",
+            "plazas": 5,
+            "autonomia": 450,
+            "color": "Blanco",
+            "imagen": "/img/vehiculos/byd_seal1.png",
+            "estado": "disponible",
+            "id_concesionario": 1
+        },
+        {
+            "matricula": "5678DEF",
+            "marca": "Renault",
+            "modelo": "Zoe",
+            "fecha": "2021-11-03",
+            "plazas": 5,
+            "autonomia": 395,
+            "color": "Azul",
+            "imagen": "/img/vehiculos/byd_seal2.png",
+            "estado": "disponible",
+            "id_concesionario": 2
+        },
+        {
+            "matricula": "9012GHI",
+            "marca": "Nissan",
+            "modelo": "Leaf",
+            "fecha": "2020-03-22",
+            "plazas": 5,
+            "autonomia": 270,
+            "color": "Gris",
+            "imagen": "/img/vehiculos/byd_seal3.png",
+            "estado": "en mantenimiento",
+            "id_concesionario": 1
+        },
+        {
+            "matricula": "3456JKL",
+            "marca": "BYD",
+            "modelo": "Seal",
+            "fecha": "2023-01-18",
+            "plazas": 5,
+            "autonomia": 520,
+            "color": "Rojo",
+            "imagen": "/img/vehiculos/byd_seal3.png",
+            "estado": "disponible",
+            "id_concesionario": 3
+        }
+    ]
+}

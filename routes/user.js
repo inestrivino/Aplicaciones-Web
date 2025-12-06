@@ -1,4 +1,3 @@
-const e = require('express');
 const express = require('express');
 const router = express.Router();
 const userDb = require("../db/userDb.js");
@@ -77,10 +76,6 @@ router.post("/register", function (request, response, next) {
         request.session.error = "Las contraseñas no coinciden.";
         return response.redirect("/");
     }
-    /*if (users[request.body.signUpEmail]) {
-        request.session.error = "El correo ya está registrado.";
-        return response.redirect("/");
-    }*/
 
     //crear hash de la contraseña
     bcrypt.hash(request.body.signUpPassword, 10).then(hash => {

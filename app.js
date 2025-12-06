@@ -21,14 +21,7 @@ const middlewareSession = session({
 });
 app.use(middlewareSession);
 
-//MIDDLEWARES
-
-
 //RUTAS 
-app.get("/a", function (request, response) {
-
-});
-
 app.get("/", async function (request, response, next) {
     ejs.renderFile("./views/header.ejs", { user: request.session.user }, (err, htmlHeader) => {
         if (err) {
@@ -44,23 +37,14 @@ app.get("/", async function (request, response, next) {
         response.render("inicio", { error: error, header: htmlHeader });
     });
 });
-app.get("/admin", async function (request, response) {
-    const htmlHeader = await ejs.renderFile("./views/header.ejs", { user: request.session.user });
-    response.render("admin", { header: htmlHeader });
-});
 app.use("/reserva", require("./routes/reserva"));
 app.use("/vehiculos", require("./routes/vehiculos"));
 app.use("/user", require("./routes/user"));
 app.use("/contacto", require("./routes/contacto"));
 app.use("/misReservas", require("./routes/misReservas"));
-app.use("/adminPanel", require("./routes/adminPanel"));
+app.use("/admin", require("./routes/admin"));
 
 //ERRORES
-/*try {
-        throw new Error("Error de prueba");
-    } catch (error) {
-        next(error);
-    }*/
 app.use(function (err, request, response, next) {
     console.error(err.stack);
     response.render("error500");
