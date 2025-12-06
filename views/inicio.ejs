@@ -22,7 +22,7 @@
 
 <body>
   <!-- NAVBAR -->
-  <%- header %>
+  <%- include('header', { user: user }) %>
 
   <!-- mensaje de error -->
   <% if (error) { %>

@@ -10,7 +10,10 @@ class UserDb {
     }
 
     async getUserByEmail(email) {
-
+        return pool.query(
+            'SELECT name, password, rol FROM users WHERE mail = ?',
+            [email]
+        )
     }
 }
 

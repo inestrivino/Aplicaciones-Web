@@ -7,7 +7,7 @@ const upload = multer({ dest: 'uploads/' }); //carpeta temporal para subir archi
 const vechiculosDb = require("../db/vehiculosDb.js"); //db
 const concesionariosDb = require("../db/concesionariosDb.js"); //db
 
-router.get("/", async function (request, response) {
+router.get("/", function (request, response) {
     response.render("admin", { user: request.session.user, concesionarios:undefined, vehiculos: undefined, });
 });
 
@@ -21,6 +21,7 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
     const pathArchivo = request.file.path;
     const file = fs.readFileSync(pathArchivo, 'utf8');
     const json = JSON.parse(file);
+    fs.unlinkSync(pathArchivo);
     
     const concesionarios = json.concesionarios;
     [insertadosCon, erroresCon] = await introducirConcesionarios(concesionarios);
@@ -29,6 +30,7 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
     [insertados, pendientes, pendientesCompleto, errores] = await introducirVehiculos(vehiculos);
     
     request.session.insertados = insertados;
+    request.session.errores = errores;
     request.session.pendientes = pendientesCompleto;
     response.render("admin", {
         user: request.session.user,
@@ -50,6 +52,11 @@ async function introducirVehiculos(vehiculos) {
     let errores = [];
     for (let vehiculo of vehiculos) {
         try {
+            resCon = await concesionariosDb.getConcesionarioById(vehiculo.id_concesionario);
+            if (resCon[0].length === 0) {
+                errores.push(vehiculo.matricula + " CONCESIONARIO_NO_EXISTE");
+                continue;
+            }
             res = await vechiculosDb.createVehiculo(vehiculo);
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
@@ -96,7 +103,7 @@ async function introducirConcesionarios(concesionarios) {
 router.post("/modificarPendientes", async function (request, response) {
     let insertados = request.session.insertados;
     const pendientes = request.session.pendientes;
-    let errores = [];
+    let errores = request.session.errores;
     for (let vehiculo of pendientes) {
         try {
             res = await vechiculosDb.updateVehiculo(vehiculo);

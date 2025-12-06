@@ -21,28 +21,37 @@ const middlewareSession = session({
 });
 app.use(middlewareSession);
 
+//MIDDLEWARES
+function comprobarUsuarioLogueado(request, response, next) {
+    if (request.session.user === undefined) {
+        request.session.error = "No autorizado";
+        return response.redirect("/");
+    }
+    next();
+}
+function comprobarUsuarioAdmin(request, response, next) {
+    if (request.session.user.rol !== "admin") {
+        request.session.error = "No autorizado";
+        return response.redirect("/");
+    }
+    next();
+}
+
 //RUTAS 
-app.get("/", async function (request, response, next) {
-    ejs.renderFile("./views/header.ejs", { user: request.session.user }, (err, htmlHeader) => {
-        if (err) {
-            console.error(err);
-            next(err);
-            return;
-        }
-        let error = undefined;
-        if (request.session.error) {
-            error = request.session.error;
-            request.session.error = undefined;
-        }
-        response.render("inicio", { error: error, header: htmlHeader });
-    });
+app.get("/", function (request, response, next) {
+    let error = undefined;
+    if (request.session.error) {
+        error = request.session.error;
+        request.session.error = undefined;
+    }
+    response.render("inicio", { error: error, user: request.session.user });
 });
-app.use("/reserva", require("./routes/reserva"));
-app.use("/vehiculos", require("./routes/vehiculos"));
+app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
+app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
 app.use("/user", require("./routes/user"));
 app.use("/contacto", require("./routes/contacto"));
-app.use("/misReservas", require("./routes/misReservas"));
-app.use("/admin", require("./routes/admin"));
+app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
+app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
 
 //ERRORES
 app.use(function (err, request, response, next) {
