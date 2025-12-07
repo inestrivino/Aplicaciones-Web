@@ -37,14 +37,30 @@ function comprobarUsuarioAdmin(request, response, next) {
     next();
 }
 
+const concesionariosDb = require("./db/concesionariosDb.js");
+
 //RUTAS 
-app.get("/", function (request, response, next) {
+app.get("/", async function (request, response, next) {
     let error = undefined;
     if (request.session.error) {
         error = request.session.error;
         request.session.error = undefined;
     }
-    response.render("inicio", { error: error, user: request.session.user });
+
+    try {
+        const concesionariosRaw = await concesionariosDb.getConcesionarios();
+        const concesionarios = concesionariosRaw[0]; // solo el array de concesionarios reales
+
+        response.render("inicio", {
+            error: error,
+            user: request.session.user,
+            concesionarios: concesionarios
+        });
+
+    } catch (err) {
+        console.error(err);
+        response.status(500).send("Error al cargar la página de inicio");
+    }
 });
 
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));

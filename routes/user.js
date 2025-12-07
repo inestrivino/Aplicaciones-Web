@@ -91,28 +91,32 @@ router.use(["/login"], validarPassword2("signInPassword"));
 router.use(["/register"], validarNombre);
 
 router.post("/register", function (request, response, next) {
-    //comprobar que la contrasenia y su confirmacion coinciden
     if (request.body.signUpPassword !== request.body.signUpConfirmPassword) {
         request.session.error = "Las contraseñas no coinciden.";
         return response.redirect("/");
     }
 
-    //crear hash de la contrasenia
     bcrypt.hash(request.body.signUpPassword, 10).then(hash => {
-        //guardar en la base de datos
         userDb.createUser({
             email: request.body.signUpEmail,
             name: request.body.signUpName,
-            password: hash
+            password: hash,
+            concesionario: request.body.signUpDealer
         })
             .then(() => {
-                request.session.user = { name: request.body.signUpName, rol: "user" };
+                request.session.user = {
+                    name: request.body.signUpName,
+                    rol: "user",
+                    concesionario: request.body.signUpDealer
+                };
+
                 response.redirect("/");
             })
             .catch(err => {
                 next(err);
                 return;
             });
+
     });
 });
 

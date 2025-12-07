@@ -4,10 +4,11 @@ class UserDb {
     //crear un nuevo usuario
     createUser(user) {
         return pool.query(
-            'INSERT INTO users(name, mail, password, rol) VALUES (?, ?, ?, "user")',
-            [user.name, user.email, user.password]
-        )
+            'INSERT INTO users(name, mail, password, rol, id_concesionario) VALUES (?, ?, ?, "user", ?)',
+            [user.name, user.email, user.password, user.concesionario]
+        );
     }
+
 
     async getUserByEmail(email) {
         return pool.query(
