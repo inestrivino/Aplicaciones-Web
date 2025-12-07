@@ -43,6 +43,13 @@ class VehiculosDb {
         );
     }
 
+    cambiarEstado(matricula, estado) {
+        return pool.query(
+            'UPDATE vehiculos SET estado = ? WHERE matricula = ?',
+            [estado, matricula]
+        );
+    }
+
     async getMarcas() {
         return await pool.query(
             'SELECT DISTINCT marca FROM vehiculos'
