@@ -7,6 +7,12 @@ class ReservasDb {
             [reserva.mail, reserva.matricula, reserva.fecha_ini, reserva.fecha_fin, reserva.estado, reserva.kilometros, reserva.incidencias]
         );
     }
+
+    getMisReservas(userId) {
+        return pool.query(
+            'SELECT * FROM reservas WHERE id_usuario = ?', [userId]
+        );
+    }
 }
 
 module.exports = new ReservasDb();
