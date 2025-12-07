@@ -33,6 +33,18 @@ class VehiculosDb {
         );
     }
 
+    async getMarcas() {
+        return await pool.query(
+            'SELECT DISTINCT marca FROM vehiculos'
+        );
+    }
+
+    async getColores() {
+        return await pool.query(
+            'SELECT DISTINCT color FROM vehiculos'
+        );
+    }
+
     //busca un vehiculo por su matricula
     async getVehiculoByMatricula(matricula) {
 
