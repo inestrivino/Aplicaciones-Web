@@ -41,14 +41,14 @@
               Mis Reservas <span class="visually-hidden">(Alt + M)</span>
             </a>
           </li>
-          <% } %>
-            <% if (user && user.rol==='admin' ) { %>
+          <% if (user && user.rol==='admin' ) { %>
               <li class="nav-item">
                 <a href="/admin" class="nav-link" aria-label="Ir al Panel de Administrador" accesskey="a">
                   Admin <span class="visually-hidden">(Alt + A)</span>
                 </a>
               </li>
               <% } %>
+          <% } %>
       </ul>
 
       <!-- Botón de Ajustes -->
@@ -147,10 +147,6 @@
             <div class="mb-3">
               <label for="shortcutMisReservas" class="form-label">Mis Reservas (Alt + )</label>
               <input type="text" class="form-control" id="shortcutMisReservas" value="m">
-            </div>
-            <div class="mb-3">
-              <label for="shortcutPanel" class="form-label">Panel (Alt + )</label>
-              <input type="text" class="form-control" id="shortcutContacto" value="p">
             </div>
             <% } %>
         </section>

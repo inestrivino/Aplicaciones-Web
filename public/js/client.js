@@ -295,8 +295,6 @@ function validateSignUp() {
 }
 
 function inicializarAtajosTeclado() {
-    //TO DO : AÑADIR ELEMENTOS PARA EL PANEL
-
     // Verificar que los elementos del DOM existen antes de acceder a ellos
     const shortcutInicioElement = document.getElementById('shortcutInicio');
     const shortcutVehiculosElement = document.getElementById('shortcutVehiculos');
