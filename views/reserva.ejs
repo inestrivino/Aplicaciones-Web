@@ -22,7 +22,7 @@
 
 <body>
   <!-- NAVBAR -->
-  <%- header %>
+  <%- include('partials/header', { user: user }) %>
 
   <main aria-label="Contenido principal de la página">
     <h1>Reservar vehículos</h1>
@@ -89,7 +89,7 @@
   </main>
 
   <!-- FOOTER -->
-  <%- include("footer") %>
+  <%- include("partials/footer") %>
 
 </body>
 

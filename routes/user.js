@@ -30,11 +30,6 @@ function validarEmail(campo) {
 }
 function validarPassword(campo) {
     return function (request, response, next) {
-        const texto1 = /['\/]/.test(request.body[campo]);
-        if (texto1) {
-            request.session.error = "La contraseña no puede contener los caracteres ' o /.";
-            return response.redirect("/");
-        }
         const texto2 = /[0-9]/.test(request.body[campo]);
         if (!texto2) {
             request.session.error = "La contraseña debe contener al menos un número.";
@@ -61,6 +56,16 @@ function validarPassword(campo) {
         next();
     }
 }
+function validarPassword2(campo) {
+    return function (request, response, next) {
+        const texto1 = /['\/]/.test(request.body[campo]);
+        if (texto1) {
+            request.session.error = "La contraseña no puede contener los caracteres ' o /.";
+            return response.redirect("/");
+        }
+        next();
+    }
+}
 function validarNombre(request, response, next) {
     const texto1 = /['\/]/.test(request.body.signUpName);
     if (texto1) {
@@ -81,8 +86,8 @@ function validarNombre(request, response, next) {
 //MIDLLEWARES
 router.use(["/register"], validarEmail("signUpEmail"));
 router.use(["/login"], validarEmail("signInEmail"));
-router.use(["/register"], validarPassword("signUpPassword"));
-router.use(["/login"], validarPassword("signInPassword"));
+router.use(["/register"], validarPassword("signUpPassword"), validarPassword2("signUpPassword"));
+router.use(["/login"], validarPassword2("signInPassword"));
 router.use(["/register"], validarNombre);
 
 router.post("/register", function (request, response, next) {
@@ -117,7 +122,6 @@ router.post("/login", function (request, response) {
             request.session.error = "El usuario no existe.";
             return response.redirect("/");
         }
-        console.log(rows[0].password);
         if (bcrypt.compareSync(request.body.signInPassword, rows[0].password)) {
             request.session.user = {name:rows[0].name, rol:rows[0].rol};
             response.redirect("/");

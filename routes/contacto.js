@@ -3,8 +3,7 @@ const router = express.Router();
 const ejs = require("ejs");
 
 router.get("/", async function(request, response){
-    const htmlHeader = await ejs.renderFile("./views/header.ejs", {user: request.session.user});
-    response.render("contacto", {header: htmlHeader});
+    response.render("contacto", {user: request.session.user});
 });
 
 module.exports = router;

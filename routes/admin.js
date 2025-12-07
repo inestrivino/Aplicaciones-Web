@@ -8,7 +8,16 @@ const vechiculosDb = require("../db/vehiculosDb.js"); //db
 const concesionariosDb = require("../db/concesionariosDb.js"); //db
 
 router.get("/", function (request, response) {
-    response.render("admin", { user: request.session.user, concesionarios:undefined, vehiculos: undefined, });
+    vechiculosDb.getVehiculos().then(vehiculos => {
+        [rows] = vehiculos;
+        response.render("admin", { 
+            user: request.session.user, 
+            concesionarios: undefined, 
+            vehiculosList: undefined, 
+
+            vehiculos: rows
+        });
+    });
 });
 
 router.post("/rellenar", upload.single("file"), async function (request, response, next) {
@@ -32,15 +41,21 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
     request.session.insertados = insertados;
     request.session.errores = errores;
     request.session.pendientes = pendientesCompleto;
-    response.render("admin", {
+
+    vechiculosDb.getVehiculos().then(vehiculos => {
+        [rows] = vehiculos;
+        response.render("admin", {
         user: request.session.user,
-        vehiculos: true,
+        vehiculosList: true,
         concesionarios: true,
         insertadosCon: insertadosCon,
         erroresCon: erroresCon,
         VehiculosInsertados: insertados,
         VehiculosPendientes: pendientes,
-        VehiculosErrores: errores
+        VehiculosErrores: errores,
+
+        vehiculos: rows
+        });
     });
 });
 
@@ -106,7 +121,7 @@ router.post("/modificarPendientes", async function (request, response) {
     let errores = request.session.errores;
     for (let vehiculo of pendientes) {
         try {
-            res = await vechiculosDb.updateVehiculo(vehiculo);
+            res = await vechiculosDb.updateVehiculo(vehiculo.matricula, vehiculo);
         } catch (error) {
             errores.push(vehiculo.matricula + " " + error.code);
             continue;
@@ -119,12 +134,18 @@ router.post("/modificarPendientes", async function (request, response) {
             errores.push(vehiculo.matricula);
         }
     }
-    response.render("admin", {
+    
+    vechiculosDb.getVehiculos().then(vehiculos => {
+        [rows] = vehiculos;
+        response.render("admin", {
         user: request.session.user,
-        vehiculos: true,
+        vehiculosList: true,
         VehiculosInsertados: insertados,
         VehiculosPendientes: [],
-        VehiculosErrores: errores
+        VehiculosErrores: errores,
+
+        vehiculos: rows
+    });
     });
 });
 

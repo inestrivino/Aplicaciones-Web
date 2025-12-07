@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const ejs = require("ejs");
 
 const reservas = [
     {
@@ -30,8 +29,7 @@ const reservas = [
 ];
 
 router.get("/", async function (request, response) {
-    const htmlHeader = await ejs.renderFile("./views/header.ejs", { user: request.session.user });
-        response.render("misReservas", { reservas: reservas, header: htmlHeader });
+    response.render("misReservas", { user: request.session.user, reservas: reservas });
 });
 
 module.exports = router;

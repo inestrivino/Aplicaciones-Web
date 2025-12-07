@@ -22,104 +22,230 @@
 
 <body>
   <!-- NAVBAR -->
-  <%- include('header', { user: user }) %>
-  <main class="card" role="main">
+  <%- include('partials/header', { user: user }) %>
+
+  <main class="container mt-5" role="main">
     <h1>Panel de gestión</h1><br>
-    <h3>Insercción en la base de datos mediante JSON</h3>
-    <div>
+    <fieldset>
+      <h2>Insercción en la base de datos mediante JSON</h2>
       <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
-        <input type="file" id="file" name="file" accept=".json"><br><br>
-        <button type="submit">Enviar JSON</button><br>
+        <input class="form-control-lg" type="file" id="file" name="file" accept=".json"><br>
+        <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button><br>
       </form>
-    </div>
-    <br>
+
+      <style>
+      .tres-columnas {
+        display: flex;
+        gap: 20px;
+      }
+      .tres-columnas > div {
+        flex: 1; /* que todas las columnas ocupen el mismo ancho */
+      }
+      </style>
+
+      <!-- Concesionarios -->
+      <% if (vehiculosList) { %>
+      <h2 class="mt-3">Resultados de la insercción de concesionarios:</h2>
+      <div class="tres-columnas">
+        <% if (insertadosCon.length !== 0) { %>
+        <div>
+          <strong>Insertados</strong> <br>
+          <% for (nombre of insertadosCon) { %>
+            <%=nombre%> <br>
+          <% } %>
+        </div>
+        <% } %>
+        <% if (erroresCon.length !== 0) { %>
+        <div>
+          <strong>Errores</strong> <br>
+          <% for (nombre of erroresCon) { %>
+            <%=nombre%> <br>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+      <% } %>
+
+      <!-- Vehiculos -->
+      <% if (vehiculosList) { %>
+      <h2 class="mt-3">Resultados de la insercción de vehículos:</h2>
+      <div class="tres-columnas">
+        <% if (VehiculosInsertados.length !== 0) { %>
+        <div>
+          <strong>Insertados</strong> <br>
+          <% for (matricula of VehiculosInsertados) { %>
+            <%=matricula%> <br>
+          <% } %>
+        </div>
+        <% } %>
+        <% if (VehiculosPendientes.length !== 0) { %>
+        <div>
+          <strong>Pendientes</strong> <br>
+          <% for (matricula of VehiculosPendientes) { %>
+            <%=matricula%> <br>
+          <% } %>
+          <br>
+          <form action="/admin/modificarPendientes" method="POST">
+            <button class="btn btn-secondary" type="submit">Confirmar</button>
+          </form>
+        </div>
+        <% } %>
+        <% if (VehiculosErrores.length !== 0) { %>
+        <div>
+          <strong>Errores</strong> <br>
+          <% for (matricula of VehiculosErrores) { %>
+            <%=matricula%> <br>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+      <% } %>
+    </fieldset>
     
-    
-    <style>
-    .tres-columnas {
-      display: flex;
-      gap: 20px;
-    }
-    .tres-columnas > div {
-      flex: 1; /* que todas las columnas ocupen el mismo ancho */
-    }
-    </style>
+    <fieldset class="grid" role="list">
+      <h3> Acciones de administrador</h3><br>
+      <a href="#altaVehiculo" class="btn btn-light" aria-label="Gestión de vehículos">
+        • Alta de vehículo
+      </a>
+      <a href="#gestionVehiculos" class="btn btn-light" aria-label="Gestión de vehículos">
+        • Gestión de vehículos
+      </a>
+      <a class="btn btn-light" id="concesionarios" role="listitem" aria-label="Gestión de concesionarios">
+        • Gestión de concesionarios
+      </a>
+      <a class="btn btn-light" id="usuarios" role="listitem" aria-label="Gestión de usuarios">
+        • Gestión de usuarios
+      </a>
+      <a class="btn btn-light" id="estadisticas" role="listitem" aria-label="Estadísticas">
+        • Estadísticas
+      </a>
+    </fieldset>
 
-    <!-- Concesionarios -->
-    <% if (vehiculos) { %>
-    <h4>Resultados de la insercción de concesionarios:</h4>
-    <div class="tres-columnas">
-      <% if (insertadosCon.length !== 0) { %>
-      <div>
-        <strong>Insertados</strong> <br>
-        <% for (nombre of insertadosCon) { %>
-          <%=nombre%> <br>
-        <% } %>
-      </div>
-      <% } %>
-      <% if (erroresCon.length !== 0) { %>
-      <div>
-        <strong>Errores</strong> <br>
-        <% for (nombre of erroresCon) { %>
-          <%=nombre%> <br>
-        <% } %>
-      </div>
-      <% } %>
-    </div>
-    <br><br>
-    <% } %>
+    <form action="/vehiculos/create" method="POST" id="altaVehiculo">
+      <fieldset class="grid" role="list">
+        <h3> Alta de vehiculo</h3>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Matricula:</strong>
+          <input class="form-control" type="text" name="matricula" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Marca:</strong>
+          <input class="form-control" type="text" name="marca" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Modelo:</strong>
+          <input class="form-control" type="text" name="modelo" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>fecha:</strong>
+          <input type="datetime-local" class="form-control" name="fecha" id="inicioFecha" aria-required="true" required
+          aria-label="Seleccionar fecha y hora de inicio"/>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Plazas:</strong>
+          <input class="form-control" type="text" name="plazas" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Autonomía:</strong>
+          <input class="form-control" type="text" name="autonomia" required> 
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Color:</strong>
+          <input class="form-control" type="text" name="color" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Imagen URL:</strong>
+          <input class="form-control" type="text" name="imagen" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Estado:</strong>
+          <input class="form-control" type="text" name="estado" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong >Concesionario:</strong>
+          <input class="form-control" type="text" name="id_concesionario" required>
+        </div>
+        <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button>
+      </fieldset>
+    </form>
 
-    <!-- Vehiculos -->
-    <% if (vehiculos) { %>
-    <h4>Resultados de la insercción de vehículos:</h4>
-    <div class="tres-columnas">
-      <% if (VehiculosInsertados.length !== 0) { %>
-      <div>
-        <strong>Insertados</strong> <br>
-        <% for (matricula of VehiculosInsertados) { %>
-          <%=matricula%> <br>
+    <!-- Lista de vehiculos -->
+    <h1 class="mt-5" id="gestionVehiculos">Gestión de vehiculos</h1>
+    <div class="container" aria-label="Contenido principal de la página">
+      <div class="row row-cols-1 row-cols-lg-3 g-4">
+        <% for (let i=0; i < vehiculos.length; i++) { %>
+          <div class="col">
+            <div class="card h-100">
+              <img src="<%= vehiculos[i].imagen %>" class="card-img-top img-fluid"
+                  alt="<%= vehiculos[i].nombre %>" style="height: 200px; object-fit: cover;">
+              <div class="card-body">
+                <h5 class="card-title">
+                    <%= vehiculos[i].nombre %>
+                </h5>
+                <!-- Detalles del vehículo -->
+                <form class="list-unstyled" action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST" id="formVehiculo_<%= vehiculos[i].matricula %>">
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Matrícula:</strong>
+                    <%= vehiculos[i].matricula %>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Marca:</strong>
+                    <input class="form-control" type="text" name="marca" value="<%= vehiculos[i].marca %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Modelo:</strong>
+                    <input class="form-control" type="text" name="modelo" value="<%= vehiculos[i].modelo %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>fecha:</strong>
+                    <input type="datetime-local" class="form-control" name="fecha" id="inicioFecha" aria-required="true" required
+                    aria-label="Seleccionar fecha y hora de inicio" value="<%= vehiculos[i].fecha.toISOString().slice(0,16) %>"/>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Plazas:</strong>
+                    <input class="form-control" type="text" name="plazas" value="<%= vehiculos[i].plazas %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Autonomía:</strong>
+                    <input class="form-control" type="text" name="autonomia" value="<%= vehiculos[i].autonomia %>"> 
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Color:</strong>
+                    <input class="form-control" type="text" name="color" value="<%= vehiculos[i].color %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Imagen URL:</strong>
+                    <input class="form-control" type="text" name="imagen" value="<%= vehiculos[i].imagen %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Estado:</strong>
+                    <input class="form-control" type="text" name="estado" value="<%= vehiculos[i].plazas %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong >Concesionario:</strong>
+                    <input class="form-control" type="text" name="id_concesionario" value="<%= vehiculos[i].id_concesionario %>">
+                  </div>
+                </form>
+                <div class="d-flex justify-content-center mt-3">
+                  <button class="btn btn-secondary" form="formVehiculo_<%= vehiculos[i].matricula %>">
+                    Modificar
+                  </button>
+                  <form action="/vehiculos/<%= vehiculos[i].matricula %>/delete" method="POST" class="ms-2">
+                      <button type="submit" class="btn btn-danger">
+                          Eliminar
+                      </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         <% } %>
       </div>
-      <% } %>
-      <% if (VehiculosPendientes.length !== 0) { %>
-      <div>
-        <strong>Pendientes</strong> <br>
-        <% for (matricula of VehiculosPendientes) { %>
-          <%=matricula%> <br>
-        <% } %>
-        <br>
-        <form action="/admin/modificarPendientes" method="POST">
-          <button type="submit">Confirmar</button>
-        </form>
-      </div>
-      <% } %>
-      <% if (VehiculosErrores.length !== 0) { %>
-      <div>
-        <strong>Errores</strong> <br>
-        <% for (matricula of VehiculosErrores) { %>
-          <%=matricula%> <br>
-        <% } %>
-      </div>
-      <% } %>
-    </div>
-    <br><br>
-    <% } %>
-
-    <h3>Acciones de administrador</h3>
-    <div class="grid" role="list">
-      <button class="btn" id="vehiculos" role="listitem" aria-label="Gestión de vehículos">• Gestión de
-        vehículos</button>
-      <button class="btn secondary" id="concesionarios" role="listitem" aria-label="Gestión de concesionarios">•
-        Gestión de concesionarios</button>
-      <button class="btn" id="usuarios" role="listitem" aria-label="Gestión de usuarios">• Gestión de
-        usuarios</button>
-      <button class="btn secondary" id="estadisticas" role="listitem" aria-label="Estadísticas">•
-        Estadísticas</button>
     </div>
   </main>
 
   <!-- FOOTER -->
-  <%- include("footer") %>
+  <%- include("partials/footer") %>
 
 </body>
 

@@ -9,27 +9,32 @@ class VehiculosDb {
         );
     }
 
+    //elimina un vehiculo
+    deleteVehiculo(matricula) {
+        return pool.query(
+            'DELETE FROM vehiculos WHERE matricula = ?',
+            [matricula]
+        );
+    }
+
     //actualiza un vehiculo
-    async updateVehiculo(vehiculo) {
-        return await pool.query(
+    updateVehiculo(matricula, vehiculo) {
+        return pool.query(
             'UPDATE vehiculos SET marca = ?, modelo = ?, fecha = ?, plazas = ?, autonomia = ?, color = ?, imagen = ?, estado = "disponible", id_concesionario = ? ' +
             'WHERE matricula = ?',
-            [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario, vehiculo.matricula]
+            [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario, matricula]
         );
     }
 
     //devuelve la lista de vehiculos
     async getVehiculos() {
-        const res = await pool.query(
-            'SELECT * FROM vehiculos'
+        return await pool.query(
+            'SELECT * FROM vehiculos ORDER BY id_concesionario, matricula'
         );
-
-        const [rows] = res;
-        return rows;
     }
 
     //busca un vehiculo por su matricula
-    async getVehiculoByMatricula(email) {
+    async getVehiculoByMatricula(matricula) {
 
     }
 }
