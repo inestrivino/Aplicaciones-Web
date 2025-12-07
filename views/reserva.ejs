@@ -27,23 +27,6 @@
   <main aria-label="Contenido principal de la página">
     <h1>Reservar vehículos</h1>
     <form class="needs-validation" aria-label="Formulario de reserva de vehículos" action="/reserva" method ="POST">
-      <fieldset aria-label="Datos del usuario">
-        <legend>Datos del usuario</legend>
-        <div>
-          <label for="nombre-reserva" class="form-label">Nombre completo</label>
-          <input type="text" class="form-control" name="nombre" id="nombre-reserva" aria-required="true" required />
-        </div>
-        <div>
-          <label for="email-reserva" class="form-label">Correo electrónico</label>
-          <input type="email" class="form-control" name="email" id="email-reserva" aria-required="true" required />
-        </div>
-        <div>
-          <label for="telefono" class="form-label">Teléfono (opcional)</label>
-          <input type="tel" class="form-control" name="telefono" id="telefono" pattern="[0-9]{9}"
-            title="Introduce 9 dígitos sin espacios ni guiones" />
-          <div class="form-text">Formato: 123456789</div>
-        </div>
-      </fieldset>
       <fieldset aria-label="Detalles de la reserva">
         <legend>Detalles de la reserva</legend>
         <div>
@@ -53,12 +36,12 @@
               Seleccione un vehículo
             </option>
             <% if (vehiculos && vehiculos.length> 0) { %>
-                                        <% vehiculos.forEach(v=> { %>
-                                            <option value="<%= v.id %>">
-                                                <%= v.matricula %>
-                                            </option>
-                                            <% }); %>
-                                                <% } %>
+            <% vehiculos.forEach(v=> { %>
+                <option value="<%= v.id %>">
+                    <%= v.matricula %>
+                </option>
+                <% }); %>
+                    <% } %>
           </select>
         </div>
         <div>

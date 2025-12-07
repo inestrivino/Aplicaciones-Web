@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ejs = require("ejs");
+const reservasDb = require("../db/reservasDb.js");
 const vehiculosDb = require("../db/vehiculosDb.js");
 
 router.get("/", async function (request, response) {
@@ -19,6 +19,9 @@ router.get("/", async function (request, response) {
 
 router.post("/", function (request, response) {
     console.log(request.body);
+    let aux = request.body;
+    aux.id_usuario = request.session.user.mail;
+    reservasDb.createReserva(aux);
     response.reditect("/reserva");
 });
 

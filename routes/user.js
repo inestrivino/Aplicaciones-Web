@@ -106,6 +106,7 @@ router.post("/register", function (request, response, next) {
             .then(() => {
                 request.session.user = {
                     name: request.body.signUpName,
+                    mail: request.body.signUpEmail,
                     rol: "user",
                     concesionario: request.body.signUpDealer
                 };
@@ -127,7 +128,11 @@ router.post("/login", function (request, response) {
             return response.redirect("/");
         }
         if (bcrypt.compareSync(request.body.signInPassword, rows[0].password)) {
-            request.session.user = { name: rows[0].name, rol: rows[0].rol };
+            request.session.user = { 
+                name: rows[0].name,
+                mail: request.body.signInEmail, 
+                rol: rows[0].rol 
+            };
             response.redirect("/");
         }
         else {

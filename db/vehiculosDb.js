@@ -45,11 +45,6 @@ class VehiculosDb {
         );
     }
 
-    //busca un vehiculo por su matricula
-    async getVehiculoByMatricula(matricula) {
-
-    }
-
     filterVehiculos(filters) {
         let query = "SELECT * FROM vehiculos WHERE 1=1";
         let params = [];
