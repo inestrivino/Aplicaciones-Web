@@ -264,15 +264,17 @@ function validateSignUp() {
 
     let isValid = true;
 
-    // 1. Validación del email
-    if (!(email.endsWith("@ucm.com") || email.endsWith("@ucm.es"))) {
+    //Email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@ucm\.(com|es)$/;
+
+    if (!emailRegex.test(email)) {
         emailError.style.display = "block";
         isValid = false;
     } else {
         emailError.style.display = "none";
     }
 
-    // 2. Validación de la contraseña (mayusc + minusc + número)
+    //Contraseña
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
     if (!passwordRegex.test(password)) {
@@ -282,15 +284,14 @@ function validateSignUp() {
         passwordError.style.display = "none";
     }
 
-    // 3. Validación de que las contraseñas coinciden
+    //Contraseñas coinciden
     if (password !== confirmPassword) {
         confirmPasswordError.style.display = "block";
         isValid = false;
     } else {
         confirmPasswordError.style.display = "none";
     }
-
-    return isValid; // el formulario solo se envía si todo es válido
+    return isValid;
 }
 
 function inicializarAtajosTeclado() {
