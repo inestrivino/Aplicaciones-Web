@@ -41,14 +41,14 @@
               Mis Reservas <span class="visually-hidden">(Alt + M)</span>
             </a>
           </li>
-        <% } %>
-        <% if (user && user.rol === 'admin') { %>
-          <li class="nav-item">
-            <a href="/admin" class="nav-link" aria-label="Ir al Panel de Administrador" accesskey="a">
-              Admin <span class="visually-hidden">(Alt + A)</span>
-            </a>
-          </li>
-        <% } %>
+          <% } %>
+            <% if (user && user.rol==='admin' ) { %>
+              <li class="nav-item">
+                <a href="/admin" class="nav-link" aria-label="Ir al Panel de Administrador" accesskey="a">
+                  Admin <span class="visually-hidden">(Alt + A)</span>
+                </a>
+              </li>
+              <% } %>
       </ul>
 
       <!-- Botón de Ajustes -->
@@ -198,8 +198,8 @@
             </div>
 
             <!-- Formulario de registro -->
-            <div id="signUpForm" class="auth-form" style="display: none;" onsubmit="return validateEmailSignUp()">
-              <form action="/user/register" method="POST">
+            <div id="signUpForm" class="auth-form" style="display: none;">
+              <form action="/user/register" method="POST" onsubmit="return validateSignUp()">
                 <div>
                   <label for="signUpName" class="form-label">Nombre completo</label>
                   <input type="text" class="form-control" name="signUpName" id="signUpName"
@@ -216,14 +216,17 @@
                   <label for="signUpPassword" class="form-label">Contraseña</label>
                   <input type="password" class="form-control" name="signUpPassword" id="signUpPassword"
                     placeholder="Contraseña" minlength="8" maxlength="30" required>
-                  <div class="invalid-feedback">
-                    La contraseña debe tener al menos 8 caracteres.
+                  <div id="signUpPasswordError" class="text-danger" style="display: none;">
+                    La contraseña debe contener al menos una mayúscula, una minúscula y un número.
                   </div>
                 </div>
                 <div>
                   <label for="signUpConfirmPassword" class="form-label">Confirmar contraseña</label>
                   <input type="password" class="form-control" name="signUpConfirmPassword" id="signUpConfirmPassword"
                     placeholder="Confirmar contraseña">
+                  <div id="signUpConfirmPasswordError" class="text-danger" style="display: none;">
+                    Las contraseñas no coinciden.
+                  </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Registrarse</button>
               </form>
@@ -237,7 +240,7 @@
           <a href="/user/logout" class="btn btn-danger">
             Cerrar Sesión
           </a>
-        <% } %>
+          <% } %>
       </div>
     </div>
   </div>

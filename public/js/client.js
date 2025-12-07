@@ -252,17 +252,45 @@ function inicializarSignInUp() {
     }
 }
 
-function validateEmailSignUp() {
+function validateSignUp() {
     const email = document.getElementById("signUpEmail").value;
     const emailError = document.getElementById("signUpEmailError");
 
+    const password = document.getElementById("signUpPassword").value;
+    const passwordError = document.getElementById("signUpPasswordError");
+
+    const confirmPassword = document.getElementById("signUpConfirmPassword").value;
+    const confirmPasswordError = document.getElementById("signUpConfirmPasswordError");
+
+    let isValid = true;
+
+    // 1. Validación del email
     if (!(email.endsWith("@ucm.com") || email.endsWith("@ucm.es"))) {
-        if (emailError) emailError.style.display = "block";
-        return false;
+        emailError.style.display = "block";
+        isValid = false;
     } else {
-        if (emailError) emailError.style.display = "none";
-        return true;
+        emailError.style.display = "none";
     }
+
+    // 2. Validación de la contraseña (mayusc + minusc + número)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+    if (!passwordRegex.test(password)) {
+        passwordError.style.display = "block";
+        isValid = false;
+    } else {
+        passwordError.style.display = "none";
+    }
+
+    // 3. Validación de que las contraseñas coinciden
+    if (password !== confirmPassword) {
+        confirmPasswordError.style.display = "block";
+        isValid = false;
+    } else {
+        confirmPasswordError.style.display = "none";
+    }
+
+    return isValid; // el formulario solo se envía si todo es válido
 }
 
 function inicializarAtajosTeclado() {
