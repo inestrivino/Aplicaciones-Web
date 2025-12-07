@@ -32,6 +32,37 @@ router.post("/create", function(request, response) {
     response.redirect("/admin");
 });
 
+router.get("/filter", async function (request, response) {
+    const { marcaSelect, autonomiaSelect, concesionarioSelect, colorSelect } = request.query;
+
+    let filters = {};
+    if (marcaSelect) filters.marcaSelect = marcaSelect;
+    if (autonomiaSelect) filters.autonomiaSelect = autonomiaSelect;
+    if (concesionarioSelect) filters.concesionarioSelect = concesionarioSelect;
+    if (colorSelect) filters.colorSelect = colorSelect;
+
+    console.log(filters);
+
+    try {
+        const vehiculos = await vehiculosDb.filterVehiculos(filters);
+        const marcas = (await vehiculosDb.getMarcas())[0];
+        const colores = (await vehiculosDb.getColores())[0];
+
+        response.render("vehiculos", {
+            user: request.session.user,
+            vehiculos: vehiculos[0],
+            marcas,
+            colores,
+            concesionarios: response.locals.concesionarios 
+        });
+
+    } catch (err) {
+        console.error(err);
+        response.status(500).send("Error aplicando filtros");
+    }
+});
+
+
 //actualiza un vehiculo
 router.post("/:matricula/update", function(request, response) {
     console.log(request.body);

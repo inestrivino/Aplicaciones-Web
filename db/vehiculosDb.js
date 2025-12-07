@@ -8,7 +8,7 @@ class VehiculosDb {
             [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario]
         );
     }
-    
+
     //actualiza un vehiculo
     updateVehiculo(matricula, vehiculo) {
         return pool.query(
@@ -24,7 +24,7 @@ class VehiculosDb {
             'DELETE FROM vehiculos WHERE matricula = ?',
             [matricula]
         );
-    }    
+    }
 
     //devuelve la lista de vehiculos
     async getVehiculos() {
@@ -49,6 +49,39 @@ class VehiculosDb {
     async getVehiculoByMatricula(matricula) {
 
     }
+
+    filterVehiculos(filters) {
+        let query = "SELECT * FROM vehiculos WHERE 1=1";
+        let params = [];
+
+        if (filters.marcaSelect) {
+            query += " AND marca = ?";
+            params.push(filters.marcaSelect);
+        }
+
+        if (filters.colorSelect) {
+            query += " AND color = ?";
+            params.push(filters.colorSelect);
+        }
+
+        if (filters.concesionarioSelect) {
+            query += " AND id_concesionario = ?";
+            params.push(filters.concesionarioSelect);
+        }
+
+        if (filters.autonomiaSelect) {
+            // autonomía enviada será: 200, 300, 400, 500
+            const value = parseInt(filters.autonomiaSelect);
+
+            if (value === 500) query += " AND autonomia >= 500";
+            else if (value === 400) query += " AND autonomia BETWEEN 400 AND 499";
+            else if (value === 300) query += " AND autonomia BETWEEN 300 AND 399";
+            else if (value === 200) query += " AND autonomia < 300";
+        }
+
+        return pool.query(query, params);
+    }
+
 }
 
 module.exports = new VehiculosDb();
