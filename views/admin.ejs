@@ -317,7 +317,57 @@
       </div>
     </div>
 
-    
+    <!-- Lista de usuarios -->
+    <h1 class="mt-5" id="gestionVehiculos">Gestión de usuarios</h1>
+    <div class="container" aria-label="Contenido principal de la página">
+      <div class="row row-cols-1 row-cols-lg-3 g-4">
+        <% for (let i=0; i < usuarios.length; i++) { %>
+          <div class="col">
+            <div class="card h-100">
+              <div class="card-body">
+                <!-- Detalles del vehículo -->
+                <form class="list-unstyled" action="/usuarios/<%= usuarios[i].id %>/update" method="POST" id="formUsuarios_<%= usuarios[i].id %>">
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>id:</strong>
+                    <%= usuarios[i].id %>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Nombre:</strong>
+                    <input class="form-control" type="text" name="name" value="<%= usuarios[i].name %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Correo:</strong>
+                    <input class="form-control" type="text" name="mail" value="<%= usuarios[i].mail %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Rol:</strong>
+                    <input class="form-control" type="text" name="rol" value="<%= usuarios[i].rol %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Telefono:</strong>
+                    <input class="form-control" type="text" name="telefono" value="<%= usuarios[i].telefono %>"> 
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Concesionario:</strong>
+                    <input class="form-control" type="text" name="id_concesionario" value="<%= usuarios[i].id_concesionario %>">
+                  </div>
+                </form>
+                <div class="d-flex justify-content-center mt-3">
+                  <button class="btn btn-secondary" form="formUsuarios_<%= usuarios[i].id %>">
+                    Modificar
+                  </button>
+                  <form action="/usuarios/<%= usuarios[i].id %>/delete" method="POST" class="ms-2">
+                      <button type="submit" class="btn btn-danger">
+                          Eliminar
+                      </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
   </main>
 
   <!-- FOOTER -->

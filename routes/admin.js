@@ -6,19 +6,24 @@ const upload = multer({ dest: 'uploads/' }); //carpeta temporal para subir archi
 
 const vechiculosDb = require("../db/vehiculosDb.js"); //db
 const concesionariosDb = require("../db/concesionariosDb.js"); //db
+const usuariosDb = require("../db/userDb.js") //db
 
 router.get("/", function (request, response) {
     vechiculosDb.getVehiculos().then(vehiculos => {
         concesionariosDb.getConcesionarios().then(concesionarios => {
-            [rows1] = vehiculos;
-            [rows2] = concesionarios;
-            response.render("admin", { 
-                user: request.session.user, 
-                concesionarios: undefined, 
-                vehiculosList: undefined, 
+            usuariosDb.getUsers().then(usuarios => {
+                [rows1] = vehiculos;
+                [rows2] = concesionarios;
+                [rows3] = usuarios;
+                response.render("admin", { 
+                    user: request.session.user, 
+                    concesionarios: undefined, 
+                    vehiculosList: undefined, 
 
-                vehiculos: rows1,
-                concesionarios: rows2
+                    vehiculos: rows1,
+                    concesionarios: rows2,
+                    usuarios: rows3
+                });
             });
         });
     });
