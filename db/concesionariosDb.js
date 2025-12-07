@@ -9,14 +9,6 @@ class ConcesionariosDb {
         );
     }
 
-    //devuelve un concesionario por su id
-    async getConcesionarioById(id) {
-        return await pool.query(
-            'SELECT * FROM concesionarios WHERE id = ?',
-            [id]
-        );
-    }
-
     //actualiza un vehiculo
     updateConcesionario(id, concesionario) {
         return pool.query(
@@ -36,7 +28,15 @@ class ConcesionariosDb {
     //devuelve la lista de vehiculos
     async getConcesionarios() {
         return await pool.query(
-            'SELECT * FROM concesionarios ORDER BY nombre'
+            'SELECT * FROM concesionarios ORDER BY id'
+        );
+    }
+
+    //devuelve un concesionario por su id
+    async getConcesionarioById(id) {
+        return await pool.query(
+            'SELECT * FROM concesionarios WHERE id = ?',
+            [id]
         );
     }
 }

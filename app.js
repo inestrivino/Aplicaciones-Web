@@ -65,6 +65,7 @@ app.get("/", async function (request, response, next) {
 
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
+app.use("/concesionarios", comprobarUsuarioLogueado, require("./routes/concesionarios"));
 app.use("/user", require("./routes/user"));
 app.use("/contacto", require("./routes/contacto"));
 app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));

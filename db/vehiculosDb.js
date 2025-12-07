@@ -8,15 +8,7 @@ class VehiculosDb {
             [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario]
         );
     }
-
-    //elimina un vehiculo
-    deleteVehiculo(matricula) {
-        return pool.query(
-            'DELETE FROM vehiculos WHERE matricula = ?',
-            [matricula]
-        );
-    }
-
+    
     //actualiza un vehiculo
     updateVehiculo(matricula, vehiculo) {
         return pool.query(
@@ -25,6 +17,14 @@ class VehiculosDb {
             [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario, matricula]
         );
     }
+
+    //elimina un vehiculo
+    deleteVehiculo(matricula) {
+        return pool.query(
+            'DELETE FROM vehiculos WHERE matricula = ?',
+            [matricula]
+        );
+    }    
 
     //devuelve la lista de vehiculos
     async getVehiculos() {

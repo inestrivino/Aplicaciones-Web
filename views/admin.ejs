@@ -121,6 +121,83 @@
       </a>
     </fieldset>
 
+    <!-- Formulario de alta de concesionario -->
+    <form action="/concesionarios/create" method="POST" id="altaConcesionario">
+      <fieldset class="grid" role="list">
+        <h3> Alta de concesionario</h3>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Id:</strong>
+          <input class="form-control" type="text" name="id" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Nombre:</strong>
+          <input class="form-control" type="text" name="nombre" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Ciudad:</strong>
+          <input class="form-control" type="text" name="ciudad" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Dirección:</strong>
+          <input class="form-control" type="text" name="direccion" required>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <strong>Teléfono:</strong>
+          <input class="form-control" type="text" name="telefono" required>
+        </div>
+        <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button>
+      </fieldset>
+    </form>
+
+    <!-- Lista de concesionarios -->
+    <h1 class="mt-5" id="gestionConcesionarios">Gestión de concesionarios</h1>
+    <div class="container" aria-label="Contenido principal de la página">
+      <div class="row row-cols-1 row-cols-lg-3 g-4">
+        <% for (let i=0; i < concesionarios.length; i++) { %>
+          <div class="col">
+            <div class="card h-100">
+              <div class="card-body">
+                <!-- Detalles del vehículo -->
+                <form class="list-unstyled" action="/concesionarios/<%= concesionarios[i].id %>/update" method="POST" id="formConcesionario_<%= concesionarios[i].id %>">
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Id:</strong>
+                    <%= concesionarios[i].id %>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Nombre:</strong>
+                    <input class="form-control" type="text" name="nombre" value="<%= concesionarios[i].nombre %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Ciudad:</strong>
+                    <input class="form-control" type="text" name="ciudad" value="<%= concesionarios[i].ciudad %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Dirección:</strong>
+                    <input class="form-control" type="text" name="direccion" value="<%= concesionarios[i].direccion %>">
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>Teléfono:</strong>
+                    <input class="form-control" type="text" name="telefono" value="<%= concesionarios[i].telefono %>">
+                  </div>
+                </form>
+                <div class="d-flex justify-content-center mt-3">
+                  <button class="btn btn-secondary" form="formConcesionario_<%= concesionarios[i].id %>">
+                    Modificar
+                  </button>
+                  <form action="/concesionarios/<%= concesionarios[i].id %>/delete" method="POST" class="ms-2">
+                      <button type="submit" class="btn btn-danger">
+                          Eliminar
+                      </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Formulario de alta de vehiculo -->
     <form action="/vehiculos/create" method="POST" id="altaVehiculo">
       <fieldset class="grid" role="list">
         <h3> Alta de vehiculo</h3>
@@ -179,9 +256,6 @@
               <img src="<%= vehiculos[i].imagen %>" class="card-img-top img-fluid"
                   alt="<%= vehiculos[i].nombre %>" style="height: 200px; object-fit: cover;">
               <div class="card-body">
-                <h5 class="card-title">
-                    <%= vehiculos[i].nombre %>
-                </h5>
                 <!-- Detalles del vehículo -->
                 <form class="list-unstyled" action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST" id="formVehiculo_<%= vehiculos[i].matricula %>">
                   <div class="d-flex align-items-center gap-2">
@@ -242,6 +316,8 @@
         <% } %>
       </div>
     </div>
+
+    
   </main>
 
   <!-- FOOTER -->
