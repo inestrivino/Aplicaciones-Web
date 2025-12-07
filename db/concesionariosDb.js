@@ -17,6 +17,23 @@ class ConcesionariosDb {
         );
     }
 
+    //actualiza un vehiculo
+    updateConcesionario(id, concesionario) {
+        return pool.query(
+            'UPDATE concesionarios SET nombre = ?, ciudad = ?, direccion = ?, telefono = ? ' +
+            'WHERE id = ?',
+            [concesionario.nombre, concesionario.ciudad, concesionario.direccion, concesionario.telefono, id]
+        );
+    }
+
+    deleteConcesionario(id) {
+        return pool.query(
+            'DELETE FROM concesionarios WHERE id = ?',
+            [id]
+        );
+    }
+
+    //devuelve la lista de vehiculos
     async getConcesionarios() {
         return await pool.query(
             'SELECT * FROM concesionarios ORDER BY nombre'
