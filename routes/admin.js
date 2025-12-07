@@ -9,7 +9,7 @@ const concesionariosDb = require("../db/concesionariosDb.js"); //db
 const usuariosDb = require("../db/userDb.js") //db
 
 router.get("/", function (request, response) {
-    vechiculosDb.getVehiculos().then(vehiculos => {
+    vechiculosDb.getVehiculosTodos().then(vehiculos => {
         concesionariosDb.getConcesionarios().then(concesionarios => {
             usuariosDb.getUsers().then(usuarios => {
                 [rows1] = vehiculos;
@@ -51,7 +51,7 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
     request.session.errores = errores;
     request.session.pendientes = pendientesCompleto;
 
-    vechiculosDb.getVehiculos().then(vehiculos => {
+    vechiculosDb.getVehiculosTodos().then(vehiculos => {
         concesionariosDb.getConcesionarios().then(concesionarios => {
             [rows1] = vehiculos;
             [rows2] = concesionarios;
@@ -148,7 +148,7 @@ router.post("/modificarPendientes", async function (request, response) {
         }
     }
     
-    vechiculosDb.getVehiculos().then(vehiculos => {
+    vechiculosDb.getVehiculosTodos().then(vehiculos => {
         [rows] = vehiculos;
         response.render("admin", {
         user: request.session.user,

@@ -18,13 +18,6 @@ class VehiculosDb {
         );
     }
 
-    cambiarEstado(matricula, estado) {
-        return pool.query(
-            'UPDATE vehiculos SET estado = ? WHERE matricula = ?',
-            [estado, matricula]
-        );
-    }
-
     //elimina un vehiculo
     deleteVehiculo(matricula) {
         return pool.query(
@@ -36,7 +29,17 @@ class VehiculosDb {
     //devuelve la lista de vehiculos
     async getVehiculos() {
         return await pool.query(
-            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
+            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
+        );
+    }
+    async getVehiculosTodos() {
+        return await pool.query(
+            "SELECT * FROM vehiculos ORDER BY matricula"
+        );
+    }
+    async getVehiculos() {
+        return await pool.query(
+            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
         );
     }
 
