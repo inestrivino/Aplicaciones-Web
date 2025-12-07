@@ -13,7 +13,6 @@ router.get("/" , async function(request, response) {
             vehiculos: rows, 
         });
     });
-    
 });
 
 //mete un nuevo vehiculo
@@ -22,16 +21,16 @@ router.post("/create", async function(request, response) {
     response.redirect("/admin");
 });
 
-//elimina un vehiculo
-router.post("/:matricula/delete", async function(request, response) {
-    vehiculosDb.deleteVehiculo(request.params.matricula);
-    response.redirect("/admin");
-});
-
 //actualiza un vehiculo
 router.post("/:matricula/update", async function(request, response) {
     console.log(request.body);
     vehiculosDb.updateVehiculo(request.params.matricula, request.body);
+    response.redirect("/admin");
+});
+
+//elimina un vehiculo
+router.post("/:matricula/delete", async function(request, response) {
+    vehiculosDb.deleteVehiculo(request.params.matricula);
     response.redirect("/admin");
 });
 

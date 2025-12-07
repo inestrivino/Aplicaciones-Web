@@ -9,13 +9,17 @@ const concesionariosDb = require("../db/concesionariosDb.js"); //db
 
 router.get("/", function (request, response) {
     vechiculosDb.getVehiculos().then(vehiculos => {
-        [rows] = vehiculos;
-        response.render("admin", { 
-            user: request.session.user, 
-            concesionarios: undefined, 
-            vehiculosList: undefined, 
+        concesionariosDb.getConcesionarios().then(concesionarios => {
+            [rows1] = vehiculos;
+            [rows2] = concesionarios;
+            response.render("admin", { 
+                user: request.session.user, 
+                concesionarios: undefined, 
+                vehiculosList: undefined, 
 
-            vehiculos: rows
+                vehiculos: rows1,
+                concesionarios: rows2
+            });
         });
     });
 });
@@ -43,18 +47,22 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
     request.session.pendientes = pendientesCompleto;
 
     vechiculosDb.getVehiculos().then(vehiculos => {
-        [rows] = vehiculos;
-        response.render("admin", {
-        user: request.session.user,
-        vehiculosList: true,
-        concesionarios: true,
-        insertadosCon: insertadosCon,
-        erroresCon: erroresCon,
-        VehiculosInsertados: insertados,
-        VehiculosPendientes: pendientes,
-        VehiculosErrores: errores,
+        concesionariosDb.getConcesionarios().then(concesionarios => {
+            [rows1] = vehiculos;
+            [rows2] = concesionarios;
+            response.render("admin", {
+            user: request.session.user,
+            vehiculosList: true,
+            concesionarios: true,
+            insertadosCon: insertadosCon,
+            erroresCon: erroresCon,
+            VehiculosInsertados: insertados,
+            VehiculosPendientes: pendientes,
+            VehiculosErrores: errores,
 
-        vehiculos: rows
+            vehiculos: rows1,
+            concesionarios: rows2
+            });
         });
     });
 });
