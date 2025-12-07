@@ -52,9 +52,13 @@
             <option selected disabled value="">
               Seleccione un vehículo
             </option>
-            <option value="1234ABC">Tesla Model 3 (1234ABC)</option>
-            <option value="5678DEF">Renault Zoe (5678DEF)</option>
-            <option value="9012GHI">Nissan Leaf (9012GHI)</option>
+            <% if (vehiculos && vehiculos.length> 0) { %>
+                                        <% vehiculos.forEach(v=> { %>
+                                            <option value="<%= v.id %>">
+                                                <%= v.matricula %>
+                                            </option>
+                                            <% }); %>
+                                                <% } %>
           </select>
         </div>
         <div>
