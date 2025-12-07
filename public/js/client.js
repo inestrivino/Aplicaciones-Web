@@ -137,9 +137,9 @@ function inicializarTema() {
     }
 }
 
-function reserveCar(id) {
+function reserveCar(matricula) {
     // Envía al usuario a reservas.html con ?car=MAT
-    window.location.href = `../reserva?car=${encodeURIComponent(id)}`;
+    window.location.href = `../reserva?car=${encodeURIComponent(matricula)}`;
 }
 
 function inicializarTamanoLetra() {

@@ -29,7 +29,7 @@ class VehiculosDb {
     //devuelve la lista de vehiculos
     async getVehiculos() {
         return await pool.query(
-            "SELECT * FROM vehiculos WHERE estado = 'disponible' ORDER BY id_concesionario, matricula"
+            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
         );
     }
 
