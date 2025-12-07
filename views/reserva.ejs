@@ -24,6 +24,33 @@
   <!-- NAVBAR -->
   <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
 
+  <% if (mensaje) { %>
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usuarioModalLabel">Mensaje</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            <%= mensaje %>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const modal = new bootstrap.Modal(document.getElementById("errorModal"));
+      modal.show();
+    });
+  </script>
+  <% } %>
+
   <main aria-label="Contenido principal de la página">
     <h1>Reservar vehículos</h1>
     <form class="needs-validation" aria-label="Formulario de reserva de vehículos" action="/reserva" method ="POST">
@@ -31,13 +58,13 @@
         <legend>Detalles de la reserva</legend>
         <div>
           <label for="vehiculo" class="form-label">Vehículo</label>
-          <select class="form-select" id="vehiculo" aria-required="true" required aria-label="Seleccionar vehículo">
+          <select class="form-select" id="vehiculo" name="matricula" aria-required="true" required aria-label="Seleccionar vehículo">
             <option selected disabled value="">
               Seleccione un vehículo
             </option>
             <% if (vehiculos && vehiculos.length> 0) { %>
             <% vehiculos.forEach(v=> { %>
-                <option value="<%= v.id %>">
+                <option value="<%= v.matricula %>">
                     <%= v.matricula %>
                 </option>
                 <% }); %>
@@ -46,12 +73,12 @@
         </div>
         <div>
           <label for="inicio" class="form-label">Inicio de reserva</label>
-          <input type="datetime-local" class="form-control" name="inicioFecha" id="inicioFecha" aria-required="true" required
+          <input type="datetime-local" class="form-control" name="fecha_ini" id="inicioFecha" aria-required="true" required
             aria-label="Seleccionar fecha y hora de inicio" />
         </div>
         <div>
           <label for="fin" class="form-label">Fin de reserva</label>
-          <input type="datetime-local" class="form-control" name="finFecha" id="finFecha" aria-required="true" required
+          <input type="datetime-local" class="form-control" name="fecha_fin" id="finFecha" aria-required="true" required
             aria-label="Seleccionar fecha y hora de fin" />
         </div>
       </fieldset>

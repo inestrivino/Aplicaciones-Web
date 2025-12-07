@@ -9,6 +9,7 @@ router.get("/", async function (request, response) {
     const coloresData = await vehiculosDb.getColores();
 
     response.render("reserva", {
+        mensaje: undefined,
         user: request.session.user,
         vehiculos: vehiculosData[0],
         marcas: marcasData[0],
@@ -18,11 +19,23 @@ router.get("/", async function (request, response) {
 
 
 router.post("/", function (request, response) {
-    console.log(request.body);
+    
     let aux = request.body;
-    aux.id_usuario = request.session.user.mail;
-    reservasDb.createReserva(aux);
-    response.reditect("/reserva");
+    aux.mail = request.session.user.mail;
+    aux.condiciones = undefined;
+    reservasDb.createReserva(aux).then(async (res) => {
+        const vehiculosData = await vehiculosDb.getVehiculos();
+        const marcasData = await vehiculosDb.getMarcas();
+        const coloresData = await vehiculosDb.getColores();
+
+        response.render("reserva", {
+            mensaje: "Reserva realizada con éxito",
+            user: request.session.user,
+            vehiculos: vehiculosData[0],
+            marcas: marcasData[0],
+            colores: coloresData[0]
+        });
+    });
 });
 
 module.exports = router;
