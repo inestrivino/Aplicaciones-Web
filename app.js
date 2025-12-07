@@ -74,8 +74,9 @@ app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
 app.use("/concesionarios", comprobarUsuarioLogueado, require("./routes/concesionarios"));
 app.use("/user", require("./routes/user"));
+app.use("/usuarios", require("./routes/usuarios"))
 app.use("/contacto", require("./routes/contacto"));
-app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
+app.use("/misReservas", comprobarUsuarioLogueado, comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
 
 //ERRORES
