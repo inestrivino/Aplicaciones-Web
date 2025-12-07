@@ -82,7 +82,7 @@
             "autonomia": 270,
             "color": "Gris",
             "imagen": "/img/vehiculos/byd_seal3.png",
-            "estado": "en mantenimiento",
+            "estado": "disponible",
             "id_concesionario": 1
         },
         {
