@@ -18,6 +18,13 @@ class VehiculosDb {
         );
     }
 
+    cambiarEstado(matricula, estado) {
+        return pool.query(
+            'UPDATE vehiculos SET estado = ? WHERE matricula = ?',
+            [estado, matricula]
+        );
+    }
+
     //elimina un vehiculo
     deleteVehiculo(matricula) {
         return pool.query(
