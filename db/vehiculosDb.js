@@ -29,7 +29,7 @@ class VehiculosDb {
     //devuelve la lista de vehiculos
     async getVehiculos() {
         return await pool.query(
-            'SELECT * FROM vehiculos ORDER BY id_concesionario, matricula'
+            "SELECT * FROM vehiculos WHERE estado = 'disponible' ORDER BY id_concesionario, matricula"
         );
     }
 
@@ -46,7 +46,7 @@ class VehiculosDb {
     }
 
     filterVehiculos(filters) {
-        let query = "SELECT * FROM vehiculos WHERE 1=1";
+        let query = "SELECT * FROM vehiculos WHERE estado = 'disponible'";
         let params = [];
 
         if (filters.marcaSelect) {
