@@ -300,7 +300,6 @@ function inicializarAtajosTeclado() {
     const shortcutVehiculosElement = document.getElementById('shortcutVehiculos');
     const shortcutReservarElement = document.getElementById('shortcutReservar');
     const shortcutMisReservasElement = document.getElementById('shortcutMisReservas');
-    const shortcutContactoElement = document.getElementById('shortcutContacto');
 
     const guardarCambiosBtn = document.getElementById("guardarCambios");
     const modal = document.getElementById('ajustesModal');
@@ -309,34 +308,29 @@ function inicializarAtajosTeclado() {
     const shortcutVehiculos = (sessionStorage.getItem('shortcutVehiculos') || 'v').toLowerCase();
     const shortcutReservar = (sessionStorage.getItem('shortcutReservar') || 'r').toLowerCase();
     const shortcutMisReservas = (sessionStorage.getItem('shortcutMisReservas') || 'm').toLowerCase();
-    const shortcutContacto = (sessionStorage.getItem('shortcutContacto') || 'c').toLowerCase();
 
     let initialShortcuts = {
         inicio: shortcutInicio,
         vehiculos: shortcutVehiculos,
         reservar: shortcutReservar,
         misReservas: shortcutMisReservas,
-        contacto: shortcutContacto
     };
 
     if (shortcutInicioElement) document.getElementById('shortcutInicio').value = initialShortcuts.inicio;
     if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
     if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
     if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
-    if (shortcutContactoElement) document.getElementById('shortcutContacto').value = initialShortcuts.contacto;
 
     const linkInicio = document.querySelector('a[aria-label="Ir a inicio"]');
     const linkVehiculos = document.querySelector('a[aria-label="Ir a Vehículos"]');
     const linkReservar = document.querySelector('a[aria-label="Ir a Reservas"]');
     const linkMisReservas = document.querySelector('a[aria-label="Ir a Mis Reservas"]');
-    const linkContacto = document.querySelector('a[aria-label="Ir a Contacto"]');
 
     function actualizarAtajos() {
         if (linkInicio) linkInicio.setAttribute('accesskey', shortcutInicio);
         if (linkVehiculos) linkVehiculos.setAttribute('accesskey', shortcutVehiculos);
         if (linkReservar) linkReservar.setAttribute('accesskey', shortcutReservar);
         if (linkMisReservas) linkMisReservas.setAttribute('accesskey', shortcutMisReservas);
-        if (linkContacto) linkContacto.setAttribute('accesskey', shortcutContacto);
     }
 
     function verificarAtajosDuplicados() {
@@ -358,10 +352,6 @@ function inicializarAtajosTeclado() {
         if (shortcutMisReservasElement) {
             const nuevoShortcutMisReservas = document.getElementById('shortcutMisReservas').value.toLowerCase();
             atajos.push(nuevoShortcutMisReservas);
-        }
-        if (shortcutContactoElement) {
-            const nuevoShortcutContacto = document.getElementById('shortcutContacto').value.toLowerCase();
-            atajos.push(nuevoShortcutContacto);
         }
 
         const atajosUnicos = new Set(atajos);
@@ -389,9 +379,6 @@ function inicializarAtajosTeclado() {
             } else if (key === shortcutMisReservas) {
                 event.preventDefault();
                 window.location.href = "/misReservas";
-            } else if (key === shortcutContacto) {
-                event.preventDefault();
-                window.location.href = "/contacto";
             }
         }
     }
@@ -407,7 +394,6 @@ function inicializarAtajosTeclado() {
         if(shortcutVehiculosElement)sessionStorage.setItem('shortcutVehiculos', shortcutVehiculosElement.value.toLowerCase());
         if(shortcutReservarElement)sessionStorage.setItem('shortcutReservar', shortcutReservarElement.value.toLowerCase());
         if(shortcutMisReservasElement)sessionStorage.setItem('shortcutMisReservas', shortcutMisReservasElement.value.toLowerCase());
-        if(shortcutContactoElement)sessionStorage.setItem('shortcutContacto', shortcutContactoElement.value.toLowerCase());
         actualizarAtajos();
         reactivarAtajos();
 
@@ -424,7 +410,6 @@ function inicializarAtajosTeclado() {
         if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
         if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
         if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
-        if (shortcutContactoElement) document.getElementById('shortcutContacto').value = initialShortcuts.contacto;
     });
     reactivarAtajos();
 }
