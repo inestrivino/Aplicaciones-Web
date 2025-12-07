@@ -1,6 +1,7 @@
 # Entrega de Aplicaciones Web
 
 Pasos para inicializar la aplicación:
+- Importe `awdatabase.sql` a la base de datos que se esté usando (phpMyAdmin)
 - Inicie sesión como administrador:
   - Correo: admin@ucm.es
   - Contraseña: Admin123
