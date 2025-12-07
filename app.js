@@ -49,7 +49,7 @@ app.get("/", async function (request, response, next) {
 
     try {
         const concesionariosRaw = await concesionariosDb.getConcesionarios();
-        const concesionarios = concesionariosRaw[0]; // solo el array de concesionarios reales
+        const concesionarios = concesionariosRaw[0];
 
         response.render("inicio", {
             error: error,
@@ -62,6 +62,13 @@ app.get("/", async function (request, response, next) {
         response.status(500).send("Error al cargar la página de inicio");
     }
 });
+
+app.use(async (req, res, next) => {
+    const data = await concesionariosDb.getConcesionarios();
+    res.locals.concesionarios = data[0];
+    next();
+});
+
 
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));

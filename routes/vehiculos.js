@@ -13,6 +13,20 @@ router.get("/" , async function(request, response) {
             vehiculos: rows, 
         });
     });
+    /* marcas = vechiculosDb.getMarcas().then(marcas => {
+        [rows] = marcas;
+        response.render("marcas", {
+            user: request.session.user, 
+            marcas: rows, 
+        });
+    });
+    marcas = vechiculosDb.getMarcas().then(marcas => {
+        [rows] = marcas;
+        response.render("marcas", {
+            user: request.session.user, 
+            marcas: rows, 
+        });
+    }); */
 });
 
 //mete un nuevo vehiculo
