@@ -23,7 +23,7 @@ router.post("/", function (request, response) {
     let aux = request.body;
     aux.mail = request.session.user.mail;
     aux.condiciones = undefined;
-    reservasDb.createReserva(aux).then(async (res) => {
+    reservasDb.createReserva(aux).then(async () => {
         const vehiculosData = await vehiculosDb.getVehiculos();
         const marcasData = await vehiculosDb.getMarcas();
         const coloresData = await vehiculosDb.getColores();

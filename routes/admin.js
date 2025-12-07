@@ -53,20 +53,24 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
 
     vechiculosDb.getVehiculosTodos().then(vehiculos => {
         concesionariosDb.getConcesionarios().then(concesionarios => {
-            [rows1] = vehiculos;
-            [rows2] = concesionarios;
-            response.render("admin", {
-            user: request.session.user,
-            vehiculosList: true,
-            concesionarios: true,
-            insertadosCon: insertadosCon,
-            erroresCon: erroresCon,
-            VehiculosInsertados: insertados,
-            VehiculosPendientes: pendientes,
-            VehiculosErrores: errores,
+            usuariosDb.getUsers().then(usuarios => {
+                [rows1] = vehiculos;
+                [rows2] = concesionarios;
+                [rows3] = usuarios;
+                response.render("admin", {
+                user: request.session.user,
+                vehiculosList: true,
+                concesionarios: true,
+                insertadosCon: insertadosCon,
+                erroresCon: erroresCon,
+                VehiculosInsertados: insertados,
+                VehiculosPendientes: pendientes,
+                VehiculosErrores: errores,
 
-            vehiculos: rows1,
-            concesionarios: rows2
+                vehiculos: rows1,
+                concesionarios: rows2,
+                usuarios: rows3
+                });
             });
         });
     });
@@ -149,16 +153,24 @@ router.post("/modificarPendientes", async function (request, response) {
     }
     
     vechiculosDb.getVehiculosTodos().then(vehiculos => {
-        [rows] = vehiculos;
-        response.render("admin", {
-        user: request.session.user,
-        vehiculosList: true,
-        VehiculosInsertados: insertados,
-        VehiculosPendientes: [],
-        VehiculosErrores: errores,
+        concesionariosDb.getConcesionarios().then(concesionarios => {
+            usuariosDb.getUsers().then(usuarios => {
+                [rows1] = vehiculos;
+                [rows2] = concesionarios;
+                [rows3] = usuarios;
+                response.render("admin", {
+                    user: request.session.user,
+                    vehiculosList: true,
+                    VehiculosInsertados: insertados,
+                    VehiculosPendientes: [],
+                    VehiculosErrores: errores,
 
-        vehiculos: rows
-    });
+                    vehiculos: rows1,
+                    concesionarios: rows2,
+                    usuarios: rows3
+                });
+            });
+        });
     });
 });
 
