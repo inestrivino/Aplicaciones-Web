@@ -46,6 +46,7 @@ app.get("/", function (request, response, next) {
     }
     response.render("inicio", { error: error, user: request.session.user });
 });
+
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
 app.use("/user", require("./routes/user"));

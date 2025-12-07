@@ -16,6 +16,12 @@ class ConcesionariosDb {
             [id]
         );
     }
+
+    async getConcesionarios() {
+        return await pool.query(
+            'SELECT * FROM concesionarios ORDER BY nombre'
+        );
+    }
 }
 
 module.exports = new ConcesionariosDb();

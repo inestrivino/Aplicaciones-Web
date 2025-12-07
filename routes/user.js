@@ -105,14 +105,14 @@ router.post("/register", function (request, response, next) {
             name: request.body.signUpName,
             password: hash
         })
-        .then(() => {
-            request.session.user = {name:request.body.signUpName, rol:"user"};
-            response.redirect("/");
-        })
-        .catch(err => {
-            next(err);
-            return;
-        });
+            .then(() => {
+                request.session.user = { name: request.body.signUpName, rol: "user" };
+                response.redirect("/");
+            })
+            .catch(err => {
+                next(err);
+                return;
+            });
     });
 });
 
@@ -123,7 +123,7 @@ router.post("/login", function (request, response) {
             return response.redirect("/");
         }
         if (bcrypt.compareSync(request.body.signInPassword, rows[0].password)) {
-            request.session.user = {name:rows[0].name, rol:rows[0].rol};
+            request.session.user = { name: rows[0].name, rol: rows[0].rol };
             response.redirect("/");
         }
         else {
