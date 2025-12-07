@@ -9,7 +9,7 @@ class ConcesionariosDb {
         );
     }
 
-    //actualiza un vehiculo
+    //actualiza un concesionario
     updateConcesionario(id, concesionario) {
         return pool.query(
             'UPDATE concesionarios SET nombre = ?, ciudad = ?, direccion = ?, telefono = ? ' +
@@ -25,10 +25,10 @@ class ConcesionariosDb {
         );
     }
 
-    //devuelve la lista de vehiculos
+    //devuelve la lista de concesionarios
     async getConcesionarios() {
         return await pool.query(
-            'SELECT * FROM concesionarios ORDER BY id'
+            'SELECT * FROM concesionarios ORDER BY nombre'
         );
     }
 
