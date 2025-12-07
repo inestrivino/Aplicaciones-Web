@@ -4,14 +4,13 @@ const reservasDb = require("../db/reservasDb.js");
 
 router.get("/", async function (request, response) {
     try {
-        const user = request.session.user;
-        const reservasData = await reservasDb.getMisReservas(1);
-        const reservas = reservasData[0]; 
-        console.log(user);
+        const userMail = request.session.user.mail; // o .id si usas ID
+        const reservasData = await reservasDb.getMisReservas(userMail);
+        const reservas = reservasData[0];
 
-        response.render("misReservas", { 
+        response.render("misReservas", {
             user: request.session.user,
-            reservas 
+            reservas
         });
     } catch (err) {
         console.error(err);
