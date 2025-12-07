@@ -317,76 +317,7 @@
       </div>
     </div>
 
-    <!-- Lista de usuarios -->
-    <h1 class="mt-5" id="gestionVehiculos">Gestión de usuarios</h1>
-    <div class="container" aria-label="Contenido principal de la página">
-      <div class="row row-cols-1 row-cols-lg-3 g-4">
-        <% for (let i=0; i < usuarios.length; i++) { %>
-          <div class="col">
-            <div class="card h-100">
-              <img src="<%= vehiculos[i].imagen %>" class="card-img-top img-fluid"
-                  alt="<%= vehiculos[i].nombre %>" style="height: 200px; object-fit: cover;">
-              <div class="card-body">
-                <!-- Detalles del vehículo -->
-                <form class="list-unstyled" action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST" id="formVehiculo_<%= vehiculos[i].matricula %>">
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Matrícula:</strong>
-                    <%= vehiculos[i].matricula %>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Marca:</strong>
-                    <input class="form-control" type="text" name="marca" value="<%= vehiculos[i].marca %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Modelo:</strong>
-                    <input class="form-control" type="text" name="modelo" value="<%= vehiculos[i].modelo %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>fecha:</strong>
-                    <input type="datetime-local" class="form-control" name="fecha" id="inicioFecha" aria-required="true" required
-                    aria-label="Seleccionar fecha y hora de inicio" value="<%= vehiculos[i].fecha.toISOString().slice(0,16) %>"/>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Plazas:</strong>
-                    <input class="form-control" type="text" name="plazas" value="<%= vehiculos[i].plazas %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Autonomía:</strong>
-                    <input class="form-control" type="text" name="autonomia" value="<%= vehiculos[i].autonomia %>"> 
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Color:</strong>
-                    <input class="form-control" type="text" name="color" value="<%= vehiculos[i].color %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Imagen URL:</strong>
-                    <input class="form-control" type="text" name="imagen" value="<%= vehiculos[i].imagen %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Estado:</strong>
-                    <input class="form-control" type="text" name="estado" value="<%= vehiculos[i].plazas %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong >Concesionario:</strong>
-                    <input class="form-control" type="text" name="id_concesionario" value="<%= vehiculos[i].id_concesionario %>">
-                  </div>
-                </form>
-                <div class="d-flex justify-content-center mt-3">
-                  <button class="btn btn-secondary" form="formVehiculo_<%= vehiculos[i].matricula %>">
-                    Modificar
-                  </button>
-                  <form action="/vehiculos/<%= vehiculos[i].matricula %>/delete" method="POST" class="ms-2">
-                      <button type="submit" class="btn btn-danger">
-                          Eliminar
-                      </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    </div>
+    
   </main>
 
   <!-- FOOTER -->
