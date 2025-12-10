@@ -21,8 +21,7 @@ router.get("/", async function(request, response) {
         });
 
     } catch (err) {
-        console.error(err);
-        response.status(500).send("Error al cargar vehículos");
+        next(err);
     }
 });
 
@@ -57,8 +56,7 @@ router.get("/filter", async function (request, response) {
         });
 
     } catch (err) {
-        console.error(err);
-        response.status(500).send("Error aplicando filtros");
+        next(err);
     }
 });
 

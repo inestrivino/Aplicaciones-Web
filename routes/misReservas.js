@@ -13,8 +13,7 @@ router.get("/", async function (request, response) {
             reservas
         });
     } catch (err) {
-        console.error(err);
-        response.status(500).send("Error al cargar tus reservas");
+        next(err);
     }
 });
 
