@@ -5,12 +5,11 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const ejs = require("ejs");
 
 //CONFIGURACIONES
 const app = express();
 app.use(express.static("public"));
-app.use(morgan("dev")); //no se si hace falta esto
+app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -47,20 +46,14 @@ app.get("/", async function (request, response, next) {
         request.session.error = undefined;
     }
 
-    try {
-        const concesionariosRaw = await concesionariosDb.getConcesionarios();
-        const concesionarios = concesionariosRaw[0];
+    const concesionariosRaw = await concesionariosDb.getConcesionarios();
+    const concesionarios = concesionariosRaw[0];
 
-        response.render("inicio", {
-            error: error,
-            user: request.session.user,
-            concesionarios: concesionarios
-        });
-
-    } catch (err) {
-        console.error(err);
-        response.status(500).send("Error al cargar la página de inicio");
-    }
+    response.render("inicio", {
+        error: error,
+        user: request.session.user,
+        concesionarios: concesionarios
+    });
 });
 
 app.use(async (req, res, next) => {
@@ -68,14 +61,12 @@ app.use(async (req, res, next) => {
     res.locals.concesionarios = data[0];
     next();
 });
-
-
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
 app.use("/concesionarios", comprobarUsuarioLogueado, require("./routes/concesionarios"));
 app.use("/user", require("./routes/user"));
 app.use("/usuarios", require("./routes/usuarios"))
-app.use("/misReservas", comprobarUsuarioLogueado, comprobarUsuarioLogueado, require("./routes/misReservas"));
+app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
 
 //ERRORES
