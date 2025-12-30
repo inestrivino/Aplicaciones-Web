@@ -38,29 +38,40 @@ function comprobarUsuarioAdmin(request, response, next) {
 
 const concesionariosDb = require("./db/concesionariosDb.js");
 
-//RUTAS 
+//INICIO
 app.get("/", async function (request, response, next) {
-    let error = undefined;
-    if (request.session.error) {
-        error = request.session.error;
-        request.session.error = undefined;
+    try {
+        let error = undefined;
+        if (request.session.error) {
+            error = request.session.error;
+            request.session.error = undefined;
+        }
+
+        const concesionariosRaw = await concesionariosDb.getConcesionarios();
+        const concesionarios = concesionariosRaw[0];
+
+        response.render("inicio", {
+            error: error,
+            user: request.session.user,
+            concesionarios: concesionarios
+        });
+    } catch (err) {
+        next(err);
     }
-
-    const concesionariosRaw = await concesionariosDb.getConcesionarios();
-    const concesionarios = concesionariosRaw[0];
-
-    response.render("inicio", {
-        error: error,
-        user: request.session.user,
-        concesionarios: concesionarios
-    });
 });
 
+//CARGA NECESARIA DE CONCESIONARIOS EN TODAS LAS RUTAS
 app.use(async (req, res, next) => {
-    const data = await concesionariosDb.getConcesionarios();
-    res.locals.concesionarios = data[0];
-    next();
+    try {
+        const data = await concesionariosDb.getConcesionarios();
+        res.locals.concesionarios = data[0];
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
+
+//RUTAS DE LA APLICACION
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
 app.use("/concesionarios", comprobarUsuarioLogueado, require("./routes/concesionarios"));
@@ -68,6 +79,9 @@ app.use("/user", require("./routes/user"));
 app.use("/usuarios", require("./routes/usuarios"))
 app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
+
+//RUTAS API
+app.use("/api/vehiculos", require("./routes/api/vehiculos.api"));
 
 //ERRORES
 app.use(function (err, request, response, next) {

@@ -37,11 +37,6 @@ class VehiculosDb {
             "SELECT * FROM vehiculos ORDER BY matricula"
         );
     }
-    async getVehiculos() {
-        return await pool.query(
-            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
-        );
-    }
 
     cambiarEstado(matricula, estado) {
         return pool.query(
@@ -63,7 +58,7 @@ class VehiculosDb {
     }
 
     filterVehiculos(filters) {
-        let query = "SELECT * FROM vehiculos WHERE estado = 'disponible'";
+        let query = "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible'";
         let params = [];
 
         if (filters.marcaSelect) {
@@ -90,6 +85,8 @@ class VehiculosDb {
             else if (value === 300) query += " AND autonomia BETWEEN 300 AND 399";
             else if (value === 200) query += " AND autonomia < 300";
         }
+
+        query += " ORDER BY v.id_concesionario, v.matricula;";
 
         return pool.query(query, params);
     }

@@ -131,7 +131,8 @@ router.post("/login", function (request, response) {
             request.session.user = { 
                 name: rows[0].name,
                 mail: request.body.signInEmail, 
-                rol: rows[0].rol 
+                rol: rows[0].rol, 
+                concesionario: rows[0].id_concesionario
             };
             response.redirect("/");
         }

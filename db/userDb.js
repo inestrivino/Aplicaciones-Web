@@ -12,7 +12,7 @@ class UserDb {
     //devuelve un usuario por su correo
     async getUserByEmail(email) {
         return pool.query(
-            'SELECT name, password, rol FROM users WHERE mail = ?',
+            'SELECT name, password, rol, id_concesionario FROM users WHERE mail = ?',
             [email]
         )
     }
