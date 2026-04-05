@@ -4,8 +4,8 @@ class VehiculosDb {
     //mete un nuevo vehiculo
     async createVehiculo(vehiculo) {
         return await pool.query(
-            'INSERT INTO vehiculos(matricula, marca, modelo, fecha, plazas, autonomia, color, imagen, estado, id_concesionario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "disponible", ?)',
-            [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario]
+            'INSERT INTO vehiculos(matricula, marca, modelo, plazas, autonomia, color, imagen, estado, id_concesionario) VALUES (?, ?, ?, ?, ?, ?, ?, "disponible", ?)',
+            [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario]
         );
     }
 
@@ -54,6 +54,14 @@ class VehiculosDb {
     async getColores() {
         return await pool.query(
             'SELECT DISTINCT color FROM vehiculos'
+        );
+    }
+
+    //devuelve un vehiculo por su matricula
+    async getVehiculoByMatricula(matricula) {
+        return await pool.query(
+            'SELECT * FROM vehiculos WHERE matricula = ?',
+            [matricula]
         );
     }
 

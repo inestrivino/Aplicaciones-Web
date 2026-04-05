@@ -12,21 +12,21 @@ class UserDb {
     //devuelve un usuario por su correo
     async getUserByEmail(email) {
         return pool.query(
-            'SELECT name, password, rol, id_concesionario FROM users WHERE mail = ?',
+            'SELECT * FROM users WHERE mail = ?',
             [email]
         )
     }
     
-    //actualiza un vehiculo
-    updateUser(id, user) {
+    //actualiza un usuario
+    updateUser(id, request) {
         return pool.query(
             'UPDATE users SET name = ?, mail = ?, rol = ?, telefono = ?, id_concesionario = ? ' +
             'WHERE id = ?',
-            [user.name, user.mail, user.rol, user.telefono, user.id_concesionario, id]
+            [request.name, request.mail, request.rol, request.telefono, request.id_concesionario, id]
         );
     }
 
-    //elimina un vehiculo
+    //elimina un usuario
     deleteUser(id) {
         return pool.query(
             'DELETE FROM users WHERE id = ?',
@@ -34,10 +34,16 @@ class UserDb {
         );
     }
 
-    //devuelve la lista de vehiculos
+    //devuelve la lista de usuarios
     getUsers() {
         return pool.query(
             'SELECT * FROM users ORDER BY id'
+        );
+    }
+
+    getUserById(id) {
+        return pool.query(
+            'SELECT * FROM users WHERE id = ?', [id]
         );
     }
 }

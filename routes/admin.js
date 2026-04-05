@@ -8,72 +8,109 @@ const vechiculosDb = require("../db/vehiculosDb.js"); //db
 const concesionariosDb = require("../db/concesionariosDb.js"); //db
 const usuariosDb = require("../db/userDb.js") //db
 
-router.get("/", function (request, response) {
-    vechiculosDb.getVehiculosTodos().then(vehiculos => {
-        concesionariosDb.getConcesionarios().then(concesionarios => {
-            usuariosDb.getUsers().then(usuarios => {
-                [rows1] = vehiculos;
-                [rows2] = concesionarios;
-                [rows3] = usuarios;
-                response.render("admin", { 
-                    user: request.session.user, 
-                    concesionarios: undefined, 
-                    vehiculosList: undefined, 
+const fs = require("fs");
+const path = require("path");
 
-                    vehiculos: rows1,
-                    concesionarios: rows2,
-                    usuarios: rows3
-                });
-            });
+router.get("/", async function (request, response, next) {
+    try {
+        const errorMessage = request.session.errorMessage;
+        delete request.session.errorMessage;
+        const responseMessage = request.session.responseMessage;
+        delete request.session.responseMessage;
+
+        // Recuperar resultados de inserción si vienen de /rellenar
+        const insertadosCon = request.session.insertadosCon || [];
+        const erroresCon = request.session.erroresCon || [];
+        const pendientesCon = request.session.pendientesCon || [];
+        const VehiculosInsertados = request.session.VehiculosInsertados || [];
+        const VehiculosPendientes = request.session.VehiculosPendientes || [];
+        const VehiculosErrores = request.session.VehiculosErrores || [];
+
+        // Limpiar después de leer
+        delete request.session.insertadosCon;
+        delete request.session.erroresCon;
+        delete request.session.pendientesCon;
+        delete request.session.VehiculosInsertados;
+        delete request.session.VehiculosPendientes;
+        delete request.session.VehiculosErrores;
+
+        // Obtener datos de DB
+        const [vehiculos, concesionarios, usuarios] = await Promise.all([
+            vechiculosDb.getVehiculosTodos(),
+            concesionariosDb.getConcesionarios(),
+            usuariosDb.getUsers()
+        ]);
+
+        const [rowsVehiculos] = vehiculos;
+        const [rowsConcesionarios] = concesionarios;
+        const [rowsUsuarios] = usuarios;
+
+        // Leer imágenes de /public/img/vehiculos
+        const imgDir = path.join(__dirname, "../public/img/vehiculos");
+        let imagenesVehiculos = [];
+        if (fs.existsSync(imgDir)) {
+            imagenesVehiculos = fs.readdirSync(imgDir);
+        }
+
+        response.render("admin", {
+            user: request.session.user,
+            vehiculosList: true,
+            concesionarios: true,
+
+            insertadosCon,
+            erroresCon,
+            pendientesCon,
+            VehiculosInsertados,
+            VehiculosPendientes,
+            VehiculosErrores,
+
+            vehiculos: rowsVehiculos,
+            concesionarios: rowsConcesionarios,
+            usuarios: rowsUsuarios,
+
+            errorMessage,
+            responseMessage,
+            imagenesVehiculos
         });
-    });
+    } catch (err) {
+        next(err);
+    }
 });
 
 router.post("/rellenar", upload.single("file"), async function (request, response, next) {
-    const fs = require('fs');
-    if (!request.file) {
-        const error = new Error("Ningun archivo seleccionado");
-        next(error);
-        return;
+    try {
+        if (!request.file) {
+            throw new Error("Ningún archivo seleccionado");
+        }
+        const pathArchivo = request.file.path;
+        const file = fs.readFileSync(pathArchivo, "utf8");
+        const json = JSON.parse(file);
+        fs.unlinkSync(pathArchivo);
+
+        // Insertar concesionarios
+        const concesionarios = json.concesionarios;
+        const [insertadosCon, pendientesCon, erroresCon] = await introducirConcesionarios(concesionarios);
+
+        // Insertar vehículos
+        const vehiculos = json.vehiculos;
+        const [VehiculosInsertados, VehiculosPendientes, pendientesCompleto, VehiculosErrores] = await introducirVehiculos(vehiculos);
+
+        // Guardar resultados en session
+        request.session.insertadosCon = insertadosCon;
+        request.session.erroresCon = erroresCon;
+        request.session.pendientesCon = pendientesCon;
+        request.session.VehiculosInsertados = VehiculosInsertados;
+        request.session.VehiculosErrores = VehiculosErrores;
+        request.session.VehiculosPendientes = VehiculosPendientes;
+        request.session.pendientes = pendientesCompleto;
+        request.session.insertados = VehiculosInsertados.slice();
+        request.session.errores = VehiculosErrores.slice();
+
+        // Redirigir a /admin para mostrar resultados
+        response.redirect("/admin/");
+    } catch (err) {
+        next(err);
     }
-    const pathArchivo = request.file.path;
-    const file = fs.readFileSync(pathArchivo, 'utf8');
-    const json = JSON.parse(file);
-    fs.unlinkSync(pathArchivo);
-    
-    const concesionarios = json.concesionarios;
-    [insertadosCon, erroresCon] = await introducirConcesionarios(concesionarios);
-
-    const vehiculos = json.vehiculos;
-    [insertados, pendientes, pendientesCompleto, errores] = await introducirVehiculos(vehiculos);
-    
-    request.session.insertados = insertados;
-    request.session.errores = errores;
-    request.session.pendientes = pendientesCompleto;
-
-    vechiculosDb.getVehiculosTodos().then(vehiculos => {
-        concesionariosDb.getConcesionarios().then(concesionarios => {
-            usuariosDb.getUsers().then(usuarios => {
-                [rows1] = vehiculos;
-                [rows2] = concesionarios;
-                [rows3] = usuarios;
-                response.render("admin", {
-                user: request.session.user,
-                vehiculosList: true,
-                concesionarios: true,
-                insertadosCon: insertadosCon,
-                erroresCon: erroresCon,
-                VehiculosInsertados: insertados,
-                VehiculosPendientes: pendientes,
-                VehiculosErrores: errores,
-
-                vehiculos: rows1,
-                concesionarios: rows2,
-                usuarios: rows3
-                });
-            });
-        });
-    });
 });
 
 //funcion auxiliar para introducir vehiculos
@@ -107,71 +144,78 @@ async function introducirVehiculos(vehiculos) {
             errores.push(vehiculo.matricula);
         }
     }
-    return [ insertados, pendientes, pendientesCompleto, errores ];
+    return [insertados, pendientes, pendientesCompleto, errores];
 }
 
 //funcion auxiliar para introducir concesionarios
 async function introducirConcesionarios(concesionarios) {
     let insertados = [];
     let errores = [];
+    let pendientesCon = [];
+
+    // Traer todos los concesionarios de la base de datos una sola vez
+    const [existentes] = await concesionariosDb.getConcesionarios();
+
     for (let concesionario of concesionarios) {
         try {
-            res = await concesionariosDb.createConcesionario(concesionario);
+            const duplicado = existentes.find(c =>
+                String(c.nombre).trim().toLowerCase() === String(concesionario.nombre).trim().toLowerCase() &&
+                String(c.direccion).trim().toLowerCase() === String(concesionario.direccion).trim().toLowerCase() &&
+                String(c.telefono).trim() === String(concesionario.telefono).trim()
+            );
+
+            if (duplicado) {
+                pendientesCon.push(concesionario.nombre);
+                continue;
+            }
+
+            const res = await concesionariosDb.createConcesionario(concesionario);
+            const [rows] = res;
+            if (rows.affectedRows > 0) {
+                insertados.push(concesionario.nombre);
+            } else {
+                errores.push(concesionario.nombre);
+            }
         } catch (error) {
             errores.push(concesionario.nombre + " " + error.code);
-            continue;
-        }
-        [rows] = res;
-        if (rows.affectedRows > 0) {
-            insertados.push(concesionario.nombre);
-        }
-        else {
-            errores.push(concesionario.nombre);
         }
     }
-    return [ insertados, errores ];
+
+    return [insertados, pendientesCon, errores];
 }
 
-router.post("/modificarPendientes", async function (request, response) {
-    let insertados = request.session.insertados;
-    const pendientes = request.session.pendientes;
-    let errores = request.session.errores;
-    for (let vehiculo of pendientes) {
-        try {
-            res = await vechiculosDb.updateVehiculo(vehiculo.matricula, vehiculo);
-        } catch (error) {
-            errores.push(vehiculo.matricula + " " + error.code);
-            continue;
-        }
-        [rows] = res;
-        if (rows.affectedRows > 0) {
-            insertados.push(vehiculo.matricula);
-        }
-        else {
-            errores.push(vehiculo.matricula);
-        }
-    }
-    
-    vechiculosDb.getVehiculosTodos().then(vehiculos => {
-        concesionariosDb.getConcesionarios().then(concesionarios => {
-            usuariosDb.getUsers().then(usuarios => {
-                [rows1] = vehiculos;
-                [rows2] = concesionarios;
-                [rows3] = usuarios;
-                response.render("admin", {
-                    user: request.session.user,
-                    vehiculosList: true,
-                    VehiculosInsertados: insertados,
-                    VehiculosPendientes: [],
-                    VehiculosErrores: errores,
+router.post("/modificarPendientes", async function (request, response, next) {
+    try {
+        // Recuperar datos de sesión
+        let insertados = request.session.insertados || [];
+        let errores = request.session.errores || [];
+        let pendientes = request.session.pendientes || [];
 
-                    vehiculos: rows1,
-                    concesionarios: rows2,
-                    usuarios: rows3
-                });
-            });
-        });
-    });
+        // Procesar cada vehículo pendiente
+        for (let vehiculo of pendientes) {
+            try {
+                const res = await vechiculosDb.updateVehiculo(vehiculo.matricula, vehiculo);
+                const [rows] = res;
+                if (rows.affectedRows > 0) {
+                    insertados.push(vehiculo.matricula);
+                } else {
+                    errores.push(vehiculo.matricula);
+                }
+            } catch (error) {
+                errores.push(vehiculo.matricula + " " + error.code);
+            }
+        }
+
+        // Guardar resultados en la sesión
+        request.session.insertados = insertados;
+        request.session.errores = errores;
+        request.session.pendientes = [];
+
+        // Redirigir a /admin para que el GET se encargue del render
+        response.redirect("/admin/");
+    } catch (err) {
+        next(err);
+    }
 });
 
 module.exports = router;

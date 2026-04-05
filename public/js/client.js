@@ -1,3 +1,4 @@
+/* ACCESIBILIDAD Y PREFERENCIAS */
 function inicializarLanguageToggle() {
     const idiomaSeleccionado = document.getElementById("idiomaSeleccionado");
     const languageLinks = document.querySelectorAll('.dropdown-item');
@@ -137,11 +138,6 @@ function inicializarTema() {
     }
 }
 
-function reserveCar(matricula) {
-    // Envía al usuario a reservas.html con ?car=MAT
-    window.location.href = `../reserva?car=${encodeURIComponent(matricula)}`;
-}
-
 function inicializarTamanoLetra() {
     const ajustesModal = document.getElementById("ajustesModal");
     const fontSizeRange = document.getElementById("fontSizeRange");
@@ -225,73 +221,6 @@ function inicializarTamanoLetra() {
             aplicarTamanoFuente(fontSizeRange.value);
         }
     }
-}
-
-function inicializarSignInUp() {
-    const signInBtn = document.getElementById('signInBtn');
-    const signUpBtn = document.getElementById('signUpBtn');
-
-    if (signInBtn && signUpBtn) {
-        signInBtn.addEventListener('click', function () {
-            const signInForm = document.getElementById('signInForm');
-            const signUpForm = document.getElementById('signUpForm');
-            if (signInForm && signUpForm) {
-                signInForm.style.display = 'block';
-                signUpForm.style.display = 'none';
-            }
-        });
-
-        signUpBtn.addEventListener('click', function () {
-            const signInForm = document.getElementById('signInForm');
-            const signUpForm = document.getElementById('signUpForm');
-            if (signInForm && signUpForm) {
-                signInForm.style.display = 'none';
-                signUpForm.style.display = 'block';
-            }
-        });
-    }
-}
-
-function validateSignUp() {
-    const email = document.getElementById("signUpEmail").value;
-    const emailError = document.getElementById("signUpEmailError");
-
-    const password = document.getElementById("signUpPassword").value;
-    const passwordError = document.getElementById("signUpPasswordError");
-
-    const confirmPassword = document.getElementById("signUpConfirmPassword").value;
-    const confirmPasswordError = document.getElementById("signUpConfirmPasswordError");
-
-    let isValid = true;
-
-    //Email
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@ucm\.(com|es)$/;
-
-    if (!emailRegex.test(email)) {
-        emailError.style.display = "block";
-        isValid = false;
-    } else {
-        emailError.style.display = "none";
-    }
-
-    //Contraseña
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-
-    if (!passwordRegex.test(password)) {
-        passwordError.style.display = "block";
-        isValid = false;
-    } else {
-        passwordError.style.display = "none";
-    }
-
-    //Contraseñas coinciden
-    if (password !== confirmPassword) {
-        confirmPasswordError.style.display = "block";
-        isValid = false;
-    } else {
-        confirmPasswordError.style.display = "none";
-    }
-    return isValid;
 }
 
 function inicializarAtajosTeclado() {
@@ -390,10 +319,10 @@ function inicializarAtajosTeclado() {
             return; // Evitar que continúe si hay duplicados
         }
 
-        if(shortcutInicioElement)sessionStorage.setItem('shortcutInicio', shortcutInicioElement.value.toLowerCase());
-        if(shortcutVehiculosElement)sessionStorage.setItem('shortcutVehiculos', shortcutVehiculosElement.value.toLowerCase());
-        if(shortcutReservarElement)sessionStorage.setItem('shortcutReservar', shortcutReservarElement.value.toLowerCase());
-        if(shortcutMisReservasElement)sessionStorage.setItem('shortcutMisReservas', shortcutMisReservasElement.value.toLowerCase());
+        if (shortcutInicioElement) sessionStorage.setItem('shortcutInicio', shortcutInicioElement.value.toLowerCase());
+        if (shortcutVehiculosElement) sessionStorage.setItem('shortcutVehiculos', shortcutVehiculosElement.value.toLowerCase());
+        if (shortcutReservarElement) sessionStorage.setItem('shortcutReservar', shortcutReservarElement.value.toLowerCase());
+        if (shortcutMisReservasElement) sessionStorage.setItem('shortcutMisReservas', shortcutMisReservasElement.value.toLowerCase());
         actualizarAtajos();
         reactivarAtajos();
 
@@ -414,6 +343,98 @@ function inicializarAtajosTeclado() {
     reactivarAtajos();
 }
 
+/* REGISTRO E INICIO DE SESIÓN */
+
+function inicializarSignInUp() {
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+
+    if (signInBtn && signUpBtn) {
+        signInBtn.addEventListener('click', function () {
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+            if (signInForm && signUpForm) {
+                signInForm.style.display = 'block';
+                signUpForm.style.display = 'none';
+            }
+        });
+
+        signUpBtn.addEventListener('click', function () {
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+            if (signInForm && signUpForm) {
+                signInForm.style.display = 'none';
+                signUpForm.style.display = 'block';
+            }
+        });
+    }
+}
+
+function validateSignUp() {
+    const email = document.getElementById("signUpEmail").value;
+    const emailError = document.getElementById("signUpEmailError");
+
+    const password = document.getElementById("signUpPassword").value;
+    const passwordError = document.getElementById("signUpPasswordError");
+
+    const confirmPassword = document.getElementById("signUpConfirmPassword").value;
+    const confirmPasswordError = document.getElementById("signUpConfirmPasswordError");
+
+    let isValid = true;
+
+    //Email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@ucm\.(com|es)$/;
+
+    if (!emailRegex.test(email)) {
+        emailError.style.display = "block";
+        isValid = false;
+    } else {
+        emailError.style.display = "none";
+    }
+
+    //Contraseña
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+    if (!passwordRegex.test(password)) {
+        passwordError.style.display = "block";
+        isValid = false;
+    } else {
+        passwordError.style.display = "none";
+    }
+
+    //Contraseñas coinciden
+    if (password !== confirmPassword) {
+        confirmPasswordError.style.display = "block";
+        isValid = false;
+    } else {
+        confirmPasswordError.style.display = "none";
+    }
+    return isValid;
+}
+
+/* OTRAS FUNCIONALIDADES */
+
+function reserveCar(matricula) {
+    // Envía al usuario a reservas.html con ?car=MAT
+    window.location.href = `../reserva?car=${encodeURIComponent(matricula)}`;
+}
+
+function toggleFormulario() {
+    // Selecciona todos los elementos que tienen data-bs-toggle="collapse"
+    const collapseHeaders = document.querySelectorAll('[data-bs-toggle="collapse"]');
+
+    collapseHeaders.forEach(header => {
+        header.addEventListener('click', function () {
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('bi-chevron-down');
+                icon.classList.toggle('bi-chevron-up');
+            }
+        });
+    });
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     inicializarAtajosTeclado();
     inicializarLanguageToggle();
@@ -430,5 +451,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const selectVehiculo = document.getElementById("vehiculo");
             if (selectVehiculo) selectVehiculo.value = matricula;
         }
+    }
+    else if (path.includes("admin")) {
+        toggleFormulario();
     }
 });

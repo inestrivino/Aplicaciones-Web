@@ -4,8 +4,8 @@ class ConcesionariosDb {
     //mete un nuevo concesionario
     async createConcesionario(concesionario) {
         return await pool.query(
-            'INSERT INTO concesionarios(id, nombre, ciudad, direccion, telefono) VALUES (?, ?, ?, ?, ?)',
-            [concesionario.id, concesionario.nombre, concesionario.ciudad, concesionario.direccion, concesionario.telefono]
+            'INSERT INTO concesionarios(nombre, ciudad, direccion, telefono) VALUES (?, ?, ?, ?)',
+            [concesionario.nombre, concesionario.ciudad, concesionario.direccion, concesionario.telefono]
         );
     }
 
@@ -28,7 +28,7 @@ class ConcesionariosDb {
     //devuelve la lista de concesionarios
     async getConcesionarios() {
         return await pool.query(
-            'SELECT * FROM concesionarios ORDER BY nombre'
+            'SELECT * FROM concesionarios ORDER BY id'
         );
     }
 

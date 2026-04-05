@@ -4,375 +4,461 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Admin</title>
-  <meta name="description"
-    content="EcoMóvil es una empresa de vehículos eléctricos disponibles para prestamo. Esta página permite a nuestros empleados gestionar nuestra flota." />
-  <meta name="keywords"
-    content="transporte ecológico, vehículos eléctricos, movilidad sostenible, EcoMóvil, soluciones de transporte, movilidad verde" />
+  <meta name="description" content="EcoMóvil es una empresa de vehículos eléctricos disponibles para préstamo." />
+  <meta name="keywords" content="transporte ecológico, vehículos eléctricos, movilidad sostenible, EcoMóvil" />
   <meta name="author" content="EcoMóvil" />
   <meta name="robots" content="index, follow" />
   <link rel="icon" href="img/Logo.svg" type="image/x-icon" />
 
-  <!-- Enlaces a las hojas de estilo -->
-  <link rel="stylesheet" href="/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
-  <!-- NAVBAR -->
   <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
 
-  <main class="container mt-5" role="main">
-    <h1>Panel de gestión</h1><br>
-    <fieldset>
-      <h2>Insercción en la base de datos mediante JSON</h2>
-      <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
-        <input class="form-control-lg" type="file" id="file" name="file" accept=".json" required><br>
-        <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button><br>
-      </form>
+    <main class="container mt-5" role="main">
+      <h1>Panel de gestión</h1>
 
-      <style>
-      .tres-columnas {
-        display: flex;
-        gap: 20px;
-      }
-      .tres-columnas > div {
-        flex: 1; /* que todas las columnas ocupen el mismo ancho */
-      }
-      </style>
-
-      <!-- Concesionarios -->
-      <% if (vehiculosList) { %>
-      <h2 class="mt-3">Resultados de la insercción de concesionarios:</h2>
-      <div class="tres-columnas">
-        <% if (insertadosCon.length !== 0) { %>
-        <div>
-          <strong>Insertados</strong> <br>
-          <% for (nombre of insertadosCon) { %>
-            <%=nombre%> <br>
-          <% } %>
+      <% if (typeof errorMessage !=='undefined' ) { %>
+        <div class="alert alert-danger" role="alert">
+          <%= errorMessage %>
         </div>
         <% } %>
-        <% if (erroresCon.length !== 0) { %>
-        <div>
-          <strong>Errores</strong> <br>
-          <% for (nombre of erroresCon) { %>
-            <%=nombre%> <br>
-          <% } %>
-        </div>
-        <% } %>
-      </div>
-      <% } %>
+          <% if (typeof responseMessage !=='undefined' ) { %>
+            <div class="alert alert-success" role="alert">
+              <%= responseMessage %>
+            </div>
+            <% } %>
 
-      <!-- Vehiculos -->
-      <% if (vehiculosList) { %>
-      <h2 class="mt-3">Resultados de la insercción de vehículos:</h2>
-      <div class="tres-columnas">
-        <% if (VehiculosInsertados.length !== 0) { %>
-        <div>
-          <strong>Insertados</strong> <br>
-          <% for (matricula of VehiculosInsertados) { %>
-            <%=matricula%> <br>
-          <% } %>
-        </div>
-        <% } %>
-        <% if (VehiculosPendientes.length !== 0) { %>
-        <div>
-          <strong>Pendientes</strong> <br>
-          <% for (matricula of VehiculosPendientes) { %>
-            <%=matricula%> <br>
-          <% } %>
-          <br>
-          <form action="/admin/modificarPendientes" method="POST">
-            <button class="btn btn-secondary" type="submit">Confirmar</button>
-          </form>
-        </div>
-        <% } %>
-        <% if (VehiculosErrores.length !== 0) { %>
-        <div>
-          <strong>Errores</strong> <br>
-          <% for (matricula of VehiculosErrores) { %>
-            <%=matricula%> <br>
-          <% } %>
-        </div>
-        <% } %>
-      </div>
-      <% } %>
-    </fieldset>
-    
-    <fieldset class="grid" role="list">
-      <h3> Acciones de administrador</h3><br>
-      <a href="#altaVehiculo" class="btn btn-light" aria-label="Gestión de vehículos">
-        • Alta de vehículo
-      </a>
-      <a href="#gestionVehiculos" class="btn btn-light" aria-label="Gestión de vehículos">
-        • Gestión de vehículos
-      </a>
-      <a href="#gestionConcesionarios" class="btn btn-light" id="concesionarios" role="listitem" aria-label="Gestión de concesionarios">
-        • Gestión de concesionarios
-      </a>
-      <a href="#gestionUsuarios" class="btn btn-light" id="usuarios" role="listitem" aria-label="Gestión de usuarios">
-        • Gestión de usuarios
-      </a>
-    </fieldset>
+              <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="baseDatos-tab" data-bs-toggle="tab" data-bs-target="#baseDatos"
+                    type="button" role="tab">Base de datos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="concesionarios-tab" data-bs-toggle="tab" data-bs-target="#concesionarios"
+                    type="button" role="tab">Concesionarios</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="vehiculos-tab" data-bs-toggle="tab" data-bs-target="#vehiculos"
+                    type="button" role="tab">Vehículos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios"
+                    type="button" role="tab">Usuarios</button>
+                </li>
+              </ul>
 
-    <!-- Formulario de alta de concesionario -->
-    <form action="/concesionarios/create" method="POST" id="altaConcesionario">
-      <fieldset class="grid" role="list">
-        <h3> Alta de concesionario</h3>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Id:</strong>
-          <input class="form-control" type="text" name="id" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Nombre:</strong>
-          <input class="form-control" type="text" name="nombre" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Ciudad:</strong>
-          <input class="form-control" type="text" name="ciudad" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Dirección:</strong>
-          <input class="form-control" type="text" name="direccion" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Teléfono:</strong>
-          <input class="form-control" type="text" name="telefono" required>
-        </div>
-        <button class="btn btn-primary mt-3" type="submit">Enviar</button>
-      </fieldset>
-    </form>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="baseDatos" role="tabpanel">
+                  <fieldset>
+                    <h2>Inserción en la base de datos mediante JSON</h2>
+                    <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
+                      <input class="form-control-lg" type="file" id="file" name="file" accept=".json" required><br>
+                      <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button><br>
+                    </form>
 
-    <!-- Lista de concesionarios -->
-    <h1 class="mt-5" id="gestionConcesionarios">Gestión de concesionarios</h1>
-    <div class="container" aria-label="Contenido principal de la página">
-      <div class="row row-cols-1 row-cols-lg-3 g-4">
-        <% for (let i=0; i < concesionarios.length; i++) { %>
-          <div class="col">
-            <div class="card h-100">
-              <div class="card-body">
-                <!-- Detalles del vehículo -->
-                <form class="list-unstyled" action="/concesionarios/<%= concesionarios[i].id %>/update" method="POST" id="formConcesionario_<%= concesionarios[i].id %>">
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Id:</strong>
-                    <%= concesionarios[i].id %>
+                    <% if (vehiculosList) { %>
+                      <h2 class="mt-3">Resultados de la inserción de concesionarios:</h2>
+                      <div>
+                        <% if (insertadosCon.length !==0) { %>
+                          <div>
+                            <strong>Insertados</strong> <br>
+                            <% for (nombre of insertadosCon) { %>
+                              <%=nombre%> <br>
+                                <% } %>
+                          </div>
+                          <% } %>
+                            <% if (erroresCon.length !==0) { %>
+                              <div>
+                                <strong>Errores</strong> <br>
+                                <% for (nombre of erroresCon) { %>
+                                  <%=nombre%> <br>
+                                    <% } %>
+                              </div>
+                              <% } %>
+                            <% if (pendientesCon.length !==0) { %>
+                          <div>
+                            <strong>Pendientes</strong> <br>
+                            <% for (nombre of pendientesCon) { %>
+                              <%=nombre%> <br>
+                                <% } %>
+                          </div>
+                          <% } %>
+                      </div>
+
+                      <h2 class="mt-3">Resultados de la inserción de vehículos:</h2>
+                      <div>
+                        <% if (VehiculosInsertados.length !==0) { %>
+                          <div>
+                            <strong>Insertados</strong> <br>
+                            <% for (matricula of VehiculosInsertados) { %>
+                              <%=matricula%> <br>
+                                <% } %>
+                          </div>
+                          <% } %>
+                            <% if (VehiculosPendientes.length !==0) { %>
+                              <div>
+                                <strong>Pendientes</strong> <br>
+                                <% for (matricula of VehiculosPendientes) { %>
+                                  <%=matricula%> <br>
+                                    <% } %>
+                                      <br>
+                                      <form action="/admin/modificarPendientes" method="POST">
+                                        <button class="btn btn-secondary" type="submit">Confirmar</button>
+                                      </form>
+                              </div>
+                              <% } %>
+                                <% if (VehiculosErrores.length !==0) { %>
+                                  <div>
+                                    <strong>Errores</strong> <br>
+                                    <% for (matricula of VehiculosErrores) { %>
+                                      <%=matricula%> <br>
+                                        <% } %>
+                                  </div>
+                                  <% } %>
+                      </div>
+                      <% } %>
+                  </fieldset>
+                </div>
+
+                <div class="tab-pane fade" id="concesionarios" role="tabpanel">
+                  <div class="card mb-4">
+                    <div class="card-header bg-primary d-flex justify-content-between align-items-center"
+                      style="cursor: pointer; color:white" data-bs-toggle="collapse"
+                      data-bs-target="#collapseAltaConcesionario" aria-expanded="false">
+                      <h5 class="mb-0">Alta de concesionario</h5>
+                      <i class="bi bi-chevron-down"></i>
+                    </div>
+
+                    <div class="collapse" id="collapseAltaConcesionario">
+                      <div class="card-body">
+                        <form action="/concesionarios/create" method="POST" id="altaConcesionario">
+                          <div class="mb-3">
+                            <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="ciudad" class="form-label"><strong>Ciudad:</strong></label>
+                            <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="direccion" class="form-label"><strong>Dirección:</strong></label>
+                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="telefono" class="form-label"><strong>Teléfono:</strong></label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" required>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                      </div>
+                    </div>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Nombre:</strong>
-                    <input class="form-control" type="text" name="nombre" value="<%= concesionarios[i].nombre %>">
+
+                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
+                    <table class="table table-sm table-striped table-bordered align-middle">
+                      <thead class="table-dark sticky-top">
+                        <tr>
+                          <th>ID</th>
+                          <th class="d-none d-sm-table-cell">Nombre</th>
+                          <th class="d-none d-sm-table-cell">Ciudad</th>
+                          <th class="d-none d-md-table-cell">Dirección</th>
+                          <th class="d-none d-md-table-cell">Teléfono</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% for (let i=0; i < concesionarios.length; i++) { %>
+                          <tr>
+                            <td>
+                              <%= concesionarios[i].id %>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="nombre"
+                                value="<%= concesionarios[i].nombre %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="ciudad"
+                                value="<%= concesionarios[i].ciudad %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="direccion"
+                                value="<%= concesionarios[i].direccion %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="telefono"
+                                value="<%= concesionarios[i].telefono %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+                            <td>
+                              <form id="form<%= concesionarios[i].id %>"
+                                action="/concesionarios/<%= concesionarios[i].id %>/update" method="POST"></form>
+
+                              <button class="btn btn-sm btn-secondary mb-1"
+                                form="form<%= concesionarios[i].id %>">Modificar</button>
+                              <form action="/concesionarios/<%= concesionarios[i].id %>/delete" method="POST"
+                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este concesionario?');"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                              </form>
+                            </td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Ciudad:</strong>
-                    <input class="form-control" type="text" name="ciudad" value="<%= concesionarios[i].ciudad %>">
+                </div>
+
+                <div class="tab-pane fade" id="vehiculos" role="tabpanel">
+                  <div class="card mb-4">
+                    <div class="card-header bg-primary d-flex justify-content-between align-items-center"
+                      style="cursor: pointer; color: white;" data-bs-toggle="collapse"
+                      data-bs-target="#collapseAltaVehiculo" aria-expanded="false">
+                      <h5 class="mb-0">Alta de vehículo</h5>
+                      <i class="bi bi-chevron-down"></i>
+                    </div>
+
+                    <div class="collapse" id="collapseAltaVehiculo">
+                      <div class="card-body">
+                        <form action="/vehiculos/create" method="POST" id="altaVehiculo">
+
+                          <div class="mb-3">
+                            <label for="matricula" class="form-label"><strong>Matrícula:</strong></label>
+                            <input type="text" class="form-control" id="matricula" name="matricula"
+                              pattern="^\d{4}[A-Z]{3}$" title="Debe tener 4 números y 3 letras mayúsculas, ej: 1234ABC"
+                              required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="marca" class="form-label"><strong>Marca:</strong></label>
+                            <input type="text" class="form-control" id="marca" name="marca" required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="modelo" class="form-label"><strong>Modelo:</strong></label>
+                            <input type="text" class="form-control" id="modelo" name="modelo" required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="plazas" class="form-label"><strong>Plazas:</strong></label>
+                            <input type="number" class="form-control" id="plazas" name="plazas" min="1" required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="autonomia" class="form-label"><strong>Autonomía:</strong></label>
+                            <input type="number" class="form-control" id="autonomia" name="autonomia" min="1" required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="color" class="form-label"><strong>Color:</strong></label>
+                            <input type="text" class="form-control" id="color" name="color" required>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="imagen" class="form-label"><strong>Imagen:</strong></label>
+                            <select class="form-select" name="imagen" id="imagen" required>
+                              <% imagenesVehiculos.forEach(img=> { %>
+                                <option value="<%= img %>">
+                                  <%= img %>
+                                </option>
+                                <% }) %>
+                            </select>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="id_concesionario" class="form-label"><strong>Concesionario:</strong></label>
+                            <select class="form-select" id="id_concesionario" name="id_concesionario" required>
+                              <% concesionarios.forEach(c=> { %>
+                                <option value="<%= c.id %>">
+                                  <%= c.nombre %> (<%= c.ciudad %>)
+                                </option>
+                                <% }) %>
+                            </select>
+                          </div>
+
+                          <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                      </div>
+                    </div>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Dirección:</strong>
-                    <input class="form-control" type="text" name="direccion" value="<%= concesionarios[i].direccion %>">
+
+                  <div style="max-height: 600px; overflow-y:auto;">
+                    <table class="table table-sm table-striped table-bordered align-middle">
+                      <thead class="table-dark sticky-top">
+                        <tr>
+                          <th>Matrícula</th>
+                          <th>Marca</th>
+                          <th>Modelo</th>
+                          <th>Fecha</th>
+                          <th>Plazas</th>
+                          <th>Autonomía</th>
+                          <th>Color</th>
+                          <th>Estado</th>
+                          <th>Concesionario</th>
+                          <th>Imagen</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% for (let i=0; i < vehiculos.length; i++) { %>
+                          <tr>
+                            <td>
+                              <%= vehiculos[i].matricula %>
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="text" name="marca"
+                                value="<%= vehiculos[i].marca %>" form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="text" name="modelo"
+                                value="<%= vehiculos[i].modelo %>" form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="datetime-local" name="fecha"
+                                value="<%= vehiculos[i].fecha.toISOString().slice(0,16) %>"
+                                form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="number" name="plazas"
+                                value="<%= vehiculos[i].plazas %>" form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="number" name="autonomia"
+                                value="<%= vehiculos[i].autonomia %>" form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="text" name="color"
+                                value="<%= vehiculos[i].color %>" form="form<%= vehiculos[i].matricula %>">
+                            </td>
+                            <td>
+                              <select class="form-select form-select-sm" name="estado"
+                                form="form<%= vehiculos[i].matricula %>">
+                                <option value="disponible" <%=vehiculos[i].estado==='disponible' ? 'selected' : '' %>
+                                  >Disponible</option>
+                                <option value="reservado" <%=vehiculos[i].estado==='reservado' ? 'selected' : '' %>
+                                  >Reservado</option>
+                              </select>
+                            </td>
+                            <td>
+                              <select class="form-select form-select-sm" name="id_concesionario"
+                                form="form<%= vehiculos[i].matricula %>">
+                                <% concesionarios.forEach(c=> { %>
+                                  <option value="<%= c.id %>" <%=c.id===vehiculos[i].id_concesionario ? 'selected' : ''
+                                    %>>
+                                    <%= c.nombre %> (<%= c.ciudad %>)
+                                  </option>
+                                  <% }) %>
+                              </select>
+                            </td>
+                            <td>
+                              <select class="form-select form-select-sm" name="imagen"
+                                form="form<%= vehiculos[i].matricula %>">
+                                <% imagenesVehiculos.forEach(img=> { %>
+                                  <option value="<%= img %>" <%=vehiculos[i].imagen===img ? 'selected' : '' %>><%= img
+                                      %>
+                                  </option>
+                                  <% }) %>
+                              </select>
+                            </td>
+                            <td>
+                              <!-- Formulario invisible -->
+                              <form id="form<%= vehiculos[i].matricula %>"
+                                action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST"></form>
+
+                              <!-- Botones inline -->
+                              <button class="btn btn-sm btn-secondary mb-1"
+                                form="form<%= vehiculos[i].matricula %>">Modificar</button>
+                              <form action="/vehiculos/<%= vehiculos[i].matricula %>/delete" method="POST"
+                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este vehículo?');"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                              </form>
+                            </td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Teléfono:</strong>
-                    <input class="form-control" type="text" name="telefono" value="<%= concesionarios[i].telefono %>">
+                </div>
+
+                <div class="tab-pane fade" id="usuarios" role="tabpanel">
+                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
+                    <table class="table table-sm table-striped table-bordered align-middle">
+                      <thead class="table-dark sticky-top">
+                        <tr>
+                          <th>ID</th>
+                          <th class="d-none d-sm-table-cell">Nombre</th>
+                          <th class="d-none d-sm-table-cell">Correo</th>
+                          <th class="d-none d-md-table-cell">Rol</th>
+                          <th class="d-none d-md-table-cell">Teléfono</th>
+                          <th class="d-none d-lg-table-cell">Concesionario</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% for (let i=0; i < usuarios.length; i++) { %>
+                          <tr>
+                            <td>
+                              <%= usuarios[i].id %>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="name"
+                                value="<%= usuarios[i].name %>" form="formUsuarios_<%= usuarios[i].id %>">
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="mail"
+                                value="<%= usuarios[i].mail %>" form="formUsuarios_<%= usuarios[i].id %>">
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                              <select class="form-select form-select-sm" name="rol"
+                                form="formUsuarios_<%= usuarios[i].id %>">
+                                <option value="admin" <%=usuarios[i].rol==='admin' ? 'selected' : '' %>>admin</option>
+                                <option value="user" <%=usuarios[i].rol==='user' ? 'selected' : '' %>>user</option>
+                              </select>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                              <input class="form-control form-control-sm" type="text" name="telefono"
+                                value="<%= usuarios[i].telefono %>" form="formUsuarios_<%= usuarios[i].id %>">
+                            </td>
+                            <td>
+                              <select class="form-select form-select-sm" name="id_concesionario"
+                                form="formUsuarios_<%= usuarios[i].id %>">
+                                <% concesionarios.forEach(c=> { %>
+                                  <option value="<%= c.id %>" <%=c.id===vehiculos[i].id_concesionario ? 'selected' : ''
+                                    %>>
+                                    <%= c.nombre %> (<%= c.ciudad %>)
+                                  </option>
+                                  <% }) %>
+                              </select>
+                            </td>
+                            <td>
+                              <form id="formUsuarios_<%= usuarios[i].id %>"
+                                action="/usuarios/<%= usuarios[i].id %>/update" method="POST"></form>
+
+                              <button class="btn btn-sm btn-secondary mb-1"
+                                form="formUsuarios_<%= usuarios[i].id %>">Modificar</button>
+                              <form action="/usuarios/<%= usuarios[i].id %>/delete" method="POST"
+                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                              </form>
+                            </td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                    </table>
                   </div>
-                </form>
-                <div class="d-flex justify-content-center mt-3">
-                  <button class="btn btn-secondary" form="formConcesionario_<%= concesionarios[i].id %>">
-                    Modificar
-                  </button>
-                  <form action="/concesionarios/<%= concesionarios[i].id %>/delete" method="POST" class="ms-2">
-                      <button type="submit" class="btn btn-danger">
-                          Eliminar
-                      </button>
-                  </form>
                 </div>
               </div>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    </div>
+    </main>
 
-    <!-- Formulario de alta de vehiculo -->
-    <form action="/vehiculos/create" method="POST" id="altaVehiculo">
-      <fieldset class="grid" role="list">
-        <h3> Alta de vehiculo</h3>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Matricula:</strong>
-          <input class="form-control" type="text" name="matricula" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Marca:</strong>
-          <input class="form-control" type="text" name="marca" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Modelo:</strong>
-          <input class="form-control" type="text" name="modelo" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>fecha:</strong>
-          <input type="datetime-local" class="form-control" name="fecha" id="inicioFecha" aria-required="true" required
-          aria-label="Seleccionar fecha y hora de inicio"/>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Plazas:</strong>
-          <input class="form-control" type="text" name="plazas" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Autonomía:</strong>
-          <input class="form-control" type="text" name="autonomia" required> 
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Color:</strong>
-          <input class="form-control" type="text" name="color" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Imagen URL:</strong>
-          <input class="form-control" type="text" name="imagen" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong>Estado:</strong>
-          <input class="form-control" type="text" name="estado" required>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <strong >Concesionario:</strong>
-          <input class="form-control" type="text" name="id_concesionario" required>
-        </div>
-        <button class="btn btn-primary mt-3" type="submit">Enviar</button>
-      </fieldset>
-    </form>
+    <%- include("partials/footer") %>
 
-    <!-- Lista de vehiculos -->
-    <h1 class="mt-5" id="gestionVehiculos">Gestión de vehiculos</h1>
-    <div class="container" aria-label="Contenido principal de la página">
-      <div class="row row-cols-1 row-cols-lg-3 g-4">
-        <% for (let i=0; i < vehiculos.length; i++) { %>
-          <div class="col">
-            <div class="card h-100">
-              <img src="<%= vehiculos[i].imagen %>" class="card-img-top img-fluid"
-                  alt="<%= vehiculos[i].nombre %>" style="height: 200px; object-fit: cover;">
-              <div class="card-body">
-                <!-- Detalles del vehículo -->
-                <form class="list-unstyled" action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST" id="formVehiculo_<%= vehiculos[i].matricula %>">
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Matrícula:</strong>
-                    <%= vehiculos[i].matricula %>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Marca:</strong>
-                    <input class="form-control" type="text" name="marca" value="<%= vehiculos[i].marca %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Modelo:</strong>
-                    <input class="form-control" type="text" name="modelo" value="<%= vehiculos[i].modelo %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>fecha:</strong>
-                    <input type="datetime-local" class="form-control" name="fecha" id="inicioFecha" aria-required="true" required
-                    aria-label="Seleccionar fecha y hora de inicio" value="<%= vehiculos[i].fecha.toISOString().slice(0,16) %>"/>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Plazas:</strong>
-                    <input class="form-control" type="text" name="plazas" value="<%= vehiculos[i].plazas %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Autonomía:</strong>
-                    <input class="form-control" type="text" name="autonomia" value="<%= vehiculos[i].autonomia %>"> 
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Color:</strong>
-                    <input class="form-control" type="text" name="color" value="<%= vehiculos[i].color %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Imagen URL:</strong>
-                    <input class="form-control" type="text" name="imagen" value="<%= vehiculos[i].imagen %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Estado:</strong>
-                    <input class="form-control" type="text" name="estado" value="<%= vehiculos[i].plazas %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong >Concesionario:</strong>
-                    <input class="form-control" type="text" name="id_concesionario" value="<%= vehiculos[i].id_concesionario %>">
-                  </div>
-                </form>
-                <div class="d-flex justify-content-center mt-3">
-                  <button class="btn btn-secondary" form="formVehiculo_<%= vehiculos[i].matricula %>">
-                    Modificar
-                  </button>
-                  <form action="/vehiculos/<%= vehiculos[i].matricula %>/delete" method="POST" class="ms-2">
-                      <button type="submit" class="btn btn-danger">
-                          Eliminar
-                      </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    </div>
-
-    <!-- Lista de usuarios -->
-    <h1 class="mt-5" id="gestionUsuarios">Gestión de usuarios</h1>
-    <div class="container" aria-label="Contenido principal de la página">
-      <div class="row row-cols-1 row-cols-lg-3 g-4">
-        <% for (let i=0; i < usuarios.length; i++) { %>
-          <div class="col">
-            <div class="card h-100">
-              <div class="card-body">
-                <!-- Detalles del vehículo -->
-                <form class="list-unstyled" action="/usuarios/<%= usuarios[i].id %>/update" method="POST" id="formUsuarios_<%= usuarios[i].id %>">
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>id:</strong>
-                    <%= usuarios[i].id %>
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Nombre:</strong>
-                    <input class="form-control" type="text" name="name" value="<%= usuarios[i].name %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Correo:</strong>
-                    <input class="form-control" type="text" name="mail" value="<%= usuarios[i].mail %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Rol:</strong>
-                    <input class="form-control" type="text" name="rol" value="<%= usuarios[i].rol %>">
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Telefono:</strong>
-                    <input class="form-control" type="text" name="telefono" value="<%= usuarios[i].telefono %>"> 
-                  </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <strong>Concesionario:</strong>
-                    <input class="form-control" type="text" name="id_concesionario" value="<%= usuarios[i].id_concesionario %>">
-                  </div>
-                </form>
-                <div class="d-flex justify-content-center mt-3">
-                  <button class="btn btn-secondary" form="formUsuarios_<%= usuarios[i].id %>">
-                    Modificar
-                  </button>
-                  <form action="/usuarios/<%= usuarios[i].id %>/delete" method="POST" class="ms-2">
-                      <button type="submit" class="btn btn-danger">
-                          Eliminar
-                      </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <%- include("partials/footer") %>
-
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="/js/client.js"></script>
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/client.js"></script>
 
 </html>
