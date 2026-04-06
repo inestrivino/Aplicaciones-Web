@@ -27,12 +27,13 @@ CREATE TABLE `concesionarios` (
   `ciudad` varchar(50) NOT NULL,
   `direccion` varchar(50) NOT NULL,
   `telefono` int(11) NOT NULL,
+  `reservas` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `reservas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mail` varchar(50) NOT NULL,
+  `id_usuario` varchar(50) NOT NULL,
   `matricula` varchar(50) NOT NULL,
   `fecha_ini` date NOT NULL,
   `fecha_fin` date NOT NULL,

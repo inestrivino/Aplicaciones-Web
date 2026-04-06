@@ -8,21 +8,21 @@ class ReservasDb {
         );
     }
 
-    getMisReservas(userMail) {
+    getMisReservas(id_usuario) {
         return pool.query(
             `SELECT r.*, 
-                    v.matricula AS vehiculo_matricula,
-                    v.marca AS vehiculo_marca,
-                    v.modelo AS vehiculo_modelo,
-                    v.plazas AS vehiculo_plazas,
-                    v.autonomia AS vehiculo_autonomia,
-                    v.color AS vehiculo_color,
-                    v.imagen AS vehiculo_imagen,
-                    v.id_concesionario AS vehiculo_concesionario
-             FROM reservas r
-             JOIN vehiculos v ON r.matricula = v.matricula
-             WHERE r.mail = ?`,
-            [userMail]
+                v.matricula AS vehiculo_matricula,
+                v.marca AS vehiculo_marca,
+                v.modelo AS vehiculo_modelo,
+                v.plazas AS vehiculo_plazas,
+                v.autonomia AS vehiculo_autonomia,
+                v.color AS vehiculo_color,
+                v.imagen AS vehiculo_imagen,
+                v.id_concesionario AS vehiculo_concesionario
+         FROM reservas r
+         JOIN vehiculos v ON r.matricula = v.matricula
+         WHERE r.id_usuario = ?`,
+            [id_usuario]
         );
     }
 }

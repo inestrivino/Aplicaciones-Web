@@ -5,12 +5,53 @@ const concesionariosDb = require("../db/concesionariosDb.js");
 const fs = require("fs");
 const path = require("path");
 
+router.get("/", async function (req, res, next) {
+    try {
+        const user = req.session.user;
+
+        // Revisar si hay resultados filtrados en sesión
+        let vehiculos = req.session.vehiculosFiltrados;
+        let filters = req.session.filtrosAplicados || {};
+
+        // Si no hay vehículos filtrados, traer todos
+        if (!vehiculos) {
+            const [todosVehiculos] = await vehiculosDb.getVehiculosTodos();
+            vehiculos = todosVehiculos;
+        }
+
+        // Limpiar la sesión para la siguiente carga
+        delete req.session.vehiculosFiltrados;
+        delete req.session.filtrosAplicados;
+
+        // Obtener los selects para filtros
+        const [concesionarios] = await concesionariosDb.getConcesionarios();
+        const [marcas] = await vehiculosDb.getMarcas();
+        const [colores] = await vehiculosDb.getColores();
+        const [ciudades] = await concesionariosDb.getCiudades();
+        const [plazas] = await vehiculosDb.getPlazas();
+
+        res.render("vehiculos", {
+            vehiculos,
+            concesionarios,
+            marcas,
+            colores,
+            filters,
+            user,
+            ciudades,
+            plazas
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
 const matriculaRegex = /^\d{4}[A-Z]{3}$/;
 
 // Crea un vehículo
 router.post("/create", async function (req, res) {
     try {
-        const { matricula, marca, modelo, plazas, autonomia, color, imagen, id_concesionario}  = req.body;
+        const { matricula, marca, modelo, plazas, autonomia, color, imagen, id_concesionario } = req.body;
 
         // Validaciones
         if (!matricula || !matriculaRegex.test(matricula)) throw new Error("Matrícula inválida. Debe ser 4 números y 3 letras mayúsculas (1234ABC).");
@@ -98,6 +139,33 @@ router.post("/:matricula/delete", async function (req, res) {
     } catch (error) {
         req.session.errorMessage = error.message;
         res.redirect("/admin");
+    }
+});
+
+router.get("/filterVehiculos", async function (req, res, next) {
+    try {
+        // Obtener los filtros enviados desde el formulario
+        const filters = {
+            marcaSelect: req.query.marcaSelect || "",
+            colorSelect: req.query.colorSelect || "",
+            concesionarioSelect: req.query.concesionarioSelect || "",
+            autonomiaSelect: req.query.autonomiaSelect || "",
+            ciudadSelect : req.query.ciudadSelect || "",
+            plazasSelect: req.query.plazasSelect || ""
+        };
+
+        // Llamar al método de la base de datos para filtrar vehículos
+        const [vehiculos] = await vehiculosDb.filterVehiculos(filters);
+
+        // Guardar los resultados y filtros en sesión para usar en GET /
+        req.session.vehiculosFiltrados = vehiculos;
+        req.session.filtrosAplicados = filters;
+
+        // Redirigir al GET principal de vehículos
+        res.redirect("/vehiculos/");
+
+    } catch (error) {
+        next(error);
     }
 });
 

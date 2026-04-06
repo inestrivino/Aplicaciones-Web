@@ -32,6 +32,13 @@ class ConcesionariosDb {
         );
     }
 
+    //devuelve la lista de ciudades
+    async getCiudades() {
+        return await pool.query(
+            'SELECT DISTINCT ciudad FROM concesionarios'
+        );
+    }
+
     //devuelve un concesionario por su id
     async getConcesionarioById(id) {
         return await pool.query(

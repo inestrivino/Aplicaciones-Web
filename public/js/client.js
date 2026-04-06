@@ -434,7 +434,6 @@ function toggleFormulario() {
     });
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
     inicializarAtajosTeclado();
     inicializarLanguageToggle();

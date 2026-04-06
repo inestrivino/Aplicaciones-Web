@@ -57,6 +57,12 @@ class VehiculosDb {
         );
     }
 
+    async getPlazas() {
+        return await pool.query(
+            'SELECT DISTINCT plazas FROM vehiculos'
+        );
+    }
+
     //devuelve un vehiculo por su matricula
     async getVehiculoByMatricula(matricula) {
         return await pool.query(
@@ -92,6 +98,16 @@ class VehiculosDb {
             else if (value === 400) query += " AND autonomia BETWEEN 400 AND 499";
             else if (value === 300) query += " AND autonomia BETWEEN 300 AND 399";
             else if (value === 200) query += " AND autonomia < 300";
+        }
+
+        if (filters.ciudadSelect) {
+            query += " AND c.ciudad = ?";
+            params.push(filters.ciudadSelect);
+        }
+
+        if (filters.plazasSelect) {
+            query += " AND plazas = ?";
+            params.push(filters.plazasSelect);
         }
 
         query += " ORDER BY v.id_concesionario, v.matricula;";
