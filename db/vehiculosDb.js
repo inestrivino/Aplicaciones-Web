@@ -5,7 +5,7 @@ class VehiculosDb {
     async createVehiculo(vehiculo) {
         return await pool.query(
             'INSERT INTO vehiculos(matricula, marca, modelo, plazas, autonomia, color, imagen, estado, id_concesionario) VALUES (?, ?, ?, ?, ?, ?, ?, "disponible", ?)',
-            [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario]
+            [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagenCompleto, vehiculo.id_concesionario]
         );
     }
 
@@ -14,7 +14,7 @@ class VehiculosDb {
         return pool.query(
             'UPDATE vehiculos SET marca = ?, modelo = ?, fecha = ?, plazas = ?, autonomia = ?, color = ?, imagen = ?, estado = "disponible", id_concesionario = ? ' +
             'WHERE matricula = ?',
-            [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagen, vehiculo.id_concesionario, matricula]
+            [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagenCompleto, vehiculo.id_concesionario, matricula]
         );
     }
 

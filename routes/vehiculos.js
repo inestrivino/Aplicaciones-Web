@@ -70,8 +70,12 @@ router.post("/create", async function (req, res) {
         const imgPath = path.join(__dirname, "../public/img/vehiculos", imagen);
         if (!fs.existsSync(imgPath)) throw new Error("La imagen seleccionada no existe.");
 
+        let imagenCompleto = "/img/vehiculos/" + imagen; 
+
+        console.log(imagenCompleto)
+
         // Estado siempre disponible al crear
-        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, estado: "disponible", id_concesionario, imagen };
+        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, estado: "disponible", id_concesionario, imagenCompleto };
 
         await vehiculosDb.createVehiculo(vehiculo);
         req.session.responseMessage = "Vehículo creado con éxito";
@@ -109,8 +113,9 @@ router.post("/:matricula/update", async function (req, res) {
         // Validar imagen
         const imgPath = path.join(__dirname, "../public/img/vehiculos", imagen);
         if (!fs.existsSync(imgPath)) throw new Error("La imagen seleccionada no existe.");
+        let imagenCompleto = "/img/vehiculos/" + imagen; 
 
-        const vehiculo = { marca, modelo, fecha, plazas, autonomia, color, estado, id_concesionario, imagen };
+        const vehiculo = { marca, modelo, fecha, plazas, autonomia, color, estado, id_concesionario, imagenCompleto };
         await vehiculosDb.updateVehiculo(matricula, vehiculo);
 
         req.session.responseMessage = "Vehículo modificado con éxito";

@@ -361,10 +361,11 @@
                               <select class="form-select form-select-sm" name="imagen"
                                 form="form<%= vehiculos[i].matricula %>">
                                 <% imagenesVehiculos.forEach(img=> { %>
-                                  <option value="<%= img %>" <%=vehiculos[i].imagen===img ? 'selected' : '' %>><%= img
-                                      %>
-                                  </option>
-                                  <% }) %>
+                                    <% const imagenBD=vehiculos[i].imagen.split('/').pop().trim(); %>
+                                      <option value="<%= img %>" <%=imagenBD===img.trim() ? 'selected' : '' %>>
+                                        <%= img %>
+                                      </option>
+                                      <% }) %>
                               </select>
                             </td>
                             <td>
