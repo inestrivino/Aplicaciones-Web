@@ -50,6 +50,10 @@
                   <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios"
                     type="button" role="tab">Usuarios</button>
                 </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="estadisticas-tab" data-bs-toggle="tab" data-bs-target="#estadisticas"
+                    type="button" role="tab">Estadísticas</button>
+                </li>
               </ul>
 
               <div class="tab-content" id="myTabContent">
@@ -80,14 +84,14 @@
                                     <% } %>
                               </div>
                               <% } %>
-                            <% if (pendientesCon.length !==0) { %>
-                          <div>
-                            <strong>Pendientes</strong> <br>
-                            <% for (nombre of pendientesCon) { %>
-                              <%=nombre%> <br>
-                                <% } %>
-                          </div>
-                          <% } %>
+                                <% if (pendientesCon.length !==0) { %>
+                                  <div>
+                                    <strong>Pendientes</strong> <br>
+                                    <% for (nombre of pendientesCon) { %>
+                                      <%=nombre%> <br>
+                                        <% } %>
+                                  </div>
+                                  <% } %>
                       </div>
 
                       <h2 class="mt-3">Resultados de la inserción de vehículos:</h2>
@@ -451,6 +455,51 @@
                       </tbody>
                     </table>
                   </div>
+                </div>
+
+                <div class="tab-pane fade" id="estadisticas" role="tabpanel">
+
+                  <h3 class="mt-3">Concesionarios con más reservas</h3>
+                  <% if (topConcesionarios && topConcesionarios.length> 0) { %>
+                    <ul class="list-group mb-4">
+                      <% topConcesionarios.forEach(c=> { %>
+                        <li class="list-group-item d-flex justify-content-between">
+                          <span><strong>
+                              <%= c.nombre %>
+                            </strong></span>
+                          <span class="badge bg-primary">
+                            <%= c.total_reservas %> reservas
+                          </span>
+                        </li>
+                        <% }) %>
+                    </ul>
+                    <% } else { %>
+                      <p>No hay datos disponibles.</p>
+                      <% } %>
+
+
+                        <h3 class="mt-3">Vehículos con más reservas</h3>
+                        <% if (topVehiculos && topVehiculos.length> 0) { %>
+                          <ul class="list-group">
+                            <% topVehiculos.forEach(v=> { %>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>
+                                  <strong>
+                                    <%= v.marca %>
+                                      <%= v.modelo %>
+                                  </strong>
+                                  (<%= v.matricula %>)
+                                </span>
+                                <span class="badge bg-success">
+                                  <%= v.total_reservas %> reservas
+                                </span>
+                              </li>
+                              <% }) %>
+                          </ul>
+                          <% } else { %>
+                            <p>No hay datos disponibles.</p>
+                            <% } %>
+
                 </div>
               </div>
     </main>

@@ -7,6 +7,7 @@ const upload = multer({ dest: 'uploads/' }); //carpeta temporal para subir archi
 const vechiculosDb = require("../db/vehiculosDb.js"); //db
 const concesionariosDb = require("../db/concesionariosDb.js"); //db
 const usuariosDb = require("../db/userDb.js") //db
+const reservasDb = require("../db/reservasDb.js") //db
 
 const fs = require("fs");
 const path = require("path");
@@ -40,6 +41,8 @@ router.get("/", async function (request, response, next) {
             concesionariosDb.getConcesionarios(),
             usuariosDb.getUsers()
         ]);
+        const [topConcesionarios] = await reservasDb.getTopConcesionarios();
+        const [topVehiculos] = await reservasDb.getTopVehiculos();
 
         const [rowsVehiculos] = vehiculos;
         const [rowsConcesionarios] = concesionarios;
@@ -67,6 +70,8 @@ router.get("/", async function (request, response, next) {
             vehiculos: rowsVehiculos,
             concesionarios: rowsConcesionarios,
             usuarios: rowsUsuarios,
+            topConcesionarios,
+            topVehiculos,
 
             errorMessage,
             responseMessage,

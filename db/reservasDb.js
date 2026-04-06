@@ -25,6 +25,31 @@ class ReservasDb {
             [id_usuario]
         );
     }
+
+    //decvuelve los vehículos con más reservas
+    async getTopVehiculos() {
+        return pool.query(`
+        SELECT v.matricula, v.marca, v.modelo, COUNT(*) AS total_reservas
+        FROM reservas r
+        JOIN vehiculos v ON r.matricula = v.matricula
+        GROUP BY v.matricula
+        ORDER BY total_reservas DESC
+        LIMIT 5
+    `);
+    }
+
+    //devuelve los concesionarios con más reservas
+    async getTopConcesionarios() {
+        return pool.query(`
+        SELECT c.nombre, COUNT(*) AS total_reservas
+        FROM reservas r
+        JOIN vehiculos v ON r.matricula = v.matricula
+        JOIN concesionarios c ON v.id_concesionario = c.id
+        GROUP BY c.id
+        ORDER BY total_reservas DESC
+        LIMIT 5
+    `);
+    }
 }
 
 module.exports = new ReservasDb();
