@@ -80,9 +80,6 @@ app.use("/usuarios", require("./routes/usuarios"))
 app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
 
-//RUTAS API
-app.use("/api/vehiculos", require("./routes/api/vehiculos.api"));
-
 //ERRORES
 app.use(function (err, request, response, next) {
     console.error(err.stack);

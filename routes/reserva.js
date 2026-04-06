@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const reservasDb = require("../db/reservasDb.js");
 const vehiculosDb = require("../db/vehiculosDb.js");
+const userDb = require("../db/userDb.js");
 
 router.get("/", async function (request, response) {
     const vehiculosData = await vehiculosDb.getVehiculos();
@@ -18,11 +19,24 @@ router.get("/", async function (request, response) {
 });
 
 
-router.post("/", function (request, response) {
-    
-    let aux = request.body;
-    aux.mail = request.session.user.mail;
-    aux.condiciones = undefined;
+router.post("/", async function (request, response) {
+
+    const mail = request.session.user.mail;
+    const [rows] = await userDb.getUserByEmail(mail);
+    if (!rows || rows.length === 0) {
+        throw new Error("Usuario no encontrado en la base de datos");
+    }
+    const usuario = rows[0];
+    const id_usuario = usuario.id;
+
+    const aux = {
+        id: id_usuario,
+        matricula: request.body.matricula,
+        fecha_ini: request.body.fecha_ini,
+        fecha_fin: request.body.fecha_fin,
+        kilometros: request.body.kilometros,
+        incidencias: request.body.incidencias
+    };
     reservasDb.createReserva(aux).then(async () => {
         const vehiculosData = await vehiculosDb.getVehiculos();
         const marcasData = await vehiculosDb.getMarcas();
