@@ -124,31 +124,61 @@ async function introducirVehiculos(vehiculos) {
     let pendientes = [];
     let pendientesCompleto = [];
     let errores = [];
+
     for (let vehiculo of vehiculos) {
         try {
-            resCon = await concesionariosDb.getConcesionarioById(vehiculo.id_concesionario);
-            if (resCon[0].length === 0) {
-                errores.push(vehiculo.matricula + " CONCESIONARIO_NO_EXISTE");
+            // 1. Validar que todos los campos obligatorios existan y no sean NULL
+            const camposObligatorios = [
+                "matricula", "marca", "modelo", "plazas", "autonomia",
+                "color", "imagen", "estado", "id_concesionario"
+            ];
+            for (const campo of camposObligatorios) {
+                if (!vehiculo[campo]) {
+                    throw new Error(`CAMPO_FALTANTE_${campo.toUpperCase()}`);
+                }
+            }
+
+            // 2. Validar que el concesionario exista
+            const resCon = await concesionariosDb.getConcesionarioById(vehiculo.id_concesionario);
+            if (!resCon[0] || resCon[0].length === 0) {
+                errores.push(`${vehiculo.matricula} CONCESIONARIO_NO_EXISTE`);
                 continue;
             }
-            res = await vechiculosDb.createVehiculo(vehiculo);
+
+            // 3. Validar y asignar valor por defecto a 'imagen' si es necesario
+            vehiculo.imagenCompleto = vehiculo.imagen;
+            if (!vehiculo.imagenCompleto || vehiculo.imagenCompleto.trim() === "")
+                vehiculo.imagenCompleto = "/img/vehiculos/byd_seal1.png"; // Ruta por defecto
+
+            // 4. Convertir la fecha a DATETIME si es necesario
+            if (vehiculo.fecha && typeof vehiculo.fecha === "string") {
+                // Si la fecha está en formato "YYYY-MM-DD", añadir "00:00:00"
+                if (!vehiculo.fecha.includes(" ")) {
+                    vehiculo.fecha = `${vehiculo.fecha} 00:00:00`;
+                }
+            } else {
+                // Si no hay fecha, usar la fecha actual
+                vehiculo.fecha = new Date().toISOString().slice(0, 19).replace("T", " ");
+            }
+
+            // 5. Intentar insertar el vehículo
+            const res = await vechiculosDb.createVehiculo(vehiculo);
+            const [rows] = res;
+            if (rows.affectedRows > 0) {
+                insertados.push(vehiculo.matricula);
+            } else {
+                errores.push(`${vehiculo.matricula} ERROR_INSERCION`);
+            }
         } catch (error) {
-            if (error.code === 'ER_DUP_ENTRY') {
+            if (error.message.includes("Duplicate")) {
                 pendientes.push(vehiculo.matricula);
                 pendientesCompleto.push(vehiculo);
-                continue;
+            } else {
+                errores.push(`${vehiculo.matricula} ${error.message}`);
             }
-            errores.push(vehiculo.matricula + " " + error.code);
-            continue;
-        }
-        [rows] = res;
-        if (rows.affectedRows > 0) {
-            insertados.push(vehiculo.matricula);
-        }
-        else {
-            errores.push(vehiculo.matricula);
         }
     }
+
     return [insertados, pendientes, pendientesCompleto, errores];
 }
 

@@ -432,7 +432,7 @@
                               <select class="form-select form-select-sm" name="id_concesionario"
                                 form="formUsuarios_<%= usuarios[i].id %>">
                                 <% concesionarios.forEach(c=> { %>
-                                  <option value="<%= c.id %>" <%=c.id===vehiculos[i].id_concesionario ? 'selected' : ''
+                                  <option value="<%= c.id %>" <%=c.id===usuarios[i].id_concesionario ? 'selected' : ''
                                     %>>
                                     <%= c.nombre %> (<%= c.ciudad %>)
                                   </option>

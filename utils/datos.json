@@ -5,35 +5,35 @@
             "nombre": "Concesionario Central",
             "ciudad": "Ciudad City",
             "direccion": "Calle Random 123",
-            "telefono": "123456789"
+            "telefono": 123456789
         },
         {
             "id": 2,
             "nombre": "AutoPlus Norte",
             "ciudad": "Ciudad Norte",
             "direccion": "Avenida Norte 45",
-            "telefono": "987654321"
+            "telefono": 987654321
         },
         {
             "id": 3,
             "nombre": "Motorama Sur",
             "ciudad": "Ciudad Sur",
             "direccion": "Boulevard Sur 78",
-            "telefono": "555123456"
+            "telefono": 555123456
         },
         {
             "id": 4,
             "nombre": "Ruedas del Este",
             "ciudad": "Ciudad Este",
             "direccion": "Calle Este 12",
-            "telefono": "444987654"
+            "telefono": 444987654
         },
         {
             "id": 5,
             "nombre": "Garage Oeste",
             "ciudad": "Ciudad Oeste",
             "direccion": "Avenida Oeste 99",
-            "telefono": "333567890"
+            "telefono": 333567890
         }
     ],
     "vehiculos": [
@@ -41,7 +41,7 @@
             "matricula": "1234ABC",
             "marca": "Tesla",
             "modelo": "Model 67",
-            "fecha": "2022-05-10",
+            "fecha": "2022-05-10 00:00:00",
             "plazas": 5,
             "autonomia": 450,
             "color": "Blanco",
@@ -53,7 +53,7 @@
             "matricula": "12345ABC",
             "marca": "Tesla",
             "modelo": "Tesla model 777",
-            "fecha": "2022-05-10",
+            "fecha": "2022-05-10 00:00:00",
             "plazas": 5,
             "autonomia": 450,
             "color": "Blanco",
@@ -65,7 +65,7 @@
             "matricula": "5678DEF",
             "marca": "Renault",
             "modelo": "Zoe",
-            "fecha": "2021-11-03",
+            "fecha": "2021-11-03 00:00:00",
             "plazas": 5,
             "autonomia": 395,
             "color": "Azul",
@@ -77,7 +77,7 @@
             "matricula": "9012GHI",
             "marca": "Nissan",
             "modelo": "Leaf",
-            "fecha": "2020-03-22",
+            "fecha": "2020-03-22 00:00:00",
             "plazas": 5,
             "autonomia": 270,
             "color": "Gris",
@@ -89,7 +89,7 @@
             "matricula": "3456JKL",
             "marca": "BYD",
             "modelo": "Seal",
-            "fecha": "2023-01-18",
+            "fecha": "2023-01-18 00:00:00",
             "plazas": 5,
             "autonomia": 520,
             "color": "Rojo",

@@ -49,7 +49,7 @@ CREATE TABLE `users` (
   `password` varchar(100) NOT NULL,
   `rol` varchar(10) NOT NULL,
   `telefono` int(11) DEFAULT NULL,
-  `id_concesionario` int(11) DEFAULT NULL,
+  `id_concesionario` int(11) NOT NULL,
   `accesibilidad` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mail` (`mail`)
