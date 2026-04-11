@@ -18,23 +18,24 @@ class ReservasDb {
 
     getMisReservas(id_usuario) {
         return pool.query(
-            `SELECT r.*, 
-                v.matricula AS vehiculo_matricula,
-                v.marca AS vehiculo_marca,
-                v.modelo AS vehiculo_modelo,
-                v.plazas AS vehiculo_plazas,
-                v.autonomia AS vehiculo_autonomia,
-                v.color AS vehiculo_color,
-                v.imagen AS vehiculo_imagen,
-                v.id_concesionario AS vehiculo_concesionario
-         FROM reservas r
-         JOIN vehiculos v ON r.matricula = v.matricula
-         WHERE r.id_usuario = ?`,
+            `SELECT r.*,
+    v.matricula AS vehiculo_matricula,
+    v.marca AS vehiculo_marca,
+    v.modelo AS vehiculo_modelo,
+    v.plazas AS vehiculo_plazas,
+    v.autonomia AS vehiculo_autonomia,
+    v.color AS vehiculo_color,
+    v.imagen AS vehiculo_imagen,
+    c.nombre AS concesionario_nombre
+FROM reservas r
+JOIN vehiculos v ON r.matricula = v.matricula
+JOIN concesionarios c ON v.id_concesionario = c.id
+WHERE r.id_usuario = ?`,
             [id_usuario]
         );
     }
 
-    //decvuelve los vehículos con más reservas
+    //devuelve los vehículos con más reservas
     async getTopVehiculos() {
         return pool.query(`
         SELECT v.matricula, v.marca, v.modelo, COUNT(*) AS total_reservas
