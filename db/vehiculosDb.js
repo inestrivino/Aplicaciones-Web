@@ -4,15 +4,24 @@ class VehiculosDb {
     //mete un nuevo vehiculo
     async createVehiculo(vehiculo) {
         return await pool.query(
-            'INSERT INTO vehiculos(matricula, marca, modelo, plazas, autonomia, color, imagen, estado, id_concesionario) VALUES (?, ?, ?, ?, ?, ?, ?, "disponible", ?)',
-            [vehiculo.matricula, vehiculo.marca, vehiculo.modelo, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagenCompleto, vehiculo.id_concesionario]
+            'INSERT INTO vehiculos (matricula, marca, modelo, fecha, plazas, autonomia, color, imagen, id_concesionario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                vehiculo.matricula,
+                vehiculo.marca,
+                vehiculo.modelo,
+                vehiculo.fecha,
+                vehiculo.plazas,
+                vehiculo.autonomia,
+                vehiculo.color,
+                vehiculo.imagenCompleto,
+                vehiculo.id_concesionario
+            ]
         );
     }
-
     //actualiza un vehiculo
     updateVehiculo(matricula, vehiculo) {
         return pool.query(
-            'UPDATE vehiculos SET marca = ?, modelo = ?, fecha = ?, plazas = ?, autonomia = ?, color = ?, imagen = ?, estado = "disponible", id_concesionario = ? ' +
+            'UPDATE vehiculos SET marca = ?, modelo = ?, fecha = ?, plazas = ?, autonomia = ?, color = ?, imagen = ?, id_concesionario = ? ' +
             'WHERE matricula = ?',
             [vehiculo.marca, vehiculo.modelo, vehiculo.fecha, vehiculo.plazas, vehiculo.autonomia, vehiculo.color, vehiculo.imagenCompleto, vehiculo.id_concesionario, matricula]
         );
@@ -29,19 +38,7 @@ class VehiculosDb {
     //devuelve la lista de vehiculos
     async getVehiculos() {
         return await pool.query(
-            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible' ORDER BY v.id_concesionario, v.matricula"
-        );
-    }
-    async getVehiculosTodos() {
-        return await pool.query(
-            "SELECT * FROM vehiculos ORDER BY matricula"
-        );
-    }
-
-    cambiarEstado(matricula, estado) {
-        return pool.query(
-            'UPDATE vehiculos SET estado = ? WHERE matricula = ?',
-            [estado, matricula]
+            "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id ORDER BY v.matricula"
         );
     }
 
@@ -72,46 +69,57 @@ class VehiculosDb {
     }
 
     filterVehiculos(filters) {
-        let query = "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id WHERE v.estado = 'disponible'";
+        let query = "SELECT v.*, c.nombre AS concesionario_nombre FROM vehiculos v LEFT JOIN concesionarios c ON v.id_concesionario = c.id";
         let params = [];
+        let whereAdded = false;
 
+        const addCondition = (condition, param) => {
+            if (!whereAdded) {
+                query += " WHERE " + condition;
+                whereAdded = true;
+            } else {
+                query += " AND " + condition;
+            }
+            if (param !== undefined) {
+                params.push(param);
+            }
+        };
+
+        // Aplicar filtros
         if (filters.marcaSelect) {
-            query += " AND marca = ?";
-            params.push(filters.marcaSelect);
+            addCondition("marca = ?", filters.marcaSelect);
         }
 
         if (filters.colorSelect) {
-            query += " AND color = ?";
-            params.push(filters.colorSelect);
+            addCondition("color = ?", filters.colorSelect);
         }
 
         if (filters.concesionarioSelect) {
-            query += " AND id_concesionario = ?";
-            params.push(filters.concesionarioSelect);
+            addCondition("id_concesionario = ?", filters.concesionarioSelect);
         }
 
         if (filters.autonomiaSelect) {
-            // autonomía enviada será: 200, 300, 400, 500
             const value = parseInt(filters.autonomiaSelect);
-
-            if (value === 500) query += " AND autonomia >= 500";
-            else if (value === 400) query += " AND autonomia BETWEEN 400 AND 499";
-            else if (value === 300) query += " AND autonomia BETWEEN 300 AND 399";
-            else if (value === 200) query += " AND autonomia < 300";
+            if (value === 500) {
+                addCondition("autonomia >= 500");
+            } else if (value === 400) {
+                addCondition("autonomia BETWEEN 400 AND 499");
+            } else if (value === 300) {
+                addCondition("autonomia BETWEEN 300 AND 399");
+            } else if (value === 200) {
+                addCondition("autonomia < 300");
+            }
         }
 
         if (filters.ciudadSelect) {
-            query += " AND c.ciudad = ?";
-            params.push(filters.ciudadSelect);
+            addCondition("c.ciudad = ?", filters.ciudadSelect);
         }
 
         if (filters.plazasSelect) {
-            query += " AND plazas = ?";
-            params.push(filters.plazasSelect);
+            addCondition("plazas = ?", filters.plazasSelect);
         }
 
-        query += " ORDER BY v.id_concesionario, v.matricula;";
-
+        query += " ORDER BY v.matricula;";
         return pool.query(query, params);
     }
 

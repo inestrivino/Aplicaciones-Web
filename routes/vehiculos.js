@@ -15,7 +15,7 @@ router.get("/", async function (req, res, next) {
 
         // Si no hay vehículos filtrados, traer todos
         if (!vehiculos) {
-            const [todosVehiculos] = await vehiculosDb.getVehiculosTodos();
+            const [todosVehiculos] = await vehiculosDb.getVehiculos();
             vehiculos = todosVehiculos;
         }
 

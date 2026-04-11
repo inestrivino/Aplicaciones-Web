@@ -46,7 +46,6 @@
             "autonomia": 450,
             "color": "Blanco",
             "imagen": "/img/vehiculos/byd_seal1.png",
-            "estado": "disponible",
             "id_concesionario": 1
         },
         {
@@ -58,7 +57,6 @@
             "autonomia": 450,
             "color": "Blanco",
             "imagen": "/img/vehiculos/byd_seal1.png",
-            "estado": "disponible",
             "id_concesionario": 2
         },
         {
@@ -70,7 +68,6 @@
             "autonomia": 395,
             "color": "Azul",
             "imagen": "/img/vehiculos/byd_seal2.png",
-            "estado": "disponible",
             "id_concesionario": 2
         },
         {
@@ -82,7 +79,6 @@
             "autonomia": 270,
             "color": "Gris",
             "imagen": "/img/vehiculos/byd_seal3.png",
-            "estado": "disponible",
             "id_concesionario": 1
         },
         {
@@ -94,7 +90,6 @@
             "autonomia": 520,
             "color": "Rojo",
             "imagen": "/img/vehiculos/byd_seal3.png",
-            "estado": "disponible",
             "id_concesionario": 3
         }
     ]

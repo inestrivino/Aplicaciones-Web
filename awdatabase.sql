@@ -65,7 +65,6 @@ CREATE TABLE `vehiculos` (
   `autonomia` int(11) NOT NULL,
   `color` varchar(50) NOT NULL,
   `imagen` varchar(50) NOT NULL,
-  `estado` varchar(20) NOT NULL,
   `id_concesionario` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `matricula` (`matricula`)

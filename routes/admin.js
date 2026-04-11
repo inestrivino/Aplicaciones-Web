@@ -37,7 +37,7 @@ router.get("/", async function (request, response, next) {
 
         // Obtener datos de DB
         const [vehiculos, concesionarios, usuarios] = await Promise.all([
-            vechiculosDb.getVehiculosTodos(),
+            vechiculosDb.getVehiculos(),
             concesionariosDb.getConcesionarios(),
             usuariosDb.getUsers()
         ]);
@@ -130,7 +130,7 @@ async function introducirVehiculos(vehiculos) {
             // 1. Validar que todos los campos obligatorios existan y no sean NULL
             const camposObligatorios = [
                 "matricula", "marca", "modelo", "plazas", "autonomia",
-                "color", "imagen", "estado", "id_concesionario"
+                "color", "imagen", "id_concesionario"
             ];
             for (const campo of camposObligatorios) {
                 if (!vehiculo[campo]) {

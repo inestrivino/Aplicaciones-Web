@@ -41,7 +41,6 @@ router.post("/", async function (request, response) {
         const vehiculosData = await vehiculosDb.getVehiculos();
         const marcasData = await vehiculosDb.getMarcas();
         const coloresData = await vehiculosDb.getColores();
-        vehiculosDb.cambiarEstado(request.body.matricula, "reservado");
 
         response.render("reserva", {
             mensaje: "Reserva realizada con éxito",
