@@ -24,35 +24,20 @@
   <!-- NAVBAR -->
   <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
 
-  <% if (mensaje) { %>
-  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="usuarioModalLabel">Mensaje</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <p>
-            <%= mensaje %>
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const modal = new bootstrap.Modal(document.getElementById("errorModal"));
-      modal.show();
-    });
-  </script>
-  <% } %>
-
   <main aria-label="Contenido principal de la página">
     <h1>Reservar vehículos</h1>
+    
+    <% if (typeof errorMessage !=='undefined' ) { %>
+        <div class="alert alert-danger" role="alert">
+          <%= errorMessage %>
+        </div>
+        <% } %>
+          <% if (typeof responseMessage !=='undefined' ) { %>
+            <div class="alert alert-success" role="alert">
+              <%= responseMessage %>
+            </div>
+            <% } %>
+      
     <form class="needs-validation" aria-label="Formulario de reserva de vehículos" action="/reserva" method ="POST">
       <fieldset aria-label="Detalles de la reserva">
         <legend>Detalles de la reserva</legend>
