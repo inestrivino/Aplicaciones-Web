@@ -151,14 +151,8 @@ async function introducirVehiculos(vehiculos) {
                 vehiculo.imagenCompleto = "/img/vehiculos/byd_seal1.png"; // Ruta por defecto
 
             // 4. Convertir la fecha a DATETIME si es necesario
-            if (vehiculo.fecha && typeof vehiculo.fecha === "string") {
-                // Si la fecha está en formato "YYYY-MM-DD", añadir "00:00:00"
-                if (!vehiculo.fecha.includes(" ")) {
-                    vehiculo.fecha = `${vehiculo.fecha} 00:00:00`;
-                }
-            } else {
-                // Si no hay fecha, usar la fecha actual
-                vehiculo.fecha = new Date().toISOString().slice(0, 19).replace("T", " ");
+            if (!vehiculo.fecha) {
+                vehiculo.fecha = new Date().toISOString().split("T")[0];
             }
 
             // 5. Intentar insertar el vehículo

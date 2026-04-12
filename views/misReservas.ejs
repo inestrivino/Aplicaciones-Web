@@ -23,45 +23,159 @@
 <body>
   <!-- NAVBAR -->
   <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
-
     <main aria-label="Contenido principal">
       <h1>Mis Reservas de Vehículos</h1>
 
-      <!-- Contenedor para las reservas -->
-      <div class="reservation-list row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="reservationList">
-        <% if (reservas && reservas.length> 0) { %>
-          <% reservas.forEach(r=> { %>
-            <div class="col">
-              <div class="card h-100">
-                <img src="<%= r.vehiculo_imagen %>" class="card-img-top img-fluid" alt="<%= r.vehiculo_modelo %>"
-                  style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <%= r.vehiculo_modelo %>
-                  </h5>
-                  <h6>
-                    <%= r.fecha_ini.toLocaleDateString('es-ES') %> - <%= r.fecha_fin.toLocaleDateString('es-ES') %>
-                  </h6>
-                  <ul class="list-unstyled">
-                    <li><strong>Matrícula:</strong>
-                      <%= r.matricula %>
-                    </li>
-                    <li><strong>Concesionario:</strong>
-                      <%= r.vehiculo_concesionario %>
-                    </li>
-                    <li><strong>Estado:</strong>
-                      <%= r.estado %>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <% }) %>
-              <% } else { %>
-                <p>No tienes reservas de vehículos en este momento.</p>
-                <% } %>
-      </div>
+      <ul class="nav nav-tabs" id="reservasTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#curso" type="button">
+            En curso
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#proximas" type="button">
+            Próximas
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pasadas" type="button">
+            Pasadas
+          </button>
+        </li>
 
+      </ul>
+      <div class="tab-content mt-4">
+
+        <!-- EN CURSO -->
+        <div class="tab-pane fade show active" id="curso">
+
+          <% if (enCurso && enCurso.length> 0) { %>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              <% enCurso.forEach(r=> { %>
+                <div class="col">
+                  <div class="card h-100">
+                    <img src="<%= r.vehiculo_imagen %>" class="card-img-top img-fluid" alt="<%= r.vehiculo_modelo %>"
+                      style="height: 200px; object-fit: cover;">
+
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <%= r.vehiculo_modelo %>
+                      </h5>
+
+                      <h6>
+                        <%= r.fecha_ini.toLocaleDateString('es-ES') %> -
+                          <%= r.fecha_fin.toLocaleDateString('es-ES') %>
+                      </h6>
+
+                      <ul class="list-unstyled">
+                        <li><strong>Matrícula:</strong>
+                          <%= r.matricula %>
+                        </li>
+                        <li><strong>Concesionario:</strong>
+                          <%= r.concesionario_nombre %>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <div class="alert alert-info">
+                No tienes reservas en curso actualmente.
+              </div>
+              <% } %>
+
+        </div>
+
+        <!-- PRÓXIMAS -->
+        <div class="tab-pane fade" id="proximas">
+
+          <% if (proximas && proximas.length> 0) { %>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              <% proximas.forEach(r=> { %>
+                <div class="col">
+                  <div class="card h-100">
+                    <img src="<%= r.vehiculo_imagen %>" class="card-img-top img-fluid" alt="<%= r.vehiculo_modelo %>"
+                      style="height: 200px; object-fit: cover;">
+
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <%= r.vehiculo_modelo %>
+                      </h5>
+
+                      <h6>
+                        <%= r.fecha_ini.toLocaleDateString('es-ES') %> -
+                          <%= r.fecha_fin.toLocaleDateString('es-ES') %>
+                      </h6>
+
+                      <ul class="list-unstyled">
+                        <li><strong>Matrícula:</strong>
+                          <%= r.matricula %>
+                        </li>
+                        <li><strong>Concesionario:</strong>
+                          <%= r.concesionario_nombre %>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <div class="alert alert-info">
+                No tienes reservas próximas.
+              </div>
+              <% } %>
+
+        </div>
+
+        <!-- PASADAS -->
+        <div class="tab-pane fade" id="pasadas">
+
+          <% if (pasadas && pasadas.length> 0) { %>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              <% pasadas.forEach(r=> { %>
+                <div class="col">
+                  <div class="card h-100">
+                    <img src="<%= r.vehiculo_imagen %>" class="card-img-top img-fluid" alt="<%= r.vehiculo_modelo %>"
+                      style="height: 200px; object-fit: cover;">
+
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <%= r.vehiculo_modelo %>
+                      </h5>
+
+                      <h6>
+                        <%= r.fecha_ini.toLocaleDateString('es-ES') %> -
+                          <%= r.fecha_fin.toLocaleDateString('es-ES') %>
+                      </h6>
+
+                      <ul class="list-unstyled">
+                        <li><strong>Matrícula:</strong>
+                          <%= r.matricula %>
+                        </li>
+                        <li><strong>Concesionario:</strong>
+                          <%= r.concesionario_nombre %>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <div class="alert alert-secondary">
+                No tienes reservas pasadas.
+              </div>
+              <% } %>
+
+        </div>
+
+      </div>
     </main>
 
     <!-- FOOTER -->

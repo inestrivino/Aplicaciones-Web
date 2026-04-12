@@ -18,6 +18,7 @@ class VehiculosDb {
             ]
         );
     }
+
     //actualiza un vehiculo
     updateVehiculo(matricula, vehiculo) {
         return pool.query(
@@ -66,6 +67,21 @@ class VehiculosDb {
             'SELECT * FROM vehiculos WHERE matricula = ?',
             [matricula]
         );
+    }
+
+    async getDisponibilidadVehiculo(matricula, fechaIni, fechaFin) {
+        const [rows] = await pool.query(
+            `SELECT COUNT(*) AS reservas_solapadas
+         FROM reservas
+         WHERE matricula = ?
+           AND (
+               (fecha_ini < ? AND fecha_fin > ?) OR  -- Nueva reserva empieza dentro de una reserva existente
+               (fecha_ini < ? AND fecha_fin > ?) OR  -- Nueva reserva termina dentro de una reserva existente
+               (fecha_ini > ? AND fecha_fin < ?)     -- Nueva reserva está completamente dentro de una reserva existente
+           )`,
+            [matricula, fechaFin, fechaIni, fechaFin, fechaIni, fechaIni, fechaFin]
+        );
+        return (rows[0].reservas_solapadas === 0);
     }
 
     filterVehiculos(filters) {
@@ -121,6 +137,17 @@ class VehiculosDb {
 
         query += " ORDER BY v.matricula;";
         return pool.query(query, params);
+    }
+
+    getFechasOcupadas(matricula) {
+        return pool.query(
+            `SELECT 
+            DATE(fecha_ini) as fecha_ini,
+            DATE(fecha_fin) as fecha_fin
+            FROM reservas
+            WHERE matricula = ?`,
+            [matricula]
+        );
     }
 
 }

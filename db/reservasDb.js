@@ -3,8 +3,8 @@ const pool = require("./pool.js");
 class ReservasDb {
     createReserva(reserva) {
         return pool.query(
-            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, estado, kilometros, incidencias) 
-         VALUES (?, ?, ?, ?, "activa", ?, ?)`,
+            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, kilometros, incidencias) 
+         VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 reserva.id,
                 reserva.matricula,

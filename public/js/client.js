@@ -38,60 +38,98 @@ function inicializarLanguageToggle() {
 function inicializarFormularioReservas() {
     const inicioInput = document.getElementById("inicioFecha");
     const finInput = document.getElementById("finFecha");
+    const matriculaInput = document.getElementById("vehiculo");
 
-    if (inicioInput && finInput) {
-        const ahora = new Date();
-        const fechaActual = ahora.toISOString().slice(0, 16);
-        inicioInput.min = fechaActual;
+    if (!inicioInput || !finInput || !matriculaInput) return;
 
-        const unAnoDespues = new Date();
-        unAnoDespues.setFullYear(ahora.getFullYear() + 1);
-        const fechaMaxima = unAnoDespues.toISOString().slice(0, 16);
-        inicioInput.max = fechaMaxima;
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-        inicioInput.addEventListener("change", function () {
-            finInput.min = this.value;
-            if (finInput.value && finInput.value < this.value) {
-                finInput.value = "";
-            }
-            const fechaMaxFin = new Date(this.value);
-            fechaMaxFin.setMonth(fechaMaxFin.getMonth() + 3);
-            finInput.max = fechaMaxFin.toISOString().slice(0, 16);
-        });
+    const manana = new Date(hoy);
+    manana.setDate(manana.getDate() + 1);
 
-        const form = document.querySelector("form");
-        if (form) {
-            form.addEventListener("submit", function (e) {
-                const fechaInicio = new Date(inicioInput.value);
-                const fechaFin = new Date(finInput.value);
+    const unAno = new Date(manana);
+    unAno.setFullYear(unAno.getFullYear() + 1);
 
-                if (inicioInput.value && finInput.value) {
-                    if (fechaFin < fechaInicio) {
-                        e.preventDefault();
-                        alert("La fecha de devolución no puede ser anterior a la fecha de inicio.");
-                        return;
-                    }
+    let fpInicio;
+    let fpFin;
+    let rangosOcupados = [];
 
-                    if (fechaInicio < ahora || fechaInicio > unAnoDespues) {
-                        e.preventDefault();
-                        alert("La fecha de inicio no puede ser anterior a la fecha actual ni posterior a un año desde hoy.");
-                        return;
-                    }
+    fpInicio = flatpickr(inicioInput, {
+        dateFormat: "Y-m-d",
+        minDate: manana,
+        maxDate: unAno,
+        disable: [],
+        onChange: onInicioChange
+    });
 
-                    const fechaMaxFin = new Date(fechaInicio);
-                    fechaMaxFin.setMonth(fechaInicio.getMonth() + 3);
-                    if (fechaFin > fechaMaxFin) {
-                        e.preventDefault();
-                        alert("La fecha de devolución no puede ser más de 3 meses después de la fecha de inicio.");
-                        return;
-                    }
-                } else {
-                    e.preventDefault();
-                    alert("Por favor, complete ambas fechas.");
-                }
-            });
-        }
+    fpFin = flatpickr(finInput, {
+        dateFormat: "Y-m-d",
+        disable: []
+    });
+
+    function onInicioChange(selectedDates) {
+        if (!selectedDates.length) return;
+
+        const inicio = selectedDates[0];
+
+        finInput.value = "";
+        fpFin.clear();
+
+        const minFin = new Date(inicio);
+        minFin.setDate(minFin.getDate() + 1);
+
+        const maxFin = new Date(inicio);
+        maxFin.setMonth(maxFin.getMonth() + 3);
+
+        fpFin.set("minDate", minFin);
+        fpFin.set("maxDate", maxFin);
+        fpFin.set("disable", rangosOcupados);
     }
+
+    const cargarFechas = async () => {
+        if (!matriculaInput.value) return;
+        const reservas = await obtenerFechasOcupadas(matriculaInput.value);
+        rangosOcupados = reservas.map(r => ({
+            from: r.fecha_ini,
+            to: r.fecha_fin
+        }));
+        fpInicio.set("disable", rangosOcupados);
+        fpFin.set("disable", rangosOcupados);
+    };
+
+    matriculaInput.addEventListener("change", () => {
+        inicioInput.value = "";
+        finInput.value = "";
+        cargarFechas();
+    });
+
+    if (matriculaInput.value) {
+        cargarFechas();
+    }
+
+    async function obtenerFechasOcupadas(matricula) {
+        const res = await fetch(`/vehiculos/fechasOcupado?matricula=${matricula}`);
+        const data = await res.json();
+        return data.ocupadas || [];
+    }
+
+    document.querySelector("form").addEventListener("submit", (e) => {
+        const inicio = document.getElementById("inicioFecha");
+        const fin = document.getElementById("finFecha");
+
+        if (!inicio.value || !fin.value) {
+            e.preventDefault();
+            alert("Debes seleccionar ambas fechas de reserva.");
+            return;
+        }
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(inicio.value) || !regex.test(fin.value)) {
+            e.preventDefault();
+            alert("Formato de fecha inválido.");
+            return;
+        }
+    });
 }
 
 function inicializarTema() {
@@ -443,6 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
+
     if (path.includes("reserva")) {
         const matricula = params.get("car");
         inicializarFormularioReservas();

@@ -15,9 +15,35 @@ router.get("/", async function (request, response, next) {
         const reservasData = await reservasDb.getMisReservas(id);
         const reservas = reservasData[0];
 
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const enCurso = [];
+        const proximas = [];
+        const pasadas = [];
+
+        for (const r of reservas) {
+            const inicio = new Date(r.fecha_ini);
+            const fin = new Date(r.fecha_fin);
+
+            inicio.setHours(0, 0, 0, 0);
+            fin.setHours(0, 0, 0, 0);
+
+            if (inicio <= hoy && fin >= hoy) {
+                enCurso.push(r);
+            } else if (inicio > hoy) {
+                proximas.push(r);
+            } else {
+                pasadas.push(r);
+            }
+        }
+
         response.render("misReservas", {
-            user: request.session.user,
-            reservas
+            reservas,
+            enCurso,
+            proximas,
+            pasadas,
+            user: request.session.user
         });
     } catch (err) {
         next(err);

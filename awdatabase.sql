@@ -36,7 +36,6 @@ CREATE TABLE `reservas` (
   `matricula` varchar(50) NOT NULL,
   `fecha_ini` date NOT NULL,
   `fecha_fin` date NOT NULL,
-  `estado` varchar(50) NOT NULL,
   `kilometros` int(11) DEFAULT NULL,
   `incidencias` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
