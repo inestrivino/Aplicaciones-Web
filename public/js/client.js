@@ -51,6 +51,13 @@ function inicializarFormularioReservas() {
     const unAno = new Date(manana);
     unAno.setFullYear(unAno.getFullYear() + 1);
 
+    const params = new URLSearchParams(window.location.search);
+    const car = params.get("car");
+
+    if (car) {
+        matriculaInput.value = car;
+    }
+
     let fpInicio;
     let fpFin;
     let rangosOcupados = [];
@@ -91,8 +98,8 @@ function inicializarFormularioReservas() {
         if (!matriculaInput.value) return;
         const reservas = await obtenerFechasOcupadas(matriculaInput.value);
         rangosOcupados = reservas.map(r => ({
-            from: r.fecha_ini,
-            to: r.fecha_fin
+            from: r.fecha_ini.split("T")[0],
+            to: r.fecha_fin.split("T")[0]
         }));
         fpInicio.set("disable", rangosOcupados);
         fpFin.set("disable", rangosOcupados);

@@ -16,6 +16,13 @@ class ReservasDb {
         );
     }
 
+    getReservaById(id){
+        return pool.query(
+            `SELECT * FROM reservas WHERE id = ?`,
+            [id]
+        )
+    }
+
     getMisReservas(id_usuario) {
         return pool.query(
             `SELECT r.*,
@@ -58,6 +65,24 @@ WHERE r.id_usuario = ?`,
         ORDER BY total_reservas DESC
         LIMIT 5
     `);
+    }
+
+    // Eliminar reserva
+    cancelReserva(id_reserva) {
+        return pool.query(
+            `DELETE FROM reservas WHERE id = ?`,
+            [id_reserva]
+        );
+    }
+
+    // Finalizar reserva (devolución)
+    finalizarReserva(id_reserva, fecha_fin) {
+        return pool.query(
+            `UPDATE reservas 
+         SET fecha_fin = ? 
+         WHERE id = ?`,
+            [fecha_fin, id_reserva]
+        );
     }
 }
 

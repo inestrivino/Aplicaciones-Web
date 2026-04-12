@@ -5,6 +5,12 @@ const userDb = require("../db/userDb.js");
 
 router.get("/", async function (request, response, next) {
     try {
+        const errorMessage = request.session.errorMessage;
+        const responseMessage = request.session.responseMessage;
+
+        delete request.session.errorMessage;
+        delete request.session.responseMessage;
+
         const mail = request.session.user.mail;
         const [rows] = await userDb.getUserByEmail(mail);
         if (!rows || rows.length === 0) {
@@ -29,7 +35,7 @@ router.get("/", async function (request, response, next) {
             inicio.setHours(0, 0, 0, 0);
             fin.setHours(0, 0, 0, 0);
 
-            if (inicio <= hoy && fin >= hoy) {
+            if (inicio <= hoy && fin > hoy) {
                 enCurso.push(r);
             } else if (inicio > hoy) {
                 proximas.push(r);
@@ -43,7 +49,9 @@ router.get("/", async function (request, response, next) {
             enCurso,
             proximas,
             pasadas,
-            user: request.session.user
+            user: request.session.user,
+            errorMessage : errorMessage,
+            responseMessage : responseMessage
         });
     } catch (err) {
         next(err);
