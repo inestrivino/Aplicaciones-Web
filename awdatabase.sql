@@ -30,17 +30,6 @@ CREATE TABLE `concesionarios` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `reservas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_usuario` varchar(50) NOT NULL,
-  `matricula` varchar(50) NOT NULL,
-  `fecha_ini` date NOT NULL,
-  `fecha_fin` date NOT NULL,
-  `kilometros` int(11) DEFAULT NULL,
-  `incidencias` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -54,6 +43,34 @@ CREATE TABLE `users` (
   UNIQUE KEY `mail` (`mail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `reservas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` int(11) NOT NULL,
+  `matricula` varchar(50) NOT NULL,
+  `fecha_ini` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  PRIMARY KEY (`id`),
+
+  CONSTRAINT fk_reservas_usuario
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES users(`id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE feedback (
+  id int(11) AUTO_INCREMENT PRIMARY KEY,
+  id_reserva int(11) NOT NULL UNIQUE,
+  comentario VARCHAR(200),
+  puntuacion int(11) NOT NULL,
+  
+  CONSTRAINT fk_reserva_feedback
+    FOREIGN KEY (id_reserva) REFERENCES reservas(id)
+    ON DELETE CASCADE,
+
+  CONSTRAINT chk_puntuacion
+    CHECK (puntuacion BETWEEN 1 AND 5)
+);
+
 CREATE TABLE `vehiculos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `matricula` varchar(20) NOT NULL,
@@ -66,7 +83,12 @@ CREATE TABLE `vehiculos` (
   `imagen` varchar(50) NOT NULL,
   `id_concesionario` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `matricula` (`matricula`)
+  UNIQUE KEY `matricula` (`matricula`),
+
+  CONSTRAINT fk_vehiculos_concesionario
+    FOREIGN KEY (`id_concesionario`)
+    REFERENCES concesionarios(`id`)
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 --
 -- Volcado de datos para la tabla `users`

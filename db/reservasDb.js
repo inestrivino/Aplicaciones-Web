@@ -3,20 +3,18 @@ const pool = require("./pool.js");
 class ReservasDb {
     createReserva(reserva) {
         return pool.query(
-            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, kilometros, incidencias) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin) 
+         VALUES (?, ?, ?, ?)`,
             [
                 reserva.id,
                 reserva.matricula,
                 reserva.fecha_ini,
-                reserva.fecha_fin,
-                reserva.kilometros,
-                reserva.incidencias
+                reserva.fecha_fin
             ]
         );
     }
 
-    getReservaById(id){
+    getReservaById(id) {
         return pool.query(
             `SELECT * FROM reservas WHERE id = ?`,
             [id]
@@ -25,19 +23,24 @@ class ReservasDb {
 
     getMisReservas(id_usuario) {
         return pool.query(
-            `SELECT r.*,
-    v.matricula AS vehiculo_matricula,
-    v.marca AS vehiculo_marca,
-    v.modelo AS vehiculo_modelo,
-    v.plazas AS vehiculo_plazas,
-    v.autonomia AS vehiculo_autonomia,
-    v.color AS vehiculo_color,
-    v.imagen AS vehiculo_imagen,
-    c.nombre AS concesionario_nombre
-FROM reservas r
-JOIN vehiculos v ON r.matricula = v.matricula
-JOIN concesionarios c ON v.id_concesionario = c.id
-WHERE r.id_usuario = ?`,
+            `SELECT 
+            r.*,
+            v.matricula AS vehiculo_matricula,
+            v.marca AS vehiculo_marca,
+            v.modelo AS vehiculo_modelo,
+            v.plazas AS vehiculo_plazas,
+            v.autonomia AS vehiculo_autonomia,
+            v.color AS vehiculo_color,
+            v.imagen AS vehiculo_imagen,
+            c.nombre AS concesionario_nombre,
+            f.puntuacion,
+            f.comentario
+
+        FROM reservas r
+        JOIN vehiculos v ON r.matricula = v.matricula
+        JOIN concesionarios c ON v.id_concesionario = c.id
+        LEFT JOIN feedback f ON r.id = f.id_reserva
+        WHERE r.id_usuario = ?`,
             [id_usuario]
         );
     }
@@ -82,6 +85,15 @@ WHERE r.id_usuario = ?`,
          SET fecha_fin = ? 
          WHERE id = ?`,
             [fecha_fin, id_reserva]
+        );
+    }
+
+    // Insertar feedback de una reserva en la base de datos
+    insertFeedback({ id_reserva, puntuacion, comentario }) {
+        return pool.query(
+            `INSERT INTO feedback (id_reserva, puntuacion, comentario)
+         VALUES (?, ?, ?)`,
+            [id_reserva, puntuacion, comentario]
         );
     }
 }

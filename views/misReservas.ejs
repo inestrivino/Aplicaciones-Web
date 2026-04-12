@@ -63,6 +63,54 @@
                   <% if (enCurso && enCurso.length> 0) { %>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                       <% enCurso.forEach(r=> { %>
+                        <div class="modal fade" id="modalFeedback<%= r.id %>" tabindex="-1">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+
+                              <div class="modal-header">
+                                <h5 class="modal-title">Devolver vehículo</h5>
+                              </div>
+
+                              <form action="/misReservas/devolver/<%= r.id %>" method="POST">
+
+                                <div class="modal-body">
+
+                                  <label>Puntuación:</label>
+                                  <select name="puntuacion" class="form-select mb-3">
+                                    <option value="">Sin valoración</option>
+                                    <option value="1">⭐</option>
+                                    <option value="2">⭐⭐</option>
+                                    <option value="3">⭐⭐⭐</option>
+                                    <option value="4">⭐⭐⭐⭐</option>
+                                    <option value="5">⭐⭐⭐⭐⭐</option>
+                                  </select>
+
+                                  <label>Comentario:</label>
+                                  <textarea name="comentario" class="form-control" placeholder="Opcional"></textarea>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                  <!-- SOLO devolver -->
+                                  <button type="submit" name="accion" value="solo" class="btn btn-warning">
+                                    Devolver sin valorar
+                                  </button>
+
+                                  <!-- devolver + feedback -->
+                                  <button type="submit" name="accion" value="feedback" class="btn btn-success">
+                                    Enviar con valoración
+                                  </button>
+
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cancelar
+                                  </button>
+                                </div>
+
+                              </form>
+
+                            </div>
+                          </div>
+                        </div>
                         <div class="col">
                           <div class="card h-100">
                             <img src="<%= r.vehiculo_imagen %>" class="card-img-top img-fluid"
@@ -88,11 +136,10 @@
                               </ul>
                             </div>
 
-                            <form action="/reserva/devolver/<%= r.id %>" method="POST">
-                              <button class="btn btn-warning w-100">
-                                Devolver vehículo
-                              </button>
-                            </form>
+                            <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal"
+                              data-bs-target="#modalFeedback<%= r.id %>">
+                              Devolver vehículo
+                            </button>
 
                           </div>
                         </div>
@@ -135,7 +182,7 @@
                                   <%= r.concesionario_nombre %>
                                 </li>
                               </ul>
-                              <form action="/reserva/cancelar/<%= r.id %>" method="POST"
+                              <form action="/misReservas/cancelar/<%= r.id %>" method="POST"
                                 onsubmit="return confirm('¿Seguro que quieres cancelar esta reserva?');">
                                 <button class="btn btn-danger w-100">
                                   Cancelar reserva
@@ -182,6 +229,21 @@
                                 <li><strong>Concesionario:</strong>
                                   <%= r.concesionario_nombre %>
                                 </li>
+
+                                <% if (r.puntuacion) { %>
+                                  <p>
+                                    <strong>Valoración:</strong>
+                                    <%= "⭐" .repeat(r.puntuacion) %>
+                                  </p>
+
+                                  <% if (r.comentario) { %>
+                                    <p><strong>Comentario:</strong>
+                                      <%= r.comentario %>
+                                    </p>
+                                    <% } %>
+                                      <% } else { %>
+                                        <p class="text-muted">Sin valoración</p>
+                                        <% } %>
                               </ul>
                             </div>
 
