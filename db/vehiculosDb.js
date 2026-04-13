@@ -72,16 +72,17 @@ class VehiculosDb {
     async getDisponibilidadVehiculo(matricula, fechaIni, fechaFin) {
         const [rows] = await pool.query(
             `SELECT COUNT(*) AS reservas_solapadas
-         FROM reservas
-         WHERE matricula = ?
-           AND (
-               (fecha_ini < ? AND fecha_fin > ?) OR  -- Nueva reserva empieza dentro de una reserva existente
-               (fecha_ini < ? AND fecha_fin > ?) OR  -- Nueva reserva termina dentro de una reserva existente
-               (fecha_ini > ? AND fecha_fin < ?)     -- Nueva reserva está completamente dentro de una reserva existente
-           )`,
-            [matricula, fechaFin, fechaIni, fechaFin, fechaIni, fechaIni, fechaFin]
+            FROM reservas
+            WHERE matricula = ?
+            AND estado != 'cancelada'
+            AND (
+               fecha_ini <= ?
+               AND fecha_fin >= ?
+            )`,
+            [matricula, fechaFin, fechaIni]
         );
-        return (rows[0].reservas_solapadas === 0);
+
+        return rows[0].reservas_solapadas === 0;
     }
 
     filterVehiculos(filters) {
@@ -142,10 +143,11 @@ class VehiculosDb {
     getFechasOcupadas(matricula) {
         return pool.query(
             `SELECT 
-            DATE(fecha_ini) as fecha_ini,
-            DATE(fecha_fin) as fecha_fin
-            FROM reservas
-            WHERE matricula = ?`,
+            DATE_FORMAT(fecha_ini, '%Y-%m-%d') AS fecha_ini,
+            DATE_FORMAT(fecha_fin, '%Y-%m-%d') AS fecha_fin
+         FROM reservas
+         WHERE matricula = ?
+           AND estado = 'activa'`,
             [matricula]
         );
     }

@@ -3,8 +3,8 @@ const pool = require("./pool.js");
 class ReservasDb {
     createReserva(reserva) {
         return pool.query(
-            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin) 
-         VALUES (?, ?, ?, ?)`,
+            `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, estado) 
+             VALUES (?, ?, ?, ?, 'activa')`,
             [
                 reserva.id,
                 reserva.matricula,
@@ -16,83 +16,89 @@ class ReservasDb {
 
     getReservaById(id) {
         return pool.query(
-            `SELECT * FROM reservas WHERE id = ?`,
+            `SELECT * 
+             FROM reservas 
+             WHERE id = ? AND estado != 'cancelada'`,
             [id]
-        )
+        );
     }
 
     getMisReservas(id_usuario) {
         return pool.query(
             `SELECT 
-            r.*,
-            v.matricula AS vehiculo_matricula,
-            v.marca AS vehiculo_marca,
-            v.modelo AS vehiculo_modelo,
-            v.plazas AS vehiculo_plazas,
-            v.autonomia AS vehiculo_autonomia,
-            v.color AS vehiculo_color,
-            v.imagen AS vehiculo_imagen,
-            c.nombre AS concesionario_nombre,
-            f.puntuacion,
-            f.comentario
-
-        FROM reservas r
-        JOIN vehiculos v ON r.matricula = v.matricula
-        JOIN concesionarios c ON v.id_concesionario = c.id
-        LEFT JOIN feedback f ON r.id = f.id_reserva
-        WHERE r.id_usuario = ?`,
+                r.*,
+                v.matricula AS vehiculo_matricula,
+                v.marca AS vehiculo_marca,
+                v.modelo AS vehiculo_modelo,
+                v.plazas AS vehiculo_plazas,
+                v.autonomia AS vehiculo_autonomia,
+                v.color AS vehiculo_color,
+                v.imagen AS vehiculo_imagen,
+                c.nombre AS concesionario_nombre,
+                f.puntuacion,
+                f.comentario
+            FROM reservas r
+            JOIN vehiculos v ON r.matricula = v.matricula
+            JOIN concesionarios c ON v.id_concesionario = c.id
+            LEFT JOIN feedback f ON r.id = f.id_reserva
+            WHERE r.id_usuario = ? 
+              AND r.estado != 'cancelada'`,
             [id_usuario]
         );
     }
 
-    //devuelve los vehículos con más reservas
+    // Vehículos con más reservas
     async getTopVehiculos() {
         return pool.query(`
-        SELECT v.matricula, v.marca, v.modelo, COUNT(*) AS total_reservas
-        FROM reservas r
-        JOIN vehiculos v ON r.matricula = v.matricula
-        GROUP BY v.matricula
-        ORDER BY total_reservas DESC
-        LIMIT 5
-    `);
+            SELECT v.matricula, v.marca, v.modelo, COUNT(*) AS total_reservas
+            FROM reservas r
+            JOIN vehiculos v ON r.matricula = v.matricula
+            WHERE r.estado != 'cancelada'
+            GROUP BY v.matricula
+            ORDER BY total_reservas DESC
+            LIMIT 5
+        `);
     }
 
-    //devuelve los concesionarios con más reservas
+    // Concesionarios con más reservas
     async getTopConcesionarios() {
         return pool.query(`
-        SELECT c.nombre, COUNT(*) AS total_reservas
-        FROM reservas r
-        JOIN vehiculos v ON r.matricula = v.matricula
-        JOIN concesionarios c ON v.id_concesionario = c.id
-        GROUP BY c.id
-        ORDER BY total_reservas DESC
-        LIMIT 5
-    `);
+            SELECT c.nombre, COUNT(*) AS total_reservas
+            FROM reservas r
+            JOIN vehiculos v ON r.matricula = v.matricula
+            JOIN concesionarios c ON v.id_concesionario = c.id
+            WHERE r.estado != 'cancelada'
+            GROUP BY c.id
+            ORDER BY total_reservas DESC
+            LIMIT 5
+        `);
     }
 
-    // Eliminar reserva
+    // Cancelar reserva
     cancelReserva(id_reserva) {
         return pool.query(
-            `DELETE FROM reservas WHERE id = ?`,
+            `UPDATE reservas 
+             SET estado = 'cancelada' 
+             WHERE id = ?`,
             [id_reserva]
         );
     }
 
-    // Finalizar reserva (devolución)
+    // Finalizar reserva
     finalizarReserva(id_reserva, fecha_fin) {
         return pool.query(
             `UPDATE reservas 
-         SET fecha_fin = ? 
-         WHERE id = ?`,
+             SET fecha_fin = ?, estado = 'finalizada'
+             WHERE id = ?`,
             [fecha_fin, id_reserva]
         );
     }
 
-    // Insertar feedback de una reserva en la base de datos
+    // Insertar feedback
     insertFeedback({ id_reserva, puntuacion, comentario }) {
         return pool.query(
             `INSERT INTO feedback (id_reserva, puntuacion, comentario)
-         VALUES (?, ?, ?)`,
+             VALUES (?, ?, ?)`,
             [id_reserva, puntuacion, comentario]
         );
     }

@@ -49,6 +49,7 @@ CREATE TABLE `reservas` (
   `matricula` varchar(50) NOT NULL,
   `fecha_ini` date NOT NULL,
   `fecha_fin` date NOT NULL,
+  `estado` varchar(50) NOT NULL, 
   PRIMARY KEY (`id`),
 
   CONSTRAINT fk_reservas_usuario

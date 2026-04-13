@@ -35,12 +35,14 @@ router.get("/", async function (request, response, next) {
             inicio.setHours(0, 0, 0, 0);
             fin.setHours(0, 0, 0, 0);
 
-            if (inicio <= hoy && fin > hoy) {
-                enCurso.push(r);
-            } else if (inicio > hoy) {
+            if (inicio > hoy) {
                 proximas.push(r);
-            } else {
+            }
+            else if (r.estado === "finalizada") {
                 pasadas.push(r);
+            }
+            else {
+                enCurso.push(r);
             }
         }
 
@@ -50,8 +52,8 @@ router.get("/", async function (request, response, next) {
             proximas,
             pasadas,
             user: request.session.user,
-            errorMessage : errorMessage,
-            responseMessage : responseMessage
+            errorMessage: errorMessage,
+            responseMessage: responseMessage
         });
     } catch (err) {
         next(err);
@@ -83,9 +85,9 @@ router.post("/cancelar/:id", async (req, res) => {
             throw new Error("No tienes permiso para cancelar esta reserva");
         }
         // Solo permitir cancelar si es futura
-        const hoy = new Date();
-        const fecha_ini = new Date(reserva.fecha_ini);
-        if (fecha_ini <= hoy) {
+        const hoy = new Date().toISOString().split("T")[0];
+        const fecha_ini = new Date(reserva.fecha_ini).toISOString().split("T")[0];
+        if (fecha_ini < hoy) {
             throw new Error("No puedes cancelar una reserva ya iniciada");
         }
         // Si todo va bien, se cancela la reserva
@@ -126,19 +128,25 @@ router.post("/devolver/:id", async (req, res) => {
         }
 
         //Comprobar que la reserva está en curso
-        const hoy = new Date();
-        const fecha_ini = new Date(reserva.fecha_ini);
-        const fecha_fin = new Date(reserva.fecha_fin);
+        const hoy = new Date().toISOString().split("T")[0];
+        const fecha_ini = new Date(reserva.fecha_ini).toISOString().split("T")[0];
+
         if (hoy < fecha_ini) {
             throw new Error("La reserva aún no ha comenzado");
         }
 
-        if (hoy > fecha_fin) {
+        if (reserva.estado === "finalizada") {
             throw new Error("La reserva ya ha finalizado");
         }
-        const hoyStr = hoy.toISOString().split("T")[0];
-        await reservasDb.finalizarReserva(id_reserva, hoyStr);
 
+        if (reserva.estado === "cancelada") {
+            throw new Error("La reserva fue cancelada");
+        }
+
+        // Devolver el vehículo
+        await reservasDb.finalizarReserva(id_reserva, hoy);
+
+        // Añadir el feedback
         if (req.body.accion === "feedback") {
             const puntuacion = parseInt(req.body.puntuacion);
             const comentario = req.body.comentario || null;
