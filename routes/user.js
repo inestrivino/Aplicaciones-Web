@@ -103,14 +103,15 @@ router.post(
 
             const hash = await bcrypt.hash(req.body.signUpPassword, 10);
 
-            await userDb.createUser({
+            const result = await userDb.createUser({
                 email: req.body.signUpEmail,
                 name: req.body.signUpName,
                 password: hash,
-                id_concesionario: req.body.signUpDealer
+                concesionario: req.body.signUpDealer
             });
 
             req.session.user = {
+                id: result.insertId,
                 name: req.body.signUpName,
                 email: req.body.signUpEmail,
                 rol: "user",
@@ -186,7 +187,7 @@ router.post(
             await userDb.updateUser(userId, {
                 name: req.body.name,
                 email: req.body.email,
-                rol:req.session.user.rol,
+                rol: req.session.user.rol,
                 id_concesionario: req.body.id_concesionario
             });
 

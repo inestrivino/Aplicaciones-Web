@@ -2,11 +2,12 @@ const pool = require("./pool.js");
 
 class UserDb {
     //crear un nuevo usuario
-    createUser(user) {
-        return pool.query(
+    async createUser(user) {
+        const [result] = await pool.query(
             'INSERT INTO users(name, email, password, rol, id_concesionario) VALUES (?, ?, ?, "user", ?)',
             [user.name, user.email, user.password, user.concesionario]
         );
+        return result;
     }
 
     //devuelve un usuario por su correo
@@ -16,7 +17,7 @@ class UserDb {
             [email]
         )
     }
-    
+
     //actualiza un usuario
     updateUser(id, request) {
         return pool.query(
