@@ -11,14 +11,12 @@ router.get("/", async function (request, response, next) {
         delete request.session.errorMessage;
         delete request.session.responseMessage;
 
-        const mail = request.session.user.mail;
-        const [rows] = await userDb.getUserByEmail(mail);
+        const idUsuario = request.session.user.id;
+        const [rows] = await userDb.getUserById(idUsuario);
         if (!rows || rows.length === 0) {
             throw new Error("Usuario no encontrado en la base de datos");
         }
-        const usuario = rows[0];
-        const id = usuario.id;
-        const reservasData = await reservasDb.getMisReservas(id);
+        const reservasData = await reservasDb.getMisReservas(idUsuario);
         const reservas = reservasData[0];
 
         const hoy = new Date();
@@ -63,13 +61,12 @@ router.get("/", async function (request, response, next) {
 router.post("/cancelar/:id", async (req, res) => {
     try {
         // Comprobar que el usuario está autenticado
-        const mail = req.session.user.mail;
-        const [rows] = await userDb.getUserByEmail(mail);
+        const idUsuario = req.session.user.id;
+        const [rows] = await userDb.getUserById(idUsuario);
         if (!rows || rows.length === 0) {
             throw new Error("Usuario no encontrado en la base de datos");
         }
-        const usuario = rows[0];
-        const id_usuario = usuario.id;
+
         // Comprobar que la reserva tiene un formato válido y existe
         const id_reserva = parseInt(req.params.id);
         if (isNaN(id_reserva)) {
@@ -81,7 +78,7 @@ router.post("/cancelar/:id", async (req, res) => {
         }
         // Comprobar que la reserva pertenece al usuario
         const reserva = reservas[0];
-        if (parseInt(reserva.id_usuario) !== parseInt(id_usuario)) {
+        if (parseInt(reserva.id_usuario) !== parseInt(idUsuario)) {
             throw new Error("No tienes permiso para cancelar esta reserva");
         }
         // Solo permitir cancelar si es futura
@@ -105,13 +102,11 @@ router.post("/cancelar/:id", async (req, res) => {
 router.post("/devolver/:id", async (req, res) => {
     try {
         // Comprobar que el usuario está autenticado
-        const mail = req.session.user.mail;
-        const [rows] = await userDb.getUserByEmail(mail);
+        const idUsuario = req.session.user.id;
+        const [rows] = await userDb.getUserById(idUsuario);
         if (!rows || rows.length === 0) {
             throw new Error("Usuario no encontrado en la base de datos");
         }
-        const usuario = rows[0];
-        const id_usuario = usuario.id;
 
         //Comprobar que la reserva es válida y pertenece al usuario
         const id_reserva = parseInt(req.params.id);
@@ -123,7 +118,7 @@ router.post("/devolver/:id", async (req, res) => {
             throw new Error("La reserva no existe");
         }
         const reserva = reservas[0];
-        if (parseInt(reserva.id_usuario) !== parseInt(id_usuario)) {
+        if (parseInt(reserva.id_usuario) !== parseInt(idUsuario)) {
             throw new Error("No tienes permiso para modificar esta reserva");
         }
 

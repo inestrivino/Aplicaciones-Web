@@ -74,8 +74,7 @@ router.post("/create", async function (req, res) {
 
         console.log(imagenCompleto)
 
-        // Estado siempre disponible al crear
-        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, estado: "disponible", id_concesionario, imagenCompleto };
+        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, id_concesionario, imagenCompleto };
 
         await vehiculosDb.createVehiculo(vehiculo);
         req.session.responseMessage = "Vehículo creado con éxito";
@@ -91,7 +90,7 @@ router.post("/create", async function (req, res) {
 router.post("/:matricula/update", async function (req, res) {
     try {
         const matricula = req.params.matricula;
-        const { marca, modelo, fecha, plazas, autonomia, color, estado, id_concesionario, imagen } = req.body;
+        const { marca, modelo, fecha, plazas, autonomia, color, id_concesionario, imagen } = req.body;
 
         if (!marca || marca.trim() === "") throw new Error("La marca no puede estar vacía.");
         if (!modelo || modelo.trim() === "") throw new Error("El modelo no puede estar vacío.");
@@ -100,7 +99,6 @@ router.post("/:matricula/update", async function (req, res) {
         if (!autonomia || isNaN(autonomia)) throw new Error("Autonomía inválida.");
         if (!color || color.trim() === "") throw new Error("El color no puede estar vacío.");
         if (!id_concesionario || isNaN(id_concesionario)) throw new Error("ID de concesionario inválido.");
-        if (!["disponible", "reservado"].includes(estado)) throw new Error("El estado debe ser 'disponible' o 'reservado'.");
 
         // Verificar existencia del vehículo
         const [existingVeh] = await vehiculosDb.getVehiculoByMatricula(matricula);
@@ -115,7 +113,7 @@ router.post("/:matricula/update", async function (req, res) {
         if (!fs.existsSync(imgPath)) throw new Error("La imagen seleccionada no existe.");
         let imagenCompleto = "/img/vehiculos/" + imagen; 
 
-        const vehiculo = { marca, modelo, fecha, plazas, autonomia, color, estado, id_concesionario, imagenCompleto };
+        const vehiculo = { marca, modelo, fecha, plazas, autonomia, color, id_concesionario, imagenCompleto };
         await vehiculosDb.updateVehiculo(matricula, vehiculo);
 
         req.session.responseMessage = "Vehículo modificado con éxito";

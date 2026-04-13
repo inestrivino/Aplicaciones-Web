@@ -26,14 +26,12 @@ router.get("/", async function (request, response) {
 
 router.post("/", async function (request, response) {
     try {
-        const mail = request.session.user.mail;
-        const [rows] = await userDb.getUserByEmail(mail);
+        const id_usuario = request.session.user.id;
+        const [rows] = await userDb.getUserById(id_usuario);
         if (!rows || rows.length === 0) {
             throw new Error("Usuario no encontrado en la base de datos");
         }
-
-        const usuario = rows[0];
-        const id_usuario = usuario.id;
+        
         const { matricula, fecha_ini, fecha_fin } = request.body;
         if (!matricula || !fecha_ini || !fecha_fin) {
             throw new Error("Todos los campos de fecha y matrícula son obligatorios");

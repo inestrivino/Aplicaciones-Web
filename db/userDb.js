@@ -4,7 +4,7 @@ class UserDb {
     //crear un nuevo usuario
     createUser(user) {
         return pool.query(
-            'INSERT INTO users(name, mail, password, rol, id_concesionario) VALUES (?, ?, ?, "user", ?)',
+            'INSERT INTO users(name, email, password, rol, id_concesionario) VALUES (?, ?, ?, "user", ?)',
             [user.name, user.email, user.password, user.concesionario]
         );
     }
@@ -12,7 +12,7 @@ class UserDb {
     //devuelve un usuario por su correo
     async getUserByEmail(email) {
         return pool.query(
-            'SELECT * FROM users WHERE mail = ?',
+            'SELECT * FROM users WHERE email = ?',
             [email]
         )
     }
@@ -20,9 +20,9 @@ class UserDb {
     //actualiza un usuario
     updateUser(id, request) {
         return pool.query(
-            'UPDATE users SET name = ?, mail = ?, rol = ?, telefono = ?, id_concesionario = ? ' +
+            'UPDATE users SET name = ?, email = ?, rol = ?, id_concesionario = ? ' +
             'WHERE id = ?',
-            [request.name, request.mail, request.rol, request.telefono, request.id_concesionario, id]
+            [request.name, request.email, request.rol, request.id_concesionario, id]
         );
     }
 

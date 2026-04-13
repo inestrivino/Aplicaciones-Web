@@ -1,151 +1,262 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const userDb = require("../db/userDb.js");
 const bcrypt = require("bcrypt");
 
-//validar correo
+
+// ============================
+// 🔐 VALIDACIONES
+// ============================
+
 function validarEmail(campo) {
-    return function (request, response, next) {
-        const texto1 = !/[._-]{2,}/.test(request.body[campo]);
-        if (!texto1) {
-            request.session.error = "El email no puede contener caracteres especiales (._-) repetidos.";
-            return response.redirect("/");
+    return function (req, res, next) {
+        const value = req.body[campo];
+
+        if (/[._-]{2,}/.test(value)) {
+            req.session.error = "Email inválido.";
+            return res.redirect("/");
         }
-        const texto2 = /^[A-Za-z0-9@._-]+$/.test(request.body[campo]);
-        if (!texto2) {
-            request.session.error = "El email solo debe contener simbolos alfanuméricos y ._-";
-            return response.redirect("/");
+
+        if (!/^[A-Za-z0-9@._-]+$/.test(value)) {
+            req.session.error = "Email con caracteres inválidos.";
+            return res.redirect("/");
         }
-        const texto3 = /^[^@]+@ucm.[^@]+$/.test(request.body[campo]);
-        if (!texto3) {
-            request.session.error = "El email debe serguir el formato usuario@ucm.";
-            return response.redirect("/");
+
+        if (!/^[^@]+@ucm\.[^@]+$/.test(value)) {
+            req.session.error = "Debe ser @ucm.";
+            return res.redirect("/");
         }
-        if (request.body[campo].length > 50) {
-            request.session.error = "El email no puede tener más de 50 caracteres.";
-            return response.redirect("/");
+
+        next();
+    };
+}
+
+function validarPassword(campo) {
+    return function (req, res, next) {
+        const p = req.body[campo];
+
+        if (!/[0-9]/.test(p)) {
+            req.session.error = "Falta número";
+            return res.redirect("/");
+        }
+
+        if (!/[A-Z]/.test(p)) {
+            req.session.error = "Falta mayúscula";
+            return res.redirect("/");
+        }
+
+        if (!/[a-z]/.test(p)) {
+            req.session.error = "Falta minúscula";
+            return res.redirect("/");
+        }
+
+        if (p.length < 8) {
+            req.session.error = "Muy corta";
+            return res.redirect("/");
+        }
+
+        if (p.length > 50) {
+            req.session.error = "Demasiado larga";
+            return res.redirect("/");
+        }
+
+        next();
+    };
+}
+
+function validarPassword2(campo) {
+    return function (req, res, next) {
+        if (/['\/]/.test(req.body[campo])) {
+            req.session.error = "Caracteres inválidos en contraseña";
+            return res.redirect("/");
         }
         next();
     };
 }
-function validarPassword(campo) {
-    return function (request, response, next) {
-        const texto2 = /[0-9]/.test(request.body[campo]);
-        if (!texto2) {
-            request.session.error = "La contraseña debe contener al menos un número.";
-            return response.redirect("/");
-        }
-        const texto3 = /[A-Z]/.test(request.body[campo]);
-        if (!texto3) {
-            request.session.error = "La contraseña debe contener al menos una letra mayúscula.";
-            return response.redirect("/");
-        }
-        const texto4 = /[a-z]/.test(request.body[campo]);
-        if (!texto4) {
-            request.session.error = "La contraseña debe contener al menos una letra minúscula.";
-            return response.redirect("/");
-        }
-        if (request.body[campo].length < 8) {
-            request.session.error = "La contraseña debe tener al menos 8 caracteres.";
-            return response.redirect("/");
-        }
-        if (request.body[campo].length > 50) {
-            request.session.error = "La contraseña no puede tener más de 50 caracteres.";
-            return response.redirect("/");
-        }
-        next();
-    }
-}
-function validarPassword2(campo) {
-    return function (request, response, next) {
-        const texto1 = /['\/]/.test(request.body[campo]);
-        if (texto1) {
-            request.session.error = "La contraseña no puede contener los caracteres ' o /.";
-            return response.redirect("/");
-        }
-        next();
-    }
-}
-function validarNombre(request, response, next) {
-    const texto1 = /['\/]/.test(request.body.signUpName);
-    if (texto1) {
-        request.session.error = "El nombre de usario no puede contener los caracteres ' o /.";
-        return response.redirect("/");
-    }
-    if (request.body.signUpName.length < 1) {
-        request.session.error = "El nombre de usuario debe tener al menos 1 caracter.";
-        return response.redirect("/");
-    }
-    if (request.body.signUpName.length > 50) {
-        request.session.error = "El nombre de usuario no puede tener más de 50 caracteres.";
-        return response.redirect("/");
+
+function validarNombre(req, res, next) {
+    if (/['\/]/.test(req.body.signUpName)) {
+        req.session.error = "Nombre inválido";
+        return res.redirect("/");
     }
     next();
 }
 
-//MIDLLEWARES
-router.use(["/register"], validarEmail("signUpEmail"));
-router.use(["/login"], validarEmail("signInEmail"));
-router.use(["/register"], validarPassword("signUpPassword"), validarPassword2("signUpPassword"));
-router.use(["/login"], validarPassword2("signInPassword"));
-router.use(["/register"], validarNombre);
 
-router.post("/register", function (request, response, next) {
-    if (request.body.signUpPassword !== request.body.signUpConfirmPassword) {
-        request.session.error = "Las contraseñas no coinciden.";
-        return response.redirect("/");
-    }
+// ============================
+// AUTENTIFICACION
+// ============================
 
-    bcrypt.hash(request.body.signUpPassword, 10).then(hash => {
-        userDb.createUser({
-            email: request.body.signUpEmail,
-            name: request.body.signUpName,
-            password: hash,
-            concesionario: request.body.signUpDealer
-        })
-            .then(() => {
-                request.session.user = {
-                    name: request.body.signUpName,
-                    mail: request.body.signUpEmail,
-                    rol: "user",
-                    concesionario: request.body.signUpDealer
-                };
+// REGISTER
+router.post(
+    "/register",
+    validarEmail("signUpEmail"),
+    validarPassword("signUpPassword"),
+    validarPassword2("signUpPassword"),
+    validarNombre,
+    async (req, res, next) => {
+        try {
+            if (req.body.signUpPassword !== req.body.signUpConfirmPassword) {
+                req.session.error = "Las contraseñas no coinciden.";
+                return res.redirect("/");
+            }
 
-                response.redirect("/");
-            })
-            .catch(err => {
-                next(err);
-                return;
+            const hash = await bcrypt.hash(req.body.signUpPassword, 10);
+
+            await userDb.createUser({
+                email: req.body.signUpEmail,
+                name: req.body.signUpName,
+                password: hash,
+                id_concesionario: req.body.signUpDealer
             });
 
-    });
-});
-
-router.post("/login", function (request, response) {
-    userDb.getUserByEmail(request.body.signInEmail).then(([rows]) => {
-        if (rows.length === 0) {
-            request.session.error = "El usuario no existe.";
-            return response.redirect("/");
-        }
-        if (bcrypt.compareSync(request.body.signInPassword, rows[0].password)) {
-            request.session.user = { 
-                name: rows[0].name,
-                mail: request.body.signInEmail, 
-                rol: rows[0].rol, 
-                concesionario: rows[0].id_concesionario
+            req.session.user = {
+                name: req.body.signUpName,
+                email: req.body.signUpEmail,
+                rol: "user",
+                id_concesionario: req.body.signUpDealer
             };
-            response.redirect("/");
+
+            res.redirect("/");
+        } catch (err) {
+            next(err);
         }
-        else {
-            request.session.error = "Contraseña incorrecta.";
-            response.redirect("/");
+    }
+);
+
+
+// LOGIN
+router.post(
+    "/login",
+    validarEmail("signInEmail"),
+    validarPassword2("signInPassword"),
+    async (req, res) => {
+        try {
+            const [rows] = await userDb.getUserByEmail(req.body.signInEmail);
+
+            if (!rows.length) {
+                req.session.error = "No existe usuario";
+                return res.redirect("/");
+            }
+
+            const ok = bcrypt.compareSync(
+                req.body.signInPassword,
+                rows[0].password
+            );
+
+            if (!ok) {
+                req.session.error = "Contraseña incorrecta";
+                return res.redirect("/");
+            }
+
+            req.session.user = {
+                id: rows[0].id,
+                name: rows[0].name,
+                email: rows[0].email,
+                rol: rows[0].rol,
+                id_concesionario: rows[0].id_concesionario
+            };
+
+            res.redirect("/");
+        } catch (err) {
+            res.status(500).send(err.message);
         }
-    });
+    }
+);
+
+
+// LOGOUT
+router.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.redirect("/");
 });
 
-router.get("/logout", function (request, response) {
-    request.session.destroy();
-    response.redirect("/");
+
+// ============================
+// PERFIL
+// ============================
+
+router.post(
+    "/updateProfile",
+    validarEmail("email"),
+    async (req, res, next) => {
+        try {
+            const userId = req.session.user.id;
+
+            await userDb.updateUser(userId, {
+                name: req.body.name,
+                email: req.body.email,
+                rol:req.session.user.rol,
+                id_concesionario: req.body.id_concesionario
+            });
+
+            req.session.user = {
+                ...req.session.user,
+                name: req.body.name,
+                email: req.body.email,
+                id_concesionario: req.body.id_concesionario
+            };
+
+            res.redirect(req.get("Referrer") || "/");
+        } catch (err) {
+            next(err);
+        }
+    }
+);
+
+
+// ============================
+// ACCIONES CRUD ADMIN
+// ============================
+
+// CREATE
+router.post("/create", async (req, res) => {
+    try {
+        await userDb.createUser(req.body);
+
+        req.session.responseMessage = "Usuario creado";
+        res.redirect("/admin");
+    } catch (err) {
+        req.session.errorMessage = err.message;
+        res.redirect("/admin");
+    }
 });
+
+// UPDATE
+router.post("/:id/update", async (req, res) => {
+    try {
+        await userDb.updateUser(req.params.id, req.body);
+        const [updated] = await userDb.getUserById(req.params.id);
+        const u = updated[0];
+        // si es el mismo usuario logueado entonces actualizar sesión
+        if (req.session.user && req.session.user.id == u.id) {
+            req.session.user = {
+                ...req.session.user,
+                name: u.name,
+                email: u.email,
+                id_concesionario: u.id_concesionario
+            };
+        }
+        req.session.responseMessage = "Usuario actualizado";
+        res.redirect("/admin");
+    } catch (err) {
+        req.session.errorMessage = err.message;
+        res.redirect("/admin");
+    }
+});
+
+// DELETE
+router.post("/:id/delete", async (req, res) => {
+    try {
+        await userDb.deleteUser(req.params.id);
+
+        req.session.responseMessage = "Usuario eliminado";
+        res.redirect("/admin");
+    } catch (err) {
+        req.session.errorMessage = err.message;
+        res.redirect("/admin");
+    }
+});
+
 
 module.exports = router;

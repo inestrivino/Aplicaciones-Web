@@ -33,14 +33,13 @@ CREATE TABLE `concesionarios` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `mail` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
   `rol` varchar(10) NOT NULL,
-  `telefono` int(11) DEFAULT NULL,
   `id_concesionario` int(11) NOT NULL,
   `accesibilidad` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `mail` (`mail`)
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `reservas` (
@@ -95,8 +94,8 @@ CREATE TABLE `vehiculos` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `mail`, `password`, `rol`, `telefono`, `id_concesionario`, `accesibilidad`) VALUES
-(1, 'Admin', 'admin@ucm.es', '$2b$10$w5JZSprvOSIi9eZEzakfuurP0F1ikssdVb2DSC5T0UGmjoT92mkj2', 'admin', NULL, 2, NULL);
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `rol`, `id_concesionario`, `accesibilidad`) VALUES
+(1, 'Admin', 'admin@ucm.es', '$2b$10$w5JZSprvOSIi9eZEzakfuurP0F1ikssdVb2DSC5T0UGmjoT92mkj2', 'admin', 2, NULL);
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
