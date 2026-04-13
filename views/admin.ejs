@@ -9,7 +9,7 @@
   <meta name="keywords" content="transporte ecológico, vehículos eléctricos, movilidad sostenible, EcoMóvil" />
   <meta name="author" content="EcoMóvil" />
   <meta name="robots" content="index, follow" />
-  <link rel="icon" href="img/Logo.svg" type="image/x-icon" />
+  <link rel="icon" href="/img/Logo.svg" type="image/x-icon" />
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -19,7 +19,7 @@
 <body>
   <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
 
-    <main class="container mt-5" role="main">
+    <main class="container" role="main">
       <h1>Panel de gestión</h1>
 
       <% if (typeof errorMessage !=='undefined' ) { %>
@@ -57,7 +57,7 @@
               </ul>
 
               <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="baseDatos" role="tabpanel">
+                <div class="tab-pane fade show active" id="baseDatos" role="tabpanel" style="overflow-x: scroll;">
                   <fieldset>
                     <h2>Inserción en la base de datos mediante JSON</h2>
                     <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
@@ -168,10 +168,10 @@
                       <thead class="table-dark sticky-top">
                         <tr>
                           <th>ID</th>
-                          <th class="d-none d-sm-table-cell">Nombre</th>
-                          <th class="d-none d-sm-table-cell">Ciudad</th>
-                          <th class="d-none d-md-table-cell">Dirección</th>
-                          <th class="d-none d-md-table-cell">Teléfono</th>
+                          <th class="d-sm-table-cell">Nombre</th>
+                          <th class="d-sm-table-cell">Ciudad</th>
+                          <th class="d-md-table-cell">Dirección</th>
+                          <th class="d-md-table-cell">Teléfono</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
@@ -181,19 +181,19 @@
                             <td>
                               <%= concesionarios[i].id %>
                             </td>
-                            <td class="d-none d-sm-table-cell">
+                            <td class="d-sm-table-cell">
                               <input class="form-control form-control-sm" type="text" name="nombre"
                                 value="<%= concesionarios[i].nombre %>" form="form<%= concesionarios[i].id %>">
                             </td>
-                            <td class="d-none d-sm-table-cell">
+                            <td class="d-sm-table-cell">
                               <input class="form-control form-control-sm" type="text" name="ciudad"
                                 value="<%= concesionarios[i].ciudad %>" form="form<%= concesionarios[i].id %>">
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-md-table-cell">
                               <input class="form-control form-control-sm" type="text" name="direccion"
                                 value="<%= concesionarios[i].direccion %>" form="form<%= concesionarios[i].id %>">
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-md-table-cell">
                               <input class="form-control form-control-sm" type="text" name="telefono"
                                 value="<%= concesionarios[i].telefono %>" form="form<%= concesionarios[i].id %>">
                             </td>
@@ -289,7 +289,7 @@
                     </div>
                   </div>
 
-                  <div style="max-height: 600px; overflow-y:auto;">
+                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
                     <table class="table table-sm table-striped table-bordered align-middle">
                       <thead class="table-dark sticky-top">
                         <tr>
@@ -385,11 +385,11 @@
                       <thead class="table-dark sticky-top">
                         <tr>
                           <th>ID</th>
-                          <th class="d-none d-sm-table-cell">Nombre</th>
-                          <th class="d-none d-sm-table-cell">Correo</th>
-                          <th class="d-none d-md-table-cell">Rol</th>
-                          <th class="d-none d-md-table-cell">Teléfono</th>
-                          <th class="d-none d-lg-table-cell">Concesionario</th>
+                          <th class="d-sm-table-cell">Nombre</th>
+                          <th class="d-sm-table-cell">Correo</th>
+                          <th class="d-md-table-cell">Rol</th>
+                          <th class="d-md-table-cell">Teléfono</th>
+                          <th class="d-lg-table-cell">Concesionario</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
@@ -399,22 +399,22 @@
                             <td>
                               <%= usuarios[i].id %>
                             </td>
-                            <td class="d-none d-sm-table-cell">
+                            <td class="d-sm-table-cell">
                               <input class="form-control form-control-sm" type="text" name="name"
                                 value="<%= usuarios[i].name %>" form="formUsuarios_<%= usuarios[i].id %>">
                             </td>
-                            <td class="d-none d-sm-table-cell">
+                            <td class="d-sm-table-cell">
                               <input class="form-control form-control-sm" type="text" name="mail"
                                 value="<%= usuarios[i].mail %>" form="formUsuarios_<%= usuarios[i].id %>">
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-md-table-cell">
                               <select class="form-select form-select-sm" name="rol"
                                 form="formUsuarios_<%= usuarios[i].id %>">
                                 <option value="admin" <%=usuarios[i].rol==='admin' ? 'selected' : '' %>>admin</option>
                                 <option value="user" <%=usuarios[i].rol==='user' ? 'selected' : '' %>>user</option>
                               </select>
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-md-table-cell">
                               <input class="form-control form-control-sm" type="text" name="telefono"
                                 value="<%= usuarios[i].telefono %>" form="formUsuarios_<%= usuarios[i].id %>">
                             </td>
