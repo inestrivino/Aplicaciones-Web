@@ -430,7 +430,7 @@
                           <span><strong>
                               <%= c.nombre %>
                             </strong></span>
-                          <span class="badge bg-primary">
+                          <span class="badge bg-info text-dark">
                             <%= c.total_reservas %> reservas
                           </span>
                         </li>
@@ -453,7 +453,7 @@
                                   </strong>
                                   (<%= v.matricula %>)
                                 </span>
-                                <span class="badge bg-success">
+                                <span class="badge bg-info text-dark">
                                   <%= v.total_reservas %> reservas
                                 </span>
                               </li>
@@ -462,6 +462,57 @@
                           <% } else { %>
                             <p>No hay datos disponibles.</p>
                             <% } %>
+
+                              <h3 class="mt-4">Vehículos con mayor valoración media</h3>
+
+                              <% if (mediaVehiculos && mediaVehiculos.length> 0) { %>
+                                <ul class="list-group mb-4">
+                                  <% mediaVehiculos.forEach(v=> { %>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                      <span>
+                                        <strong>
+                                          <%= v.marca %>
+                                            <%= v.modelo %>
+                                        </strong>
+                                        (<%= v.matricula %>)
+                                          <small class="text-muted">
+                                            - <%= v.total_reviews %> reviews
+                                          </small>
+                                      </span>
+
+                                      <span class="badge bg-info text-dark">
+                                        <%= Number(v.media_puntuacion).toFixed(2) %>
+                                      </span>
+                                    </li>
+                                    <% }) %>
+                                </ul>
+                                <% } else { %>
+                                  <p>No hay valoraciones todavía.</p>
+                                  <% } %>
+
+                                    <h3 class="mt-4">Vehículos con más kilómetros recorridos</h3>
+
+                                    <% if (kmVehiculos && kmVehiculos.length> 0) { %>
+                                      <ul class="list-group">
+                                        <% kmVehiculos.forEach(v=> { %>
+                                          <li class="list-group-item d-flex justify-content-between">
+                                            <span>
+                                              <strong>
+                                                <%= v.marca %>
+                                                  <%= v.modelo %>
+                                              </strong>
+                                              (<%= v.matricula %>)
+                                            </span>
+
+                                            <span class="badge bg-info text-dark">
+                                              <%= v.kilometros %> km
+                                            </span>
+                                          </li>
+                                          <% }) %>
+                                      </ul>
+                                      <% } else { %>
+                                        <p>No hay datos disponibles.</p>
+                                        <% } %>
 
                 </div>
               </div>

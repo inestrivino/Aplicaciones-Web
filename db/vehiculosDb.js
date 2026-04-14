@@ -157,14 +157,45 @@ class VehiculosDb {
         );
     }
 
-    //actualiza los kilometros de un coche al finalizar una reserva
+    //actualiza los kilometros recorridos por un vehiculo al terminar una reserva
     async actualizarKilometros(id_reserva, kilometros) {
         return await pool.query(
             `UPDATE vehiculos v
-             JOIN reservas r ON v.matricula = r.matricula
-             SET v.kilometros = v.kilometros + ?
-             WHERE r.id = ?`,
+         JOIN reservas r ON v.matricula = r.matricula
+         SET v.kilometros = v.kilometros + ?
+         WHERE r.id = ?`,
             [kilometros, id_reserva]
+        );
+    }
+
+    async getMediaVehiculos() {
+        return await pool.query(
+            `SELECT 
+            v.matricula,
+            v.marca,
+            v.modelo,
+            AVG(f.puntuacion) AS media_puntuacion,
+            COUNT(f.id) AS total_reviews
+        FROM vehiculos v
+        JOIN reservas r ON v.matricula = r.matricula
+        JOIN feedback f ON r.id = f.id_reserva
+        GROUP BY v.matricula, v.marca, v.modelo
+        ORDER BY media_puntuacion DESC
+        LIMIT 5`
+        );
+    }
+
+    //conseguir por cada coche sus kilometros totales recorridos
+    async getKilometrosVehiculos() {
+        return await pool.query(
+            `SELECT 
+            matricula,
+            marca,
+            modelo,
+            kilometros
+        FROM vehiculos
+        ORDER BY kilometros DESC
+        LIMIT 5`
         );
     }
 }

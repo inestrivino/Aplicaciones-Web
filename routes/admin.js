@@ -11,6 +11,7 @@ const reservasDb = require("../db/reservasDb.js") //db
 
 const fs = require("fs");
 const path = require("path");
+const vehiculosDb = require('../db/vehiculosDb.js');
 
 router.get("/", async function (request, response, next) {
     try {
@@ -39,6 +40,8 @@ router.get("/", async function (request, response, next) {
         ]);
         const [topConcesionarios] = await reservasDb.getTopConcesionarios();
         const [topVehiculos] = await reservasDb.getTopVehiculos();
+        const [mediaVehiculos] = await vehiculosDb.getMediaVehiculos();
+        const [kmVehiculos] = await vehiculosDb.getKilometrosVehiculos();
 
         const [rowsVehiculos] = vehiculos;
         const [rowsConcesionarios] = concesionarios;
@@ -64,8 +67,11 @@ router.get("/", async function (request, response, next) {
             vehiculos: rowsVehiculos,
             concesionarios: rowsConcesionarios,
             usuarios: rowsUsuarios,
+
             topConcesionarios,
             topVehiculos,
+            mediaVehiculos,
+            kmVehiculos,
 
             errorMessage,
             responseMessage,
@@ -177,7 +183,7 @@ async function introducirVehiculos(vehiculos) {
 async function introducirConcesionarios(concesionarios) {
     let insertados = [];
     let errores = [];
-    
+
     for (let concesionario of concesionarios) {
         try {
             // 1. Validar campos obligatorios
