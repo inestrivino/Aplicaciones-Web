@@ -22,17 +22,13 @@ router.get("/", async function (request, response, next) {
         // Recuperar resultados de inserción si vienen de /rellenar
         const insertadosCon = request.session.insertadosCon || [];
         const erroresCon = request.session.erroresCon || [];
-        const pendientesCon = request.session.pendientesCon || [];
         const VehiculosInsertados = request.session.VehiculosInsertados || [];
-        const VehiculosPendientes = request.session.VehiculosPendientes || [];
         const VehiculosErrores = request.session.VehiculosErrores || [];
 
         // Limpiar después de leer
         delete request.session.insertadosCon;
         delete request.session.erroresCon;
-        delete request.session.pendientesCon;
         delete request.session.VehiculosInsertados;
-        delete request.session.VehiculosPendientes;
         delete request.session.VehiculosErrores;
 
         // Obtener datos de DB
@@ -62,9 +58,7 @@ router.get("/", async function (request, response, next) {
 
             insertadosCon,
             erroresCon,
-            pendientesCon,
             VehiculosInsertados,
-            VehiculosPendientes,
             VehiculosErrores,
 
             vehiculos: rowsVehiculos,
@@ -94,20 +88,17 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
 
         // Insertar concesionarios
         const concesionarios = json.concesionarios;
-        const [insertadosCon, pendientesCon, erroresCon] = await introducirConcesionarios(concesionarios);
+        const [insertadosCon, erroresCon] = await introducirConcesionarios(concesionarios);
 
         // Insertar vehículos
         const vehiculos = json.vehiculos;
-        const [VehiculosInsertados, VehiculosPendientes, pendientesCompleto, VehiculosErrores] = await introducirVehiculos(vehiculos);
+        const [VehiculosInsertados, VehiculosErrores] = await introducirVehiculos(vehiculos);
 
         // Guardar resultados en session
         request.session.insertadosCon = insertadosCon;
         request.session.erroresCon = erroresCon;
-        request.session.pendientesCon = pendientesCon;
         request.session.VehiculosInsertados = VehiculosInsertados;
         request.session.VehiculosErrores = VehiculosErrores;
-        request.session.VehiculosPendientes = VehiculosPendientes;
-        request.session.pendientes = pendientesCompleto;
         request.session.insertados = VehiculosInsertados.slice();
         request.session.errores = VehiculosErrores.slice();
 
@@ -121,8 +112,6 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
 //funcion auxiliar para introducir vehiculos
 async function introducirVehiculos(vehiculos) {
     let insertados = [];
-    let pendientes = [];
-    let pendientesCompleto = [];
     let errores = [];
 
     for (let vehiculo of vehiculos) {
@@ -150,101 +139,97 @@ async function introducirVehiculos(vehiculos) {
             if (!vehiculo.imagenCompleto || vehiculo.imagenCompleto.trim() === "")
                 vehiculo.imagenCompleto = "/img/vehiculos/byd_seal1.png"; // Ruta por defecto
 
-            // 4. Convertir la fecha a DATETIME si es necesario
+            // 4. Añadir fecha si es necesario
             if (!vehiculo.fecha) {
-                vehiculo.fecha = new Date().toISOString().split("T")[0];
+                vehiculo.fecha = new Date();
             }
 
-            // 5. Intentar insertar el vehículo
-            const res = await vechiculosDb.createVehiculo(vehiculo);
-            const [rows] = res;
-            if (rows.affectedRows > 0) {
-                insertados.push(vehiculo.matricula);
+            // 5. Comprobar si el vehículo ya existe por matrícula
+            const [rowsExistente] = await vechiculosDb.getVehiculoByMatricula(vehiculo.matricula);
+            if (rowsExistente.length > 0) {
+                const [resUpdate] = await vechiculosDb.updateVehiculo(vehiculo.matricula, vehiculo);
+                if (resUpdate.affectedRows > 0) {
+                    insertados.push(vehiculo.matricula + " (actualizado)");
+                } else {
+                    errores.push(`${vehiculo.matricula} NO_ACTUALIZADO`);
+                }
             } else {
-                errores.push(`${vehiculo.matricula} ERROR_INSERCION`);
+                try {
+                    const [resInsert] = await vechiculosDb.createVehiculo(vehiculo);
+                    if (resInsert.affectedRows > 0) {
+                        insertados.push(vehiculo.matricula + " (nuevo)");
+                    } else {
+                        errores.push(`${vehiculo.matricula} ERROR_INSERCION`);
+                    }
+                } catch (error) {
+                    errores.push(`${vehiculo.matricula} ${error.code}`);
+                }
             }
         } catch (error) {
-            if (error.message.includes("Duplicate")) {
-                pendientes.push(vehiculo.matricula);
-                pendientesCompleto.push(vehiculo);
-            } else {
-                errores.push(`${vehiculo.matricula} ${error.message}`);
-            }
+            errores.push(`${vehiculo.matricula} ${error.message}`);
         }
     }
 
-    return [insertados, pendientes, pendientesCompleto, errores];
+    return [insertados, errores];
 }
 
 //funcion auxiliar para introducir concesionarios
 async function introducirConcesionarios(concesionarios) {
     let insertados = [];
     let errores = [];
-    let pendientesCon = [];
-
-    // Traer todos los concesionarios de la base de datos una sola vez
-    const [existentes] = await concesionariosDb.getConcesionarios();
-
+    
     for (let concesionario of concesionarios) {
         try {
-            const duplicado = existentes.find(c =>
-                String(c.nombre).trim().toLowerCase() === String(concesionario.nombre).trim().toLowerCase() &&
-                String(c.direccion).trim().toLowerCase() === String(concesionario.direccion).trim().toLowerCase() &&
-                String(c.telefono).trim() === String(concesionario.telefono).trim()
-            );
-
-            if (duplicado) {
-                pendientesCon.push(concesionario.nombre);
-                continue;
-            }
-
-            const res = await concesionariosDb.createConcesionario(concesionario);
-            const [rows] = res;
-            if (rows.affectedRows > 0) {
-                insertados.push(concesionario.nombre);
-            } else {
-                errores.push(concesionario.nombre);
-            }
-        } catch (error) {
-            errores.push(concesionario.nombre + " " + error.code);
-        }
-    }
-
-    return [insertados, pendientesCon, errores];
-}
-
-router.post("/modificarPendientes", async function (request, response, next) {
-    try {
-        // Recuperar datos de sesión
-        let insertados = request.session.insertados || [];
-        let errores = request.session.errores || [];
-        let pendientes = request.session.pendientes || [];
-
-        // Procesar cada vehículo pendiente
-        for (let vehiculo of pendientes) {
-            try {
-                const res = await vechiculosDb.updateVehiculo(vehiculo.matricula, vehiculo);
-                const [rows] = res;
-                if (rows.affectedRows > 0) {
-                    insertados.push(vehiculo.matricula);
-                } else {
-                    errores.push(vehiculo.matricula);
+            // 1. Validar campos obligatorios
+            const camposObligatorios = ["nombre", "ciudad", "direccion", "telefono"];
+            for (const campo of camposObligatorios) {
+                if (!concesionario[campo] || concesionario[campo].toString().trim() === "") {
+                    throw new Error(`CAMPO_FALTANTE_${campo.toUpperCase()}`);
                 }
-            } catch (error) {
-                errores.push(vehiculo.matricula + " " + error.code);
             }
+
+            // 2. Normalizar datos
+            concesionario.nombre = concesionario.nombre.trim();
+            concesionario.ciudad = concesionario.ciudad.trim();
+            concesionario.direccion = concesionario.direccion.trim();
+            concesionario.telefono = concesionario.telefono.toString().trim();
+
+            // 3. Validaciones básicas
+            // Teléfono: solo números (simple)
+            if (!/^[0-9]+$/.test(concesionario.telefono)) {
+                throw new Error("TELEFONO_INVALIDO");
+            }
+            // Longitud mínima nombre
+            if (concesionario.nombre.length < 3) {
+                throw new Error("NOMBRE_DEMASIADO_CORTO");
+            }
+
+            // 4. Comprobar si existe por nombre
+            const [rowsExistente] = await concesionariosDb.getConcesionarioByNombre(concesionario.nombre);
+            if (rowsExistente.length > 0) {
+                const id = rowsExistente[0].id;
+                const [resUpdate] = await concesionariosDb.updateConcesionario(id, concesionario);
+                if (resUpdate.affectedRows > 0) {
+                    insertados.push(concesionario.nombre + " (actualizado)");
+                } else {
+                    errores.push(concesionario.nombre + " NO_ACTUALIZADO");
+                }
+
+            } else {
+                const [resInsert] = await concesionariosDb.createConcesionario(concesionario);
+                if (resInsert.affectedRows > 0) {
+                    insertados.push(concesionario.nombre + " (nuevo)");
+                } else {
+                    errores.push(concesionario.nombre + " NO_INSERTADO");
+                }
+            }
+
+        } catch (error) {
+            errores.push(`${concesionario.nombre || "SIN_NOMBRE"} ${error.message || error.code}`);
         }
-
-        // Guardar resultados en la sesión
-        request.session.insertados = insertados;
-        request.session.errores = errores;
-        request.session.pendientes = [];
-
-        // Redirigir a /admin para que el GET se encargue del render
-        response.redirect("/admin/");
-    } catch (err) {
-        next(err);
     }
-});
+
+    return [insertados, errores];
+}
 
 module.exports = router;

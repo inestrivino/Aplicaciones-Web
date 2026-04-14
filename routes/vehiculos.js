@@ -72,9 +72,9 @@ router.post("/create", async function (req, res) {
 
         let imagenCompleto = "/img/vehiculos/" + imagen; 
 
-        console.log(imagenCompleto)
+        const fecha = new Date();
 
-        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, id_concesionario, imagenCompleto };
+        const vehiculo = { matricula, marca, modelo, plazas, autonomia, color, fecha, id_concesionario, imagenCompleto };
 
         await vehiculosDb.createVehiculo(vehiculo);
         req.session.responseMessage = "Vehículo creado con éxito";

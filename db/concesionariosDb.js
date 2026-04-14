@@ -46,6 +46,14 @@ class ConcesionariosDb {
             [id]
         );
     }
+
+    //devuelve un concesionario por su nombre
+    async getConcesionarioByNombre(nombre) {
+        return await pool.query(
+            'SELECT * FROM concesionarios WHERE nombre = ?',
+            [nombre]
+        );
+    }
 }
 
 module.exports = new ConcesionariosDb();

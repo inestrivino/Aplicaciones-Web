@@ -82,8 +82,8 @@ router.post("/cancelar/:id", async (req, res) => {
             throw new Error("No tienes permiso para cancelar esta reserva");
         }
         // Solo permitir cancelar si es futura
-        const hoy = new Date().toISOString().split("T")[0];
-        const fecha_ini = new Date(reserva.fecha_ini).toISOString().split("T")[0];
+        const hoy = new Date();
+        const fecha_ini = new Date(reserva.fecha_ini);
         if (fecha_ini < hoy) {
             throw new Error("No puedes cancelar una reserva ya iniciada");
         }
@@ -123,8 +123,8 @@ router.post("/devolver/:id", async (req, res) => {
         }
 
         //Comprobar que la reserva está en curso
-        const hoy = new Date().toISOString().split("T")[0];
-        const fecha_ini = new Date(reserva.fecha_ini).toISOString().split("T")[0];
+        const hoy = new Date();
+        const fecha_ini = new Date(reserva.fecha_ini);
 
         if (hoy < fecha_ini) {
             throw new Error("La reserva aún no ha comenzado");
