@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const reservasDb = require("../db/reservasDb.js");
 const userDb = require("../db/userDb.js");
+const vehiculosDb = require("../db/vehiculosDb.js");
 
 router.get("/", async function (request, response, next) {
     try {
@@ -145,10 +146,15 @@ router.post("/devolver/:id", async (req, res) => {
         if (req.body.accion === "feedback") {
             const puntuacion = parseInt(req.body.puntuacion);
             const comentario = req.body.comentario || null;
+            const kilometros = req.body.kilometros || 0;
 
             if (isNaN(puntuacion) || puntuacion < 1 || puntuacion > 5) {
                 throw new Error("Puntuación inválida");
             }
+
+            if (isNaN(kilometros) || kilometros < 0) throw new Error("No pueden recorrerse kilometros negativos");
+
+            await vehiculosDb.actualizarKilometros(id_reserva, kilometros);
 
             await reservasDb.insertFeedback({
                 id_reserva,

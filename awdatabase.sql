@@ -47,6 +47,7 @@ CREATE TABLE `vehiculos` (
   `color` varchar(50) NOT NULL,
   `imagen` varchar(255) NOT NULL,
   `id_concesionario` int(11) NOT NULL,
+  `kilometros` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`matricula`),
   
   CONSTRAINT fk_vehiculos_concesionario
