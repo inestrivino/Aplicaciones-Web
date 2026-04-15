@@ -91,6 +91,24 @@ CREATE TABLE `feedback` (
     CHECK (`puntuacion` BETWEEN 1 AND 5)
 );
 
+CREATE TABLE `incidentes` (
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
+  `matricula` varchar(20) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `comentario` VARCHAR(200),
+  `fecha` date,
+
+  CONSTRAINT fk_incidente_usuario
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES users(`id`)
+    ON DELETE CASCADE,
+
+  CONSTRAINT fk_incidente_matricula
+    FOREIGN KEY (`matricula`)
+    REFERENCES vehiculos(`matricula`)
+    ON DELETE CASCADE
+);
+
 INSERT INTO `concesionarios` (`id`, `nombre`, `ciudad`, `direccion`, `telefono`) VALUES
 (1, 'Concesionario Central', 'Madrid', 'Calle Gran Via 1', '912345678');
 

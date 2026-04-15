@@ -89,7 +89,6 @@
                                   <textarea name="comentario" class="form-control" placeholder="Opcional"></textarea>
 
                                   <label>Kilometros recorridos:</label>
-                                  <label>Kilometros recorridos:</label>
                                   <input type="number" name="kilometros" class="form-control" placeholder="Opcional"
                                     min="0" step="1" />
                                 </div>
@@ -103,6 +102,39 @@
                                   <!-- devolver + feedback -->
                                   <button type="submit" name="accion" value="feedback" class="btn btn-success">
                                     Enviar con valoración
+                                  </button>
+
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cancelar
+                                  </button>
+                                </div>
+
+                              </form>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal fade" id="modalIncidencias<%= r.id %>" tabindex="-1">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+
+                              <div class="modal-header">
+                                <h5 class="modal-title">Reportar incidencias</h5>
+                              </div>
+
+                              <form action="/misReservas/enviarIncidencia/<%= r.id %>" method="POST">
+
+                                <div class="modal-body">
+                                  <label>Comentario:</label>
+                                  <textarea name="comentario" class="form-control"
+                                    placeholder="Describe tu incidencia"></textarea>
+                                </div>
+
+                                <div class="modal-footer">
+                                  <!-- Enviar -->
+                                  <button type="submit" class="btn btn-success">
+                                    Enviar incidencia
                                   </button>
 
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -138,12 +170,16 @@
                                   <%= r.concesionario_nombre %>
                                 </li>
                               </ul>
-                            </div>
 
-                            <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal"
-                              data-bs-target="#modalFeedback<%= r.id %>">
-                              Devolver vehículo
-                            </button>
+                              <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal"
+                                data-bs-target="#modalFeedback<%= r.id %>">
+                                Devolver vehículo
+                              </button>
+                              <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
+                                data-bs-target="#modalIncidencias<%= r.id %>">
+                                Reportar una incidencia
+                              </button>
+                            </div>
 
                           </div>
                         </div>

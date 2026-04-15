@@ -42,6 +42,7 @@ router.get("/", async function (request, response, next) {
         const [topVehiculos] = await reservasDb.getTopVehiculos();
         const [mediaVehiculos] = await vehiculosDb.getMediaVehiculos();
         const [kmVehiculos] = await vehiculosDb.getKilometrosVehiculos();
+        const [incidencias] = await vehiculosDb.getIncidenciasConVehiculo();
 
         const [rowsVehiculos] = vehiculos;
         const [rowsConcesionarios] = concesionarios;
@@ -72,6 +73,7 @@ router.get("/", async function (request, response, next) {
             topVehiculos,
             mediaVehiculos,
             kmVehiculos,
+            incidencias,
 
             errorMessage,
             responseMessage,

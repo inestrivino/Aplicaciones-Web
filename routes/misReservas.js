@@ -172,4 +172,50 @@ router.post("/devolver/:id", async (req, res) => {
     }
 });
 
+router.post("/enviarIncidencia/:id", async (req, res) => {
+    try {
+        // Comprobar que el usuario está autenticado
+        const idUsuario = req.session.user.id;
+        const [rows] = await userDb.getUserById(idUsuario);
+        if (!rows || rows.length === 0) {
+            throw new Error("Usuario no encontrado en la base de datos");
+        }
+
+        // Comprobar que la reserva tiene un formato válido y existe
+        const id_reserva = parseInt(req.params.id);
+        if (isNaN(id_reserva)) {
+            throw new Error("ID de reserva inválido");
+        }
+        const [reservas] = await reservasDb.getReservaById(id_reserva);
+        if (!reservas || reservas.length === 0) {
+            throw new Error("La reserva no existe");
+        }
+
+        // Comprobar que la reserva pertenece al usuario
+        const reserva = reservas[0];
+        if (parseInt(reserva.id_usuario) !== parseInt(idUsuario)) {
+            throw new Error("No tienes permiso para cancelar esta reserva");
+        }
+
+        // Obtener comentario desde el body
+        const { comentario } = req.body;
+        if (!comentario || comentario.trim().length === 0) {
+            throw new Error("El comentario no puede estar vacío");
+        }
+
+        // Obtener la fecha de la incidencia
+        const hoy = new Date();
+
+        // Enviar incidencia
+        await vehiculosDb.enviarIncidencia(reserva.id_usuario, reserva.matricula, comentario, hoy);
+
+        req.session.responseMessage = "Incidencia enviada";
+        res.redirect("/misReservas");
+
+    } catch (err) {
+        req.session.errorMessage = err.message || "Error al enviar incidencia";
+        res.redirect("/misReservas");
+    }
+});
+
 module.exports = router;

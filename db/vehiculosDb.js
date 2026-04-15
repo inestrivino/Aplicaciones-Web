@@ -198,6 +198,33 @@ class VehiculosDb {
         LIMIT 5`
         );
     }
+
+    //inserta la incidencia en la base de datos
+    async enviarIncidencia(idUsuario, matricula, comentario, fecha) {
+        return await pool.query(
+            `
+        INSERT INTO incidentes (id_usuario, matricula, comentario, fecha)
+        VALUES (?, ?, ?, ?)
+        `,
+            [idUsuario, matricula, comentario, fecha]
+        );
+    }
+
+    //devuelve todas las incidentes con su vehiculo
+    async getIncidenciasConVehiculo() {
+        return await pool.query(`
+        SELECT 
+            i.id,
+            i.matricula,
+            i.comentario,
+            i.fecha,
+            v.modelo,
+            COUNT(i.id) OVER (PARTITION BY i.matricula) AS total_incidencias
+        FROM incidentes i
+        JOIN vehiculos v ON i.matricula = v.matricula
+        ORDER BY fecha DESC
+    `);
+    }
 }
 
 module.exports = new VehiculosDb();
