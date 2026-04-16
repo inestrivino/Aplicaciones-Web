@@ -474,7 +474,7 @@ function mapaConcesionarios() {
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap'
+            attribution: '&copy OpenStreetMap'
         }).addTo(map);
 
         let bounds = [];
@@ -493,6 +493,54 @@ function mapaConcesionarios() {
         });
         if (bounds.length > 0) {
             map.fitBounds(bounds, { padding: [50, 50] });
+        }
+
+        navigator.geolocation.getCurrentPosition(pos => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+
+            L.marker([userLat, userLng])
+                .addTo(map)
+                .bindPopup("Tu ubicación")
+                .openPopup();
+
+            calcularDistancias(userLat, userLng, map);
+        });
+
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+        }
+
+        function calcularDistancias(userLat, userLng, map) {
+            concesionariosData.forEach(c => {
+                if (c.latitud && c.longitud) {
+                    const lat = parseFloat(c.latitud);
+                    const lng = parseFloat(c.longitud);
+
+                    const distancia = calcularDistancia(userLat, userLng, lat, lng);
+
+                    L.marker([lat, lng])
+                        .addTo(map)
+                        .bindPopup(`
+                    <strong>${c.nombre}</strong><br>
+                    ${c.direccion}<br>
+                    ${distancia.toFixed(2)} km
+                `);
+                }
+            });
         }
     }
 }
