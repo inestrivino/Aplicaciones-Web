@@ -138,6 +138,16 @@
                             <input type="text" class="form-control" id="direccion" name="direccion" required>
                           </div>
                           <div class="mb-3">
+                            <label for="latitud" class="form-label"><strong>Latitud:</strong></label>
+                            <input type="text" class="form-control" id="latitud" name="latitud" placeholder="Opcional">
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="longitud" class="form-label"><strong>Longitud:</strong></label>
+                            <input type="text" class="form-control" id="longitud" name="longitud"
+                              placeholder="Opcional">
+                          </div>
+                          <div class="mb-3">
                             <label for="telefono" class="form-label"><strong>Teléfono:</strong></label>
                             <input type="text" class="form-control" id="telefono" name="telefono" required>
                           </div>
@@ -155,6 +165,8 @@
                           <th class="d-sm-table-cell">Nombre</th>
                           <th class="d-sm-table-cell">Ciudad</th>
                           <th class="d-md-table-cell">Dirección</th>
+                          <th>Lat</th>
+                          <th>Lng</th>
                           <th class="d-md-table-cell">Teléfono</th>
                           <th>Acciones</th>
                         </tr>
@@ -176,6 +188,15 @@
                             <td class="d-md-table-cell">
                               <input class="form-control form-control-sm" type="text" name="direccion"
                                 value="<%= concesionarios[i].direccion %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+                            <td>
+                              <input class="form-control form-control-sm" type="text" name="latitud"
+                                value="<%= concesionarios[i].latitud || '' %>" form="form<%= concesionarios[i].id %>">
+                            </td>
+
+                            <td>
+                              <input class="form-control form-control-sm" type="text" name="longitud"
+                                value="<%= concesionarios[i].longitud || '' %>" form="form<%= concesionarios[i].id %>">
                             </td>
                             <td class="d-md-table-cell">
                               <input class="form-control form-control-sm" type="text" name="telefono"
