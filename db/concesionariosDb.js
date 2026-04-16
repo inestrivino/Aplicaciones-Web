@@ -4,17 +4,35 @@ class ConcesionariosDb {
     //mete un nuevo concesionario
     async createConcesionario(concesionario) {
         return await pool.query(
-            'INSERT INTO concesionarios(nombre, ciudad, direccion, telefono) VALUES (?, ?, ?, ?)',
-            [concesionario.nombre, concesionario.ciudad, concesionario.direccion, concesionario.telefono]
+            `INSERT INTO concesionarios
+        (nombre, ciudad, direccion, telefono, latitud, longitud)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+                concesionario.nombre,
+                concesionario.ciudad,
+                concesionario.direccion,
+                concesionario.telefono,
+                concesionario.latitud,
+                concesionario.longitud
+            ]
         );
     }
 
     //actualiza un concesionario
     updateConcesionario(id, concesionario) {
         return pool.query(
-            'UPDATE concesionarios SET nombre = ?, ciudad = ?, direccion = ?, telefono = ? ' +
-            'WHERE id = ?',
-            [concesionario.nombre, concesionario.ciudad, concesionario.direccion, concesionario.telefono, id]
+            `UPDATE concesionarios 
+         SET nombre = ?, ciudad = ?, direccion = ?, telefono = ?, latitud = ?, longitud = ?
+         WHERE id = ?`,
+            [
+                concesionario.nombre,
+                concesionario.ciudad,
+                concesionario.direccion,
+                concesionario.telefono,
+                concesionario.latitud,
+                concesionario.longitud,
+                id
+            ]
         );
     }
 

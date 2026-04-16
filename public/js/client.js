@@ -464,6 +464,39 @@ function reserveCar(matricula) {
     window.location.href = `../reserva?car=${encodeURIComponent(matricula)}`;
 }
 
+function mapaConcesionarios() {
+    var map = L.map('map').setView([40.4168, -3.7038], 6);
+
+    if (map) {
+        const concesionariosData = JSON.parse(
+            document.getElementById("data-concesionarios").textContent
+        );
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        let bounds = [];
+
+        concesionariosData.forEach(c => {
+            if (c.latitud && c.longitud) {
+                const lat = parseFloat(c.latitud);
+                const lng = parseFloat(c.longitud);
+
+                L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup(c.nombre);
+
+                bounds.push([lat, lng]);
+            }
+        });
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    }
+}
+
 function toggleFormulario() {
     // Selecciona todos los elementos que tienen data-bs-toggle="collapse"
     const collapseHeaders = document.querySelectorAll('[data-bs-toggle="collapse"]');
@@ -485,6 +518,7 @@ document.addEventListener("DOMContentLoaded", function () {
     inicializarTema();
     inicializarTamanoLetra();
     inicializarSignInUp();
+    mapaConcesionarios();
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);

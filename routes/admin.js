@@ -189,9 +189,13 @@ async function introducirConcesionarios(concesionarios) {
     for (let concesionario of concesionarios) {
         try {
             // 1. Validar campos obligatorios
-            const camposObligatorios = ["nombre", "ciudad", "direccion", "telefono"];
+            const camposObligatorios = ["nombre", "ciudad", "direccion", "telefono", "latitud", "longitud"];
             for (const campo of camposObligatorios) {
-                if (!concesionario[campo] || concesionario[campo].toString().trim() === "") {
+                if (
+                    concesionario[campo] === undefined ||
+                    concesionario[campo] === null ||
+                    concesionario[campo].toString().trim() === ""
+                ) {
                     throw new Error(`CAMPO_FALTANTE_${campo.toUpperCase()}`);
                 }
             }
@@ -202,21 +206,40 @@ async function introducirConcesionarios(concesionarios) {
             concesionario.direccion = concesionario.direccion.trim();
             concesionario.telefono = concesionario.telefono.toString().trim();
 
+            // Convertir las coordenadas
+            concesionario.latitud = parseFloat(concesionario.latitud);
+            concesionario.longitud = parseFloat(concesionario.longitud);
+
             // 3. Validaciones básicas
-            // Teléfono: solo números (simple)
             if (!/^[0-9]+$/.test(concesionario.telefono)) {
                 throw new Error("TELEFONO_INVALIDO");
             }
-            // Longitud mínima nombre
+
             if (concesionario.nombre.length < 3) {
                 throw new Error("NOMBRE_DEMASIADO_CORTO");
             }
 
+            // Validamos las geolocalizaciones
+            if (isNaN(concesionario.latitud) || isNaN(concesionario.longitud)) {
+                throw new Error("COORDENADAS_INVALIDAS");
+            }
+
+            if (concesionario.latitud < -90 || concesionario.latitud > 90) {
+                throw new Error("LATITUD_INVALIDA");
+            }
+
+            if (concesionario.longitud < -180 || concesionario.longitud > 180) {
+                throw new Error("LONGITUD_INVALIDA");
+            }
+
             // 4. Comprobar si existe por nombre
             const [rowsExistente] = await concesionariosDb.getConcesionarioByNombre(concesionario.nombre);
+
             if (rowsExistente.length > 0) {
                 const id = rowsExistente[0].id;
+
                 const [resUpdate] = await concesionariosDb.updateConcesionario(id, concesionario);
+
                 if (resUpdate.affectedRows > 0) {
                     insertados.push(concesionario.nombre + " (actualizado)");
                 } else {
@@ -225,6 +248,7 @@ async function introducirConcesionarios(concesionarios) {
 
             } else {
                 const [resInsert] = await concesionariosDb.createConcesionario(concesionario);
+
                 if (resInsert.affectedRows > 0) {
                     insertados.push(concesionario.nombre + " (nuevo)");
                 } else {
@@ -233,7 +257,7 @@ async function introducirConcesionarios(concesionarios) {
             }
 
         } catch (error) {
-            errores.push(`${concesionario.nombre || "SIN_NOMBRE"} ${error.message || error.code}`);
+            errores.push(`${concesionario.nombre || "SIN_NOMBRE"} ${error.message}`);
         }
     }
 
