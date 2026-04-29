@@ -566,7 +566,6 @@ document.addEventListener("DOMContentLoaded", function () {
     inicializarTema();
     inicializarTamanoLetra();
     inicializarSignInUp();
-    mapaConcesionarios();
 
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
@@ -581,5 +580,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     else if (path.includes("admin")) {
         toggleFormulario();
+    }
+    else if (L!=null) {
+        mapaConcesionarios();
     }
 });
