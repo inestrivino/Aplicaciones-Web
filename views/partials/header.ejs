@@ -219,18 +219,10 @@
                 </div>
                 <div>
                   <label for="signUpDealer" class="form-label">Concesionario</label>
-                  <select class="form-select" name="signUpDealer" id="signUpDealer" required
-                    aria-label="Seleccionar concesionario">
+                  <select id="signUpDealer" class="form-select" required>
                     <option selected disabled value="">
                       Seleccione un concesionario
                     </option>
-                    <% if (concesionarios && concesionarios.length> 0) { %>
-                      <% concesionarios.forEach(c=> { %>
-                        <option value="<%= c.id %>">
-                          <%= c.nombre %>
-                        </option>
-                        <% }); %>
-                          <% } %>
                   </select>
                 </div>
                 <div>

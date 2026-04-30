@@ -79,6 +79,11 @@ app.use("/user", require("./routes/user"));
 app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));
 
+//APIS DE LA APLICACIÓN
+app.use("/api/concesionarios", require("./routes/api/concesionarios"));
+app.use("/api/vehiculos", require("./routes/api/vehiculos"));
+app.use("/api/misReservas", require("./routes/api/misReservas"));
+
 //ERRORES
 app.use(function (err, request, response, next) {
     console.error(err.stack);

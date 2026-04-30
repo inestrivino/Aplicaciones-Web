@@ -172,18 +172,4 @@ router.get("/filterVehiculos", async function (req, res, next) {
     }
 });
 
-// Ruta para obtener las fechas ocupadas de un vehículo
-router.get("/fechasOcupado", async (req, res) => {
-    const { matricula } = req.query;
-    try {
-        // Llamar a la función getFechasOcupadas de vehiculosDb
-        const [rows] = await vehiculosDb.getFechasOcupadas(matricula);
-        // Devolver las fechas ocupadas en formato JSON
-        res.json({ ocupadas: rows });
-    } catch (error) {
-        console.error("Error al obtener fechas ocupadas:", error);
-        res.status(500).json({ error: "Error al obtener fechas ocupadas" });
-    }
-});
-
 module.exports = router;
