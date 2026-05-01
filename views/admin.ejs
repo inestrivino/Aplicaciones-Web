@@ -158,7 +158,7 @@
                   </div>
 
                   <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table class="table table-sm table-striped table-bordered align-middle">
+                    <table id="tabla-concesionarios" class="table table-sm table-striped table-bordered align-middle">
                       <thead class="table-dark sticky-top">
                         <tr>
                           <th>ID</th>
@@ -171,52 +171,7 @@
                           <th>Acciones</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <% for (let i=0; i < concesionarios.length; i++) { %>
-                          <tr>
-                            <td>
-                              <%= concesionarios[i].id %>
-                            </td>
-                            <td class="d-sm-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="nombre"
-                                value="<%= concesionarios[i].nombre %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-                            <td class="d-sm-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="ciudad"
-                                value="<%= concesionarios[i].ciudad %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-                            <td class="d-md-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="direccion"
-                                value="<%= concesionarios[i].direccion %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="text" name="latitud"
-                                value="<%= concesionarios[i].latitud || '' %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-
-                            <td>
-                              <input class="form-control form-control-sm" type="text" name="longitud"
-                                value="<%= concesionarios[i].longitud || '' %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-                            <td class="d-md-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="telefono"
-                                value="<%= concesionarios[i].telefono %>" form="form<%= concesionarios[i].id %>">
-                            </td>
-                            <td>
-                              <form id="form<%= concesionarios[i].id %>"
-                                action="/concesionarios/<%= concesionarios[i].id %>/update" method="POST"></form>
-
-                              <button class="btn btn-sm btn-secondary mb-1"
-                                form="form<%= concesionarios[i].id %>">Modificar</button>
-                              <form action="/concesionarios/<%= concesionarios[i].id %>/delete" method="POST"
-                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este concesionario?');"
-                                style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                              </form>
-                            </td>
-                          </tr>
-                          <% } %>
-                      </tbody>
+                      <tbody></tbody>
                     </table>
                   </div>
                 </div>
@@ -295,7 +250,7 @@
                   </div>
 
                   <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table class="table table-sm table-striped table-bordered align-middle">
+                    <table class="table table-sm table-striped table-bordered align-middle" id="tabla-vehiculos">
                       <thead class="table-dark sticky-top">
                         <tr>
                           <th>Matrícula</th>
@@ -310,80 +265,14 @@
                           <th>Acciones</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <% for (let i=0; i < vehiculos.length; i++) { %>
-                          <tr>
-                            <td>
-                              <%= vehiculos[i].matricula %>
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="text" name="marca"
-                                value="<%= vehiculos[i].marca %>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="text" name="modelo"
-                                value="<%= vehiculos[i].modelo %>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="date" name="fecha"
-                                value="<%= vehiculos[i].fecha%>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="number" name="plazas"
-                                value="<%= vehiculos[i].plazas %>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="number" name="autonomia"
-                                value="<%= vehiculos[i].autonomia %>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <input class="form-control form-control-sm" type="text" name="color"
-                                value="<%= vehiculos[i].color %>" form="form<%= vehiculos[i].matricula %>">
-                            </td>
-                            <td>
-                              <select class="form-select form-select-sm" name="id_concesionario"
-                                form="form<%= vehiculos[i].matricula %>">
-                                <% concesionarios.forEach(c=> { %>
-                                  <option value="<%= c.id %>" <%=c.id===vehiculos[i].id_concesionario ? 'selected' : ''
-                                    %>>
-                                    <%= c.nombre %> (<%= c.ciudad %>)
-                                  </option>
-                                  <% }) %>
-                              </select>
-                            </td>
-                            <td>
-                              <select class="form-select form-select-sm" name="imagen"
-                                form="form<%= vehiculos[i].matricula %>">
-                                <% imagenesVehiculos.forEach(img=> { %>
-                                  <% const imagenBD=vehiculos[i].imagen.split('/').pop().trim(); %>
-                                    <option value="<%= img %>" <%=imagenBD===img.trim() ? 'selected' : '' %>>
-                                      <%= img %>
-                                    </option>
-                                    <% }) %>
-                              </select>
-                            </td>
-                            <td>
-                              <form id="form<%= vehiculos[i].matricula %>"
-                                action="/vehiculos/<%= vehiculos[i].matricula %>/update" method="POST"></form>
-
-                              <button class="btn btn-sm btn-secondary mb-1"
-                                form="form<%= vehiculos[i].matricula %>">Modificar</button>
-                              <form action="/vehiculos/<%= vehiculos[i].matricula %>/delete" method="POST"
-                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este vehículo?');"
-                                style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                              </form>
-                            </td>
-                          </tr>
-                          <% } %>
-                      </tbody>
+                      <tbody></tbody>
                     </table>
                   </div>
                 </div>
 
                 <div class="tab-pane fade" id="usuarios" role="tabpanel">
                   <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table class="table table-sm table-striped table-bordered align-middle">
+                    <table class="table table-sm table-striped table-bordered align-middle" id="tabla-usuarios">
                       <thead class="table-dark sticky-top">
                         <tr>
                           <th>ID</th>
@@ -394,53 +283,7 @@
                           <th>Acciones</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <% for (let i=0; i < usuarios.length; i++) { %>
-                          <tr>
-                            <td>
-                              <%= usuarios[i].id %>
-                            </td>
-                            <td class="d-sm-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="name"
-                                value="<%= usuarios[i].name %>" form="formUsuarios_<%= usuarios[i].id %>">
-                            </td>
-                            <td class="d-sm-table-cell">
-                              <input class="form-control form-control-sm" type="text" name="email"
-                                value="<%= usuarios[i].email %>" form="formUsuarios_<%= usuarios[i].id %>">
-                            </td>
-                            <td class="d-md-table-cell">
-                              <select class="form-select form-select-sm" name="rol"
-                                form="formUsuarios_<%= usuarios[i].id %>">
-                                <option value="admin" <%=usuarios[i].rol==='admin' ? 'selected' : '' %>>admin</option>
-                                <option value="user" <%=usuarios[i].rol==='user' ? 'selected' : '' %>>user</option>
-                              </select>
-                            </td>
-                            <td>
-                              <select class="form-select form-select-sm" name="id_concesionario"
-                                form="formUsuarios_<%= usuarios[i].id %>">
-                                <% concesionarios.forEach(c=> { %>
-                                  <option value="<%= c.id %>" <%=c.id===usuarios[i].id_concesionario ? 'selected' : ''
-                                    %>>
-                                    <%= c.nombre %> (<%= c.ciudad %>)
-                                  </option>
-                                  <% }) %>
-                              </select>
-                            </td>
-                            <td>
-                              <form id="formUsuarios_<%= usuarios[i].id %>" action="/user/<%= usuarios[i].id %>/update"
-                                method="POST"></form>
-
-                              <button class="btn btn-sm btn-secondary mb-1"
-                                form="formUsuarios_<%= usuarios[i].id %>">Modificar</button>
-                              <form action="/user/<%= usuarios[i].id %>/delete" method="POST"
-                                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este usuario?');"
-                                style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                              </form>
-                            </td>
-                          </tr>
-                          <% } %>
-                      </tbody>
+                      <tbody></tbody>
                     </table>
                   </div>
                 </div>
@@ -448,97 +291,10 @@
                 <div class="tab-pane fade" id="estadisticas" role="tabpanel">
 
                   <h3 class="mt-3">Concesionarios con más reservas</h3>
-                  <% if (topConcesionarios && topConcesionarios.length> 0) { %>
-                    <ul class="list-group mb-4">
-                      <% topConcesionarios.forEach(c=> { %>
-                        <li class="list-group-item d-flex justify-content-between">
-                          <span><strong>
-                              <%= c.nombre %>
-                            </strong></span>
-                          <span class="badge bg-info text-dark">
-                            <%= c.total_reservas %> reservas
-                          </span>
-                        </li>
-                        <% }) %>
-                    </ul>
-                    <% } else { %>
-                      <p>No hay datos disponibles.</p>
-                      <% } %>
-
-
-                        <h3 class="mt-3">Vehículos con más reservas</h3>
-                        <% if (topVehiculos && topVehiculos.length> 0) { %>
-                          <ul class="list-group">
-                            <% topVehiculos.forEach(v=> { %>
-                              <li class="list-group-item d-flex justify-content-between">
-                                <span>
-                                  <strong>
-                                    <%= v.marca %>
-                                      <%= v.modelo %>
-                                  </strong>
-                                  (<%= v.matricula %>)
-                                </span>
-                                <span class="badge bg-info text-dark">
-                                  <%= v.total_reservas %> reservas
-                                </span>
-                              </li>
-                              <% }) %>
-                          </ul>
-                          <% } else { %>
-                            <p>No hay datos disponibles.</p>
-                            <% } %>
-
-                              <h3 class="mt-4">Vehículos con mayor valoración media</h3>
-
-                              <% if (mediaVehiculos && mediaVehiculos.length> 0) { %>
-                                <ul class="list-group mb-4">
-                                  <% mediaVehiculos.forEach(v=> { %>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                      <span>
-                                        <strong>
-                                          <%= v.marca %>
-                                            <%= v.modelo %>
-                                        </strong>
-                                        (<%= v.matricula %>)
-                                          <small class="text-muted">
-                                            - <%= v.total_reviews %> reviews
-                                          </small>
-                                      </span>
-
-                                      <span class="badge bg-info text-dark">
-                                        <%= Number(v.media_puntuacion).toFixed(2) %>
-                                      </span>
-                                    </li>
-                                    <% }) %>
-                                </ul>
-                                <% } else { %>
-                                  <p>No hay valoraciones todavía.</p>
-                                  <% } %>
-
-                                    <h3 class="mt-4">Vehículos con más kilómetros recorridos</h3>
-
-                                    <% if (kmVehiculos && kmVehiculos.length> 0) { %>
-                                      <ul class="list-group">
-                                        <% kmVehiculos.forEach(v=> { %>
-                                          <li class="list-group-item d-flex justify-content-between">
-                                            <span>
-                                              <strong>
-                                                <%= v.marca %>
-                                                  <%= v.modelo %>
-                                              </strong>
-                                              (<%= v.matricula %>)
-                                            </span>
-
-                                            <span class="badge bg-info text-dark">
-                                              <%= v.kilometros %> km
-                                            </span>
-                                          </li>
-                                          <% }) %>
-                                      </ul>
-                                      <% } else { %>
-                                        <p>No hay datos disponibles.</p>
-                                        <% } %>
-
+                  <ul id="stats-concesionarios" class="list-group mb-4"></ul>
+                  <ul id="stats-reservas" class="list-group mb-4"></ul>
+                  <ul id="stats-media" class="list-group mb-4"></ul>
+                  <ul id="stats-km" class="list-group mb-4"></ul>
                 </div>
 
                 <div class="tab-pane fade" id="incidencias" role="tabpanel">
@@ -547,36 +303,9 @@
                     <label for="filtroVehiculo">Seleccionar vehículo:</label>
                     <select id="filtroVehiculo" class="form-control">
                       <option value="all">Todos</option>
-                      <% const vehiculosMap={}; incidencias.forEach(i=> {
-                        vehiculosMap[i.matricula] = {
-                        modelo: i.modelo,
-                        total: i.total_incidencias
-                        };
-                        });
-                        for (let mat in vehiculosMap) {
-                        %>
-                        <option value="<%= mat %>">
-                          <%= vehiculosMap[mat].modelo %> (<%= mat %>) - <%= vehiculosMap[mat].total %> incidencias
-                        </option>
-                        <% } %>
                     </select>
                   </div>
                   <ul id="listaIncidencias" class="list-group">
-                    <% incidencias.forEach(i=> { %>
-                      <li class="list-group-item incidencia-item" data-matricula="<%= i.matricula %>">
-                        <strong>
-                          <%= i.modelo %> (<%= i.matricula %>)
-                        </strong><br>
-
-                        <small class="text-muted">
-                          <%= i.fecha %>
-                        </small><br>
-
-                        <span>
-                          <%= i.comentario %>
-                        </span>
-                      </li>
-                      <% }) %>
                   </ul>
                 </div>
               </div>

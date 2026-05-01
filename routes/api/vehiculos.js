@@ -4,6 +4,9 @@ const router = express.Router();
 const vehiculosDb = require("../../db/vehiculosDb.js");
 const concesionariosDb = require("../../db/concesionariosDb.js");
 
+const fs = require("fs");
+const path = require("path");
+
 // OBTENER VEHICULOS CON FILTROS
 router.get("/", async (req, res) => {
     try {
@@ -68,6 +71,22 @@ router.get("/fechasOcupado", async (req, res) => {
     } catch (error) {
         console.error("Error al obtener fechas ocupadas:", error);
         res.status(500).json({ error: "Error al obtener fechas ocupadas" });
+    }
+});
+
+router.get("/imagenes", async (req, res) => {
+    try {
+        const imgDir = path.join(__dirname, "../public/img/vehiculos");
+        let imagenesVehiculos = [];
+        if (fs.existsSync(imgDir)) {
+            imagenesVehiculos = fs.readdirSync(imgDir);
+        }
+
+        res.json(imagenesVehiculos);
+
+    } catch (error) {
+        console.error("Error al obtener imágenes:", error);
+        res.status(500).json({ error: "Error al obtener imágenes" });
     }
 });
 

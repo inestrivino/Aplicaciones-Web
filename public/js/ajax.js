@@ -30,6 +30,17 @@ export async function fetchVehiculos(filtros = {}) {
     }
 }
 
+export async function fetchImagenesVehiculos() {
+    try {
+        const res = await fetch('/api/vehiculos/imagenes');
+        return await res.json();
+
+    } catch (error) {
+        console.error('Error cargando imágenes de vehículos:', error);
+        return [];
+    }
+}
+
 export async function fetchFechasOcupado(matricula) {
     const res = await fetch(`/api/vehiculos/fechasOcupado?matricula=${matricula}`);
     const data = await res.json();
@@ -53,6 +64,36 @@ export async function fetchFiltros() {
         return await res.json();
     } catch (error) {
         console.error('Error cargando filtros:', error);
+        return null;
+    }
+}
+
+export async function fetchUsuarios() {
+    try {
+        const res = await fetch('/api/user');
+        return await res.json();
+    } catch (error) {
+        console.error('Error cargando filtros:', error);
+        return null;
+    }
+}
+
+export async function fetchEstadisticas() {
+    try {
+        const res = await fetch('/api/admin/estadisticas');
+        return await res.json();
+    } catch (err) {
+        console.error('Error cargando estadísticas:', err);
+        return null;
+    }
+}
+
+export async function fetchIncidencias() {
+    try {
+        const res = await fetch('/api/admin/incidencias');
+        return await res.json();
+    } catch (err) {
+        console.error('Error cargando incidencias:', err);
         return null;
     }
 }

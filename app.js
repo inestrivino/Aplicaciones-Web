@@ -81,8 +81,10 @@ app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./ro
 
 //APIS DE LA APLICACIÓN
 app.use("/api/concesionarios", require("./routes/api/concesionarios"));
-app.use("/api/vehiculos", require("./routes/api/vehiculos"));
-app.use("/api/misReservas", require("./routes/api/misReservas"));
+app.use("/api/vehiculos", comprobarUsuarioLogueado, require("./routes/api/vehiculos"));
+app.use("/api/misReservas", comprobarUsuarioLogueado, require("./routes/api/misReservas"));
+app.use("/api/user", comprobarUsuarioLogueado, require("./routes/api/user"));
+app.use("/api/admin", comprobarUsuarioAdmin, require("./routes/api/admin"));
 
 //ERRORES
 app.use(function (err, request, response, next) {
