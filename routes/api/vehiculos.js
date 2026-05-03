@@ -73,6 +73,7 @@ router.get("/fechasOcupado", async (req, res) => {
     }
 });
 
+// Ruta para obtener las imagenes posibles
 router.get("/imagenes", async (req, res) => {
     try {
         const imgDir = path.join(__dirname, "../../public/img/vehiculos");
@@ -91,7 +92,7 @@ router.get("/imagenes", async (req, res) => {
 
 const matriculaRegex = /^\d{4}[A-Z]{3}$/;
 
-// ACCIONES DE CREACION, EDICION, ELIMINACION
+// ACCIONES CRUD
 router.post("/create", async function (req, res) {
     try {
         const {

@@ -3,6 +3,7 @@ const router = express.Router();
 const vehiculosDb = require("../../db/vehiculosDb.js");
 const reservasDb = require("../../db/reservasDb.js");
 
+//devuelve toda la información necesaria para renderizar las estadísticas en formato json
 router.get("/estadisticas", async (req, res) => {
     try {
 
@@ -35,6 +36,7 @@ router.get("/estadisticas", async (req, res) => {
     }
 });
 
+//devuelve las incidencias en formato json
 router.get("/incidencias", async (req, res) => {
     try {
         const result = await vehiculosDb.getIncidenciasConVehiculo();

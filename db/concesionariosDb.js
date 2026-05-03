@@ -36,6 +36,7 @@ class ConcesionariosDb {
         );
     }
 
+    //elimina un concesionario
     deleteConcesionario(id) {
         return pool.query(
             'DELETE FROM concesionarios WHERE id = ?',

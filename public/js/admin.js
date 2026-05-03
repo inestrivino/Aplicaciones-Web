@@ -545,9 +545,6 @@ async function renderEstadisticas() {
         kmVehiculos
     } = data;
 
-    // --------------------------
-    // Concesionarios
-    // --------------------------
     document.querySelector('#stats-concesionarios').innerHTML =
         topConcesionarios?.length
             ? topConcesionarios.map(c => `
@@ -558,9 +555,6 @@ async function renderEstadisticas() {
             `).join('')
             : `<p>No hay datos disponibles.</p>`;
 
-    // --------------------------
-    // Vehículos más reservas
-    // --------------------------
     document.querySelector('#stats-reservas').innerHTML =
         topVehiculos?.length
             ? topVehiculos.map(v => `
@@ -571,9 +565,6 @@ async function renderEstadisticas() {
             `).join('')
             : `<p>No hay datos disponibles.</p>`;
 
-    // --------------------------
-    // Media valoraciones
-    // --------------------------
     document.querySelector('#stats-media').innerHTML =
         mediaVehiculos?.length
             ? mediaVehiculos.map(v => `
@@ -589,9 +580,6 @@ async function renderEstadisticas() {
             `).join('')
             : `<p>No hay valoraciones todavía.</p>`;
 
-    // --------------------------
-    // Km recorridos
-    // --------------------------
     document.querySelector('#stats-km').innerHTML =
         kmVehiculos?.length
             ? kmVehiculos.map(v => `
@@ -621,9 +609,6 @@ async function renderIncidencias() {
         return;
     }
 
-    // --------------------------
-    // Construir mapa de vehículos
-    // --------------------------
     const vehiculosMap = {};
 
     incidencias.forEach(i => {
@@ -633,9 +618,6 @@ async function renderIncidencias() {
         };
     });
 
-    // --------------------------
-    // Render select (filtro)
-    // --------------------------
     select.innerHTML = `
         <option value="all">Todos</option>
         ${Object.entries(vehiculosMap).map(([mat, v]) => `
@@ -645,9 +627,6 @@ async function renderIncidencias() {
         `).join('')}
     `;
 
-    // --------------------------
-    // Render lista
-    // --------------------------
     const renderLista = (filtro = 'all') => {
         const filtradas = filtro === 'all'
             ? incidencias
@@ -672,9 +651,6 @@ async function renderIncidencias() {
             : `<p>No hay incidencias para este vehículo.</p>`;
     };
 
-    // --------------------------
-    // Evento filtro
-    // --------------------------
     select.addEventListener('change', (e) => {
         renderLista(e.target.value);
     });

@@ -43,7 +43,6 @@ export function mostrarFeedbackModal(mensaje, tipo = 'success') {
 }
 
 function toggleFormulario() {
-    // Selecciona todos los elementos que tienen data-bs-toggle="collapse"
     const collapseHeaders = document.querySelectorAll('[data-bs-toggle="collapse"]');
 
     collapseHeaders.forEach(header => {

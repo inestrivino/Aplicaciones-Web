@@ -63,6 +63,7 @@ class UserDb {
         );
     }
 
+    //devuelve un usuario dado su id
     getUserById(id) {
         return pool.query(
             'SELECT id, name, email, rol, id_concesionario FROM users WHERE id = ?', [id]

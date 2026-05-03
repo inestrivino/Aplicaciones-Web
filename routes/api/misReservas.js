@@ -3,6 +3,7 @@ const router = express.Router();
 const reservasDb = require("../../db/reservasDb.js");
 const vehiculosDb = require("../../db/vehiculosDb.js");
 
+// DEVUELVE LAS RESERVAS DEL USUARIO QUE REALIZA LA LLAMADA
 router.get("/", async (req, res) => {
     try {
         const id_usuario = req.session?.user?.id;
@@ -21,6 +22,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+// CANCELA UNA RESERVA
 router.post("/cancelar/:id", async (req, res) => {
     try {
         const idUsuario = req.session.user.id;
@@ -54,6 +56,7 @@ router.post("/cancelar/:id", async (req, res) => {
     }
 });
 
+// DEVUELVE UNA RESERVA
 router.post("/devolver/:id", async (req, res) => {
     try {
         const idUsuario = req.session.user.id;
@@ -111,6 +114,7 @@ router.post("/devolver/:id", async (req, res) => {
     }
 });
 
+// CREA UNA INCIDENCIA RELACIONADA CON UNA RESERVA
 router.post("/incidencia/:id", async (req, res) => {
     try {
         const idUsuario = req.session.user.id;

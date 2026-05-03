@@ -1,89 +1,21 @@
 const express = require('express');
 const router = express.Router();
-router.use(express.json()); //para parsear el body
-const multer = require("multer"); //para subir archivos
-const upload = multer({ dest: 'uploads/' }); //carpeta temporal para subir archivos
+router.use(express.json()); 
+const multer = require("multer");
+const upload = multer({ dest: 'uploads/' }); 
 
-const vechiculosDb = require("../db/vehiculosDb.js"); //db
-const concesionariosDb = require("../db/concesionariosDb.js"); //db
-const usuariosDb = require("../db/userDb.js") //db
-const reservasDb = require("../db/reservasDb.js") //db
-
+const vechiculosDb = require("../db/vehiculosDb.js"); 
+const concesionariosDb = require("../db/concesionariosDb.js");
 const fs = require("fs");
-const path = require("path");
-const vehiculosDb = require('../db/vehiculosDb.js');
 
-router.get("/", async function (request, response, next) {
-    try {
-        const errorMessage = request.session.errorMessage;
-        delete request.session.errorMessage;
-        const responseMessage = request.session.responseMessage;
-        delete request.session.responseMessage;
-
-        // Recuperar resultados de inserción si vienen de /rellenar
-        const insertadosCon = request.session.insertadosCon || [];
-        const erroresCon = request.session.erroresCon || [];
-        const VehiculosInsertados = request.session.VehiculosInsertados || [];
-        const VehiculosErrores = request.session.VehiculosErrores || [];
-
-        // Limpiar después de leer
-        delete request.session.insertadosCon;
-        delete request.session.erroresCon;
-        delete request.session.VehiculosInsertados;
-        delete request.session.VehiculosErrores;
-
-        // Obtener datos de DB
-        const [vehiculos, concesionarios, usuarios] = await Promise.all([
-            vechiculosDb.getVehiculos(),
-            concesionariosDb.getConcesionarios(),
-            usuariosDb.getUsers()
-        ]);
-        const [topConcesionarios] = await reservasDb.getTopConcesionarios();
-        const [topVehiculos] = await reservasDb.getTopVehiculos();
-        const [mediaVehiculos] = await vehiculosDb.getMediaVehiculos();
-        const [kmVehiculos] = await vehiculosDb.getKilometrosVehiculos();
-        const [incidencias] = await vehiculosDb.getIncidenciasConVehiculo();
-
-        const [rowsVehiculos] = vehiculos;
-        const [rowsConcesionarios] = concesionarios;
-        const [rowsUsuarios] = usuarios;
-
-        // Leer imágenes de /public/img/vehiculos
-        const imgDir = path.join(__dirname, "../public/img/vehiculos");
-        let imagenesVehiculos = [];
-        if (fs.existsSync(imgDir)) {
-            imagenesVehiculos = fs.readdirSync(imgDir);
-        }
-
-        response.render("admin", {
-            user: request.session.user,
-            vehiculosList: true,
-            concesionarios: true,
-
-            insertadosCon,
-            erroresCon,
-            VehiculosInsertados,
-            VehiculosErrores,
-
-            vehiculos: rowsVehiculos,
-            concesionarios: rowsConcesionarios,
-            usuarios: rowsUsuarios,
-
-            topConcesionarios,
-            topVehiculos,
-            mediaVehiculos,
-            kmVehiculos,
-            incidencias,
-
-            errorMessage,
-            responseMessage,
-            imagenesVehiculos
-        });
-    } catch (err) {
-        next(err);
-    }
+// CARGA LA PÁGINA DE ADMIN
+router.get("/", (req, res) => {
+    res.render("admin", {
+        user: req.session.user || null
+    });
 });
 
+// PARA AÑADIR ELEMENTOS MASIVAMENTE CON UN JSON
 router.post("/rellenar", upload.single("file"), async function (request, response, next) {
     try {
         if (!request.file) {

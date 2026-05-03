@@ -1,10 +1,3 @@
-/* FUNCIONES AQUÍ:
-- INICIALIZACION DEL CAMBIO DE IDIOMA
-- INICIALIZACIÓN DEL CAMBIO DE TEMA
-- INICIALIZACIÓN DEL CAMBIO DE TAMAÑO DE LA LETRA
-- INICIALIZACIÓN DEL CAMBIO DE LOS ATAJOS DEL TECLADO
-*/
-
 function inicializarLanguageToggle() {
     const idiomaSeleccionado = document.getElementById("idiomaSeleccionado");
     const languageLinks = document.querySelectorAll('.dropdown-item');

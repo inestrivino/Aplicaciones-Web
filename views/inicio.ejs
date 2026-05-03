@@ -27,7 +27,7 @@
 <body>
   <!-- NAVBAR -->
   <%- include('partials/header', { user: user }) %>
-    <!-- mensaje de error -->
+    <!-- mensaje de error (falta de acceso, etc) -->
     <% if (error) { %>
       <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -55,6 +55,7 @@
       </script>
       <% } %>
 
+      <!-- HEADER DEL INICIO -->
         <header class="position-relative w-100" aria-label="Encabezado de la página">
           <div class="header-image" aria-hidden="true"></div>
           <div class="position-relative text-white h-100 d-flex align-items-center">

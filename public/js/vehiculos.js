@@ -116,7 +116,6 @@ async function inicializarFormularioReservas() {
         fpInicio.set("disable", rangosOcupados);
         fpFin.set("disable", rangosOcupados);
 
-        // 🔥 restaurar selección si sigue siendo válida
         if (inicioActual) {
             const valid = !rangosOcupados.some(r => {
                 const from = new Date(r.from);

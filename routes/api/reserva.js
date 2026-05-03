@@ -4,6 +4,7 @@ const reservasDb = require("../../db/reservasDb.js");
 const vehiculosDb = require("../../db/vehiculosDb.js");
 const userDb = require("../../db/userDb.js");
 
+// CREA UNA RESERVA
 router.post("/", async function (request, response) {
     try {
         const id_usuario = request.session.user.id;

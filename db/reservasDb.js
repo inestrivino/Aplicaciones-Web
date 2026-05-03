@@ -1,6 +1,7 @@
 const pool = require("./pool.js");
 
 class ReservasDb {
+    //crea una reserva
     createReserva(reserva) {
         return pool.query(
             `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, estado) 
@@ -14,6 +15,7 @@ class ReservasDb {
         );
     }
 
+    //devuelve una reserva dada su id
     getReservaById(id) {
         return pool.query(
             `SELECT * 
@@ -23,6 +25,7 @@ class ReservasDb {
         );
     }
 
+    //devuelve las reservas de un usuario dado su id
     getMisReservas(id_usuario) {
         return pool.query(
             `SELECT 

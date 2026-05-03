@@ -6,6 +6,7 @@ const {
     comprobarUsuarioLogueado
 } = require('../../app.js');
 
+// DEVUELVE LOS USUARIOS DEL SISTEMA
 router.get("/", comprobarUsuarioAdmin, async (req, res) => {
     try {
         const [usuariosData] = await userDb.getUsers();
@@ -18,6 +19,7 @@ router.get("/", comprobarUsuarioAdmin, async (req, res) => {
     }
 });
 
+// DEVUELVE LA INFORMACION DEL USUARIO LOGUEADO
 router.get("/me", comprobarUsuarioLogueado, async (req, res) => {
     try {
         const userId = req.session?.user?.id;
@@ -34,8 +36,65 @@ router.get("/me", comprobarUsuarioLogueado, async (req, res) => {
     }
 });
 
-// ACCIONES CRUD DE ADMIN
+// ACTUALIZA EL PERFIL DEL USUARIO LOGUEADO
+router.put("/updateProfile", comprobarUsuarioLogueado, async (req, res) => {
+    try {
+        const userId = req.session?.user?.id;
 
+        const { name, email, id_concesionario } = req.body;
+
+        if (!name || !email || !id_concesionario) {
+            return res.status(400).json({
+                ok: false,
+                error: "Todos los campos son obligatorios"
+            });
+        }
+
+        // Validar email duplicado
+        if (email) {
+            const [rows] = await userDb.getUserByEmail(email);
+            const emailUser = rows?.[0];
+
+            if (emailUser && emailUser.id != userId) {
+                return res.status(400).json({
+                    ok: false,
+                    error: "El email ya está en uso"
+                });
+            }
+        }
+
+        await userDb.updateUser(userId, {
+            name,
+            email,
+            rol: req.session.user.rol,
+            id_concesionario
+        });
+
+        req.session.user = {
+            ...req.session.user,
+            name,
+            email,
+            id_concesionario
+        };
+
+        return res.json({
+            ok: true,
+            message: "Perfil actualizado correctamente",
+            data: req.session.user
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        return res.status(500).json({
+            ok: false,
+            error: err.message || "Error al actualizar perfil"
+        });
+    }
+}
+);
+
+// ACCIONES CRUD DE ADMIN
 router.post("/", comprobarUsuarioAdmin, async (req, res) => {
     try {
         const user = await userDb.createUser(req.body);
@@ -158,51 +217,5 @@ router.delete("/:id", async (req, res) => {
         });
     }
 });
-
-router.put(
-    "/updateProfile", comprobarUsuarioLogueado,
-    async (req, res) => {
-        try {
-            const userId = req.session.user.id;
-
-            const { name, email, id_concesionario } = req.body;
-
-            if (!name || !email || !id_concesionario) {
-                return res.status(400).json({
-                    ok: false,
-                    error: "Todos los campos son obligatorios"
-                });
-            }
-
-            await userDb.updateUser(userId, {
-                name,
-                email,
-                rol: req.session.user.rol,
-                id_concesionario
-            });
-
-            req.session.user = {
-                ...req.session.user,
-                name,
-                email,
-                id_concesionario
-            };
-
-            return res.json({
-                ok: true,
-                message: "Perfil actualizado correctamente",
-                data: req.session.user
-            });
-
-        } catch (err) {
-            console.error(err);
-
-            return res.status(500).json({
-                ok: false,
-                error: err.message || "Error al actualizar perfil"
-            });
-        }
-    }
-);
 
 module.exports = router;

@@ -139,8 +139,6 @@ function inicializarSignInUp() {
                     }
 
                     mostrarFeedbackModal("Login correcto", "success");
-
-                    // opcional: recargar UI o redirigir
                     window.location.reload();
 
                 } catch (err) {
@@ -194,7 +192,7 @@ function validateSignUp() {
 
 /* RENDER DEL MAPA DE CONCESIONARIOS */
 function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371; //Radio de la tierra en km para calcular la disancia
 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -207,7 +205,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c; // distancia en km
+    return R * c; //resultado se devuelve en km
 }
 
 function pintarConcesionarios(concesionariosData, map, markersLayer, userLocation, primeraCarga) {

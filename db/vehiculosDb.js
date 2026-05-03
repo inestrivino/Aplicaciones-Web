@@ -75,10 +75,12 @@ class VehiculosDb {
         return await pool.query('SELECT DISTINCT marca FROM vehiculos');
     }
 
+    //devuelve los colores de vehiculos
     async getColores() {
         return await pool.query('SELECT DISTINCT color FROM vehiculos');
     }
 
+    //devuelve las plazas de vehiculos
     async getPlazas() {
         return await pool.query('SELECT DISTINCT plazas FROM vehiculos');
     }
@@ -168,6 +170,7 @@ class VehiculosDb {
         );
     }
 
+    //devuelve la nota media de los 5 vehículos con nota más alta
     async getMediaVehiculos() {
         return await pool.query(
             `SELECT 
