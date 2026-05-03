@@ -163,33 +163,7 @@
       </div>
       <div class="modal-body">
         <% if (user) { %>
-          <form action="/user/updateProfile" method="POST">
-
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input type="text" class="form-control" name="name" value="<%= user.name %>" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Correo electrónico</label>
-              <input type="email" class="form-control" name="email" value="<%= user.email %>" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Concesionario</label>
-              <select class="form-select" name="id_concesionario" required>
-                <% concesionarios.forEach(c=> { %>
-                  <option value="<%= c.id %>" <%=c.id===user.id_concesionario ? 'selected' : '' %>>
-                    <%= c.nombre %>
-                  </option>
-                  <% }) %>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">
-              Guardar cambios
-            </button>
-          </form>
+          <div id="form-container"></div>
           <% } else { %>
             <!-- Formulario inicio de sesión-->
             <div id="signInForm" class="auth-form">

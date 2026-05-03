@@ -49,27 +49,32 @@ function parseGeo(latitud, longitud) {
 }
 
 // CREAR CONCESIONARIO
-router.post("/", async (req, res) => {
+router.post("/create", async function (request, response) {
     try {
-        const { nombre, ciudad, direccion, telefono, latitud, longitud } = req.body;
+        let { nombre, ciudad, direccion, telefono, latitud, longitud } = request.body;
 
         validarConcesionario({ nombre, ciudad, direccion, telefono });
-
-        const geo = parseGeo(latitud, longitud);
+        ({ latitud, longitud } = parseGeo(latitud, longitud));
 
         await concesionariosDb.createConcesionario({
             nombre,
             ciudad,
             direccion,
             telefono,
-            latitud: geo.latitud,
-            longitud: geo.longitud
+            latitud,
+            longitud
         });
 
-        res.json({ success: true });
+        return response.json({
+            ok: true,
+            message: "Concesionario creado con éxito"
+        });
 
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        return response.status(400).json({
+            ok: false,
+            error: error.message
+        });
     }
 });
 

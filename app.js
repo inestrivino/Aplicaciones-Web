@@ -13,11 +13,16 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.json());
 const middlewareSession = session({
     saveUninitialized: false,
     secret: "secreto12345",
     resave: false
 });
+module.exports = {
+    comprobarUsuarioLogueado,
+    comprobarUsuarioAdmin
+};
 app.use(middlewareSession);
 
 //MIDDLEWARES
@@ -83,8 +88,9 @@ app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./ro
 app.use("/api/concesionarios", require("./routes/api/concesionarios"));
 app.use("/api/vehiculos", comprobarUsuarioLogueado, require("./routes/api/vehiculos"));
 app.use("/api/misReservas", comprobarUsuarioLogueado, require("./routes/api/misReservas"));
-app.use("/api/user", comprobarUsuarioLogueado, require("./routes/api/user"));
+app.use("/api/user", require("./routes/api/user"));
 app.use("/api/admin", comprobarUsuarioAdmin, require("./routes/api/admin"));
+app.use("/api/reserva", comprobarUsuarioLogueado, require("./routes/api/reserva"));
 
 //ERRORES
 app.use(function (err, request, response, next) {

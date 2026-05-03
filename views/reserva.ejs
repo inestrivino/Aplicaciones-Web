@@ -28,56 +28,50 @@
     <main aria-label="Contenido principal de la página">
       <h1>Reservar vehículos</h1>
 
-      <% if (typeof errorMessage !=='undefined' ) { %>
-        <div class="alert alert-danger" role="alert">
-          <%= errorMessage %>
-        </div>
-        <% } %>
-          <% if (typeof responseMessage !=='undefined' ) { %>
-            <div class="alert alert-success" role="alert">
-              <%= responseMessage %>
-            </div>
-            <% } %>
+      <form id="reservaForm" aria-label="Formulario de reserva de vehículos">
 
-              <form class="needs-validation" aria-label="Formulario de reserva de vehículos" action="/reserva"
-                method="POST">
-                <fieldset aria-label="Detalles de la reserva">
-                  <legend>Detalles de la reserva</legend>
-                  <div>
-                    <label for="vehiculo" class="form-label">Vehículo</label>
-                    <select class="form-select" id="vehiculo" name="matricula" required>
-                      <option value="">Cargando vehículos...</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label for="inicio" class="form-label">Inicio de reserva</label>
-                    <input type="text" class="form-control" name="fecha_ini" id="inicioFecha" aria-required="true"
-                      required aria-label="Seleccionar fecha y hora de inicio" />
-                  </div>
-                  <div>
-                    <label for="fin" class="form-label">Fin de reserva</label>
-                    <input type="text" class="form-control" name="fecha_fin" id="finFecha" aria-required="true" required
-                      aria-label="Seleccionar fecha y hora de fin" />
-                  </div>
-                </fieldset>
-                <div>
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="condiciones" id="condiciones"
-                      aria-required="true" required aria-label="Aceptar condiciones de uso" />
-                    <label class="form-check-label" for="condiciones">
-                      Acepto las condiciones de uso
-                    </label>
-                  </div>
-                </div>
-                <div aria-label="Botones del formulario de reserva">
-                  <button type="submit" class="btn btn-primary" aria-label="Enviar formulario de reserva">
-                    Enviar reserva
-                  </button>
-                  <button type="reset" class="btn btn-secondary" aria-label="Limpiar formulario de reserva">
-                    Limpiar formulario
-                  </button>
-                </div>
-              </form>
+        <fieldset aria-label="Detalles de la reserva">
+          <legend>Detalles de la reserva</legend>
+
+          <div>
+            <label for="vehiculo" class="form-label">Vehículo</label>
+            <select class="form-select" id="vehiculo" name="matricula" required>
+              <option value="">Cargando vehículos...</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="inicioFecha" class="form-label">Inicio de reserva</label>
+            <input type="text" class="form-control" name="fecha_ini" id="inicioFecha" required
+              aria-label="Seleccionar fecha de inicio" />
+          </div>
+
+          <div>
+            <label for="finFecha" class="form-label">Fin de reserva</label>
+            <input type="text" class="form-control" name="fecha_fin" id="finFecha" required
+              aria-label="Seleccionar fecha de fin" />
+          </div>
+
+        </fieldset>
+
+        <div class="form-check mt-3">
+          <input type="checkbox" class="form-check-input" name="condiciones" id="condiciones" required />
+          <label class="form-check-label" for="condiciones">
+            Acepto las condiciones de uso
+          </label>
+        </div>
+
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary" aria-label="Enviar formulario de reserva">
+            Enviar reserva
+          </button>
+
+          <button type="reset" class="btn btn-secondary" aria-label="Limpiar formulario de reserva">
+            Limpiar formulario
+          </button>
+        </div>
+
+      </form>
     </main>
 
     <!-- FOOTER -->

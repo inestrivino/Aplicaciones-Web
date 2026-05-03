@@ -97,3 +97,13 @@ export async function fetchIncidencias() {
         return null;
     }
 }
+
+export async function fetchUser(){
+    try{
+        const res = await fetch("/api/user/me");
+        return await res.json();
+    } catch (err) {
+        console.error("Error cargando el usuario: ", err);
+        return null;
+    }
+}

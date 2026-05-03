@@ -37,7 +37,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-
 // OBTENER FILTROS
 router.get("/filtros", async (req, res) => {
     try {
@@ -76,7 +75,7 @@ router.get("/fechasOcupado", async (req, res) => {
 
 router.get("/imagenes", async (req, res) => {
     try {
-        const imgDir = path.join(__dirname, "../public/img/vehiculos");
+        const imgDir = path.join(__dirname, "../../public/img/vehiculos");
         let imagenesVehiculos = [];
         if (fs.existsSync(imgDir)) {
             imagenesVehiculos = fs.readdirSync(imgDir);
@@ -87,6 +86,91 @@ router.get("/imagenes", async (req, res) => {
     } catch (error) {
         console.error("Error al obtener imágenes:", error);
         res.status(500).json({ error: "Error al obtener imágenes" });
+    }
+});
+
+const matriculaRegex = /^\d{4}[A-Z]{3}$/;
+
+router.post("/create", async function (req, res) {
+    try {
+        const {
+            matricula,
+            marca,
+            modelo,
+            plazas,
+            autonomia,
+            color,
+            imagen,
+            id_concesionario
+        } = req.body;
+
+        if (!matricula || !matriculaRegex.test(matricula)) {
+            throw new Error("Matrícula inválida. Debe ser 1234ABC.");
+        }
+
+        if (!marca?.trim()) {
+            throw new Error("La marca no puede estar vacía.");
+        }
+
+        if (!modelo?.trim()) {
+            throw new Error("El modelo no puede estar vacío.");
+        }
+
+        if (!plazas || isNaN(plazas)) {
+            throw new Error("Plazas inválidas.");
+        }
+
+        if (!autonomia || isNaN(autonomia)) {
+            throw new Error("Autonomía inválida.");
+        }
+
+        if (!color?.trim()) {
+            throw new Error("El color no puede estar vacío.");
+        }
+
+        if (!id_concesionario || isNaN(id_concesionario)) {
+            throw new Error("ID de concesionario inválido.");
+        }
+
+        const [existingCon] = await concesionariosDb.getConcesionarioById(id_concesionario);
+
+        if (!existingCon || existingCon.length === 0) {
+            throw new Error("El concesionario no existe.");
+        }
+
+        const imgPath = path.join(__dirname, "../../public/img/vehiculos", imagen);
+
+        if (!fs.existsSync(imgPath)) {
+            throw new Error("La imagen seleccionada no existe.");
+        }
+
+        const imagenCompleto = "/img/vehiculos/" + imagen;
+        const fecha = new Date();
+
+        const vehiculo = {
+            matricula,
+            marca,
+            modelo,
+            plazas: parseInt(plazas),
+            autonomia: parseInt(autonomia),
+            color,
+            fecha,
+            id_concesionario: parseInt(id_concesionario),
+            imagenCompleto: imagenCompleto
+        };
+
+        await vehiculosDb.createVehiculo(vehiculo);
+
+        return res.json({
+            ok: true,
+            message: "Vehículo creado con éxito"
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            ok: false,
+            error: error.message
+        });
     }
 });
 

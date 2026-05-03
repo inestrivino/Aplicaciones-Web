@@ -26,53 +26,104 @@
     <main aria-label="Contenido principal">
       <h1>Mis Reservas de Vehículos</h1>
 
-      <% if (typeof errorMessage !=='undefined' ) { %>
-        <div class="alert alert-danger" role="alert">
-          <%= errorMessage %>
-        </div>
-        <% } %>
-          <% if (typeof responseMessage !=='undefined' ) { %>
-            <div class="alert alert-success" role="alert">
-              <%= responseMessage %>
-            </div>
-            <% } %>
+      <ul class="nav nav-tabs" id="reservasTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#curso" type="button">
+            En curso
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#proximas" type="button">
+            Próximas
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pasadas" type="button">
+            Pasadas
+          </button>
+        </li>
 
-              <ul class="nav nav-tabs" id="reservasTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#curso" type="button">
-                    En curso
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#proximas" type="button">
-                    Próximas
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pasadas" type="button">
-                    Pasadas
-                  </button>
-                </li>
+      </ul>
+      <div id="modales">
+        <div class="modal fade" id="devolucionModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
 
-              </ul>
-              <div class="tab-content mt-4">
+              <div class="modal-header">
+                <h5 class="modal-title">Devolver vehículo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
 
-                <!-- EN CURSO -->
-                <div class="tab-pane fade show active" id="curso">
-                  <div id="curso-container"></div>
-                </div>
+              <div class="modal-body">
 
-                <!-- PRÓXIMAS -->
-                <div class="tab-pane fade" id="proximas">
-                  <div id="proximas-container"></div>
-                </div>
+                <label>Puntuación (opcional)</label>
+                <select id="puntuacion" class="form-select mb-3">
+                  <option value="">Sin valoración</option>
+                  <option value="5">⭐⭐⭐⭐⭐</option>
+                  <option value="4">⭐⭐⭐⭐</option>
+                  <option value="3">⭐⭐⭐</option>
+                  <option value="2">⭐⭐</option>
+                  <option value="1">⭐</option>
+                </select>
 
-                <!-- PASADAS -->
-                <div class="tab-pane fade" id="pasadas">
-                  <div id="pasadas-container"></div>
+                <textarea id="comentario" class="form-control" placeholder="Comentario opcional..."></textarea>
+
+                <div class="mb-3">
+                  <label for="kilometros" class="form-label">Kilómetros recorridos</label>
+                  <input type="number" id="kilometros" class="form-control" min="0" placeholder="Ej: 120" required />
                 </div>
 
               </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-warning" id="confirmarDevolucionBtn">Devolver vehículo</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="incidenciaModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h5 class="modal-title">Reportar incidencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body">
+                <textarea id="incidenciaTexto" class="form-control" placeholder="Describe la incidencia..."></textarea>
+                <small id="incidenciaError" class="text-danger d-none">Debes escribir un comentario</small>
+              </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-danger" id="confirmarIncidenciaBtn">Enviar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content mt-4">
+
+        <!-- EN CURSO -->
+        <div class="tab-pane fade show active" id="curso">
+          <div id="curso-container"></div>
+        </div>
+
+        <!-- PRÓXIMAS -->
+        <div class="tab-pane fade" id="proximas">
+          <div id="proximas-container"></div>
+        </div>
+
+        <!-- PASADAS -->
+        <div class="tab-pane fade" id="pasadas">
+          <div id="pasadas-container"></div>
+        </div>
+
+      </div>
     </main>
 
     <!-- FOOTER -->

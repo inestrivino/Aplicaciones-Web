@@ -38,13 +38,13 @@ class UserDb {
     //devuelve la lista de usuarios
     getUsers() {
         return pool.query(
-            'SELECT * FROM users ORDER BY id'
+            'SELECT id, name, email, rol, id_concesionario FROM users ORDER BY id'
         );
     }
 
     getUserById(id) {
         return pool.query(
-            'SELECT * FROM users WHERE id = ?', [id]
+            'SELECT id, name, email, rol, id_concesionario FROM users WHERE id = ?', [id]
         );
     }
 }

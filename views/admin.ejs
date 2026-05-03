@@ -21,294 +21,272 @@
 
     <main class="container" role="main">
       <h1>Panel de gestión</h1>
+      <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="baseDatos-tab" data-bs-toggle="tab" data-bs-target="#baseDatos"
+            type="button" role="tab">Base de datos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="concesionarios-tab" data-bs-toggle="tab" data-bs-target="#concesionarios"
+            type="button" role="tab">Concesionarios</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="vehiculos-tab" data-bs-toggle="tab" data-bs-target="#vehiculos" type="button"
+            role="tab">Vehículos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button"
+            role="tab">Usuarios</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="estadisticas-tab" data-bs-toggle="tab" data-bs-target="#estadisticas"
+            type="button" role="tab">Estadísticas</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="incidencias-tab" data-bs-toggle="tab" data-bs-target="#incidencias" type="button"
+            role="tab">Incidencias</button>
+        </li>
+      </ul>
 
-      <% if (typeof errorMessage !=='undefined' ) { %>
-        <div class="alert alert-danger" role="alert">
-          <%= errorMessage %>
-        </div>
-        <% } %>
-          <% if (typeof responseMessage !=='undefined' ) { %>
-            <div class="alert alert-success" role="alert">
-              <%= responseMessage %>
-            </div>
-            <% } %>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="baseDatos" role="tabpanel" style="overflow-x: scroll;">
+          <fieldset>
+            <h2>Inserción en la base de datos mediante JSON</h2>
+            <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
+              <input class="form-control-lg" type="file" id="file" name="file" accept=".json" required><br>
+              <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button><br>
+            </form>
 
-              <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="baseDatos-tab" data-bs-toggle="tab" data-bs-target="#baseDatos"
-                    type="button" role="tab">Base de datos</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="concesionarios-tab" data-bs-toggle="tab" data-bs-target="#concesionarios"
-                    type="button" role="tab">Concesionarios</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="vehiculos-tab" data-bs-toggle="tab" data-bs-target="#vehiculos"
-                    type="button" role="tab">Vehículos</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios"
-                    type="button" role="tab">Usuarios</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="estadisticas-tab" data-bs-toggle="tab" data-bs-target="#estadisticas"
-                    type="button" role="tab">Estadísticas</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="incidencias-tab" data-bs-toggle="tab" data-bs-target="#incidencias"
-                    type="button" role="tab">Incidencias</button>
-                </li>
-              </ul>
-
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="baseDatos" role="tabpanel" style="overflow-x: scroll;">
-                  <fieldset>
-                    <h2>Inserción en la base de datos mediante JSON</h2>
-                    <form id="jsonForm" action="/admin/rellenar" method="POST" enctype="multipart/form-data">
-                      <input class="form-control-lg" type="file" id="file" name="file" accept=".json" required><br>
-                      <button class="btn btn-primary mt-3" type="submit">Enviar JSON</button><br>
-                    </form>
-
-                    <% if (vehiculosList) { %>
-                      <h2 class="mt-3">Resultados de la inserción de concesionarios:</h2>
+            <% if (vehiculosList) { %>
+              <h2 class="mt-3">Resultados de la inserción de concesionarios:</h2>
+              <div>
+                <% if (insertadosCon.length !==0) { %>
+                  <div>
+                    <strong>Insertados</strong> <br>
+                    <% for (nombre of insertadosCon) { %>
+                      <%=nombre%> <br>
+                        <% } %>
+                  </div>
+                  <% } %>
+                    <% if (erroresCon.length !==0) { %>
                       <div>
-                        <% if (insertadosCon.length !==0) { %>
-                          <div>
-                            <strong>Insertados</strong> <br>
-                            <% for (nombre of insertadosCon) { %>
-                              <%=nombre%> <br>
-                                <% } %>
-                          </div>
-                          <% } %>
-                            <% if (erroresCon.length !==0) { %>
-                              <div>
-                                <strong>Errores</strong> <br>
-                                <% for (nombre of erroresCon) { %>
-                                  <%=nombre%> <br>
-                                    <% } %>
-                              </div>
-                              <% } %>
-                      </div>
-
-                      <h2 class="mt-3">Resultados de la inserción de vehículos:</h2>
-                      <div>
-                        <% if (VehiculosInsertados.length !==0) { %>
-                          <div>
-                            <strong>Insertados</strong> <br>
-                            <% for (matricula of VehiculosInsertados) { %>
-                              <%=matricula%> <br>
-                                <% } %>
-                          </div>
-                          <% } %>
-                            <% if (VehiculosErrores.length !==0) { %>
-                              <div>
-                                <strong>Errores</strong> <br>
-                                <% for (matricula of VehiculosErrores) { %>
-                                  <%=matricula%> <br>
-                                    <% } %>
-                              </div>
-                              <% } %>
+                        <strong>Errores</strong> <br>
+                        <% for (nombre of erroresCon) { %>
+                          <%=nombre%> <br>
+                            <% } %>
                       </div>
                       <% } %>
-                  </fieldset>
-                </div>
+              </div>
 
-                <div class="tab-pane fade" id="concesionarios" role="tabpanel">
-                  <div class="card mb-4">
-                    <div class="card-header bg-primary d-flex justify-content-between align-items-center"
-                      style="cursor: pointer; color:white" data-bs-toggle="collapse"
-                      data-bs-target="#collapseAltaConcesionario" aria-expanded="false">
-                      <h5 class="mb-0">Alta de concesionario</h5>
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
-
-                    <div class="collapse" id="collapseAltaConcesionario">
-                      <div class="card-body">
-                        <form action="/concesionarios/create" method="POST" id="altaConcesionario">
-                          <div class="mb-3">
-                            <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="ciudad" class="form-label"><strong>Ciudad:</strong></label>
-                            <input type="text" class="form-control" id="ciudad" name="ciudad" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="direccion" class="form-label"><strong>Dirección:</strong></label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="latitud" class="form-label"><strong>Latitud:</strong></label>
-                            <input type="text" class="form-control" id="latitud" name="latitud" placeholder="Opcional">
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="longitud" class="form-label"><strong>Longitud:</strong></label>
-                            <input type="text" class="form-control" id="longitud" name="longitud"
-                              placeholder="Opcional">
-                          </div>
-                          <div class="mb-3">
-                            <label for="telefono" class="form-label"><strong>Teléfono:</strong></label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" required>
-                          </div>
-                          <button type="submit" class="btn btn-primary">Enviar</button>
-                        </form>
+              <h2 class="mt-3">Resultados de la inserción de vehículos:</h2>
+              <div>
+                <% if (VehiculosInsertados.length !==0) { %>
+                  <div>
+                    <strong>Insertados</strong> <br>
+                    <% for (matricula of VehiculosInsertados) { %>
+                      <%=matricula%> <br>
+                        <% } %>
+                  </div>
+                  <% } %>
+                    <% if (VehiculosErrores.length !==0) { %>
+                      <div>
+                        <strong>Errores</strong> <br>
+                        <% for (matricula of VehiculosErrores) { %>
+                          <%=matricula%> <br>
+                            <% } %>
                       </div>
-                    </div>
-                  </div>
+                      <% } %>
+              </div>
+              <% } %>
+          </fieldset>
+        </div>
 
-                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table id="tabla-concesionarios" class="table table-sm table-striped table-bordered align-middle">
-                      <thead class="table-dark sticky-top">
-                        <tr>
-                          <th>ID</th>
-                          <th class="d-sm-table-cell">Nombre</th>
-                          <th class="d-sm-table-cell">Ciudad</th>
-                          <th class="d-md-table-cell">Dirección</th>
-                          <th>Lat</th>
-                          <th>Lng</th>
-                          <th class="d-md-table-cell">Teléfono</th>
-                          <th>Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </div>
+        <div class="tab-pane fade" id="concesionarios" role="tabpanel">
+          <div class="card mb-4">
+            <div class="card-header bg-primary d-flex justify-content-between align-items-center"
+              style="cursor: pointer; color:white" data-bs-toggle="collapse" data-bs-target="#collapseAltaConcesionario"
+              aria-expanded="false">
+              <h5 class="mb-0">Alta de concesionario</h5>
+              <i class="bi bi-chevron-down"></i>
+            </div>
 
-                <div class="tab-pane fade" id="vehiculos" role="tabpanel">
-                  <div class="card mb-4">
-                    <div class="card-header bg-primary d-flex justify-content-between align-items-center"
-                      style="cursor: pointer; color: white;" data-bs-toggle="collapse"
-                      data-bs-target="#collapseAltaVehiculo" aria-expanded="false">
-                      <h5 class="mb-0">Alta de vehículo</h5>
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
-
-                    <div class="collapse" id="collapseAltaVehiculo">
-                      <div class="card-body">
-                        <form action="/vehiculos/create" method="POST" id="altaVehiculo">
-
-                          <div class="mb-3">
-                            <label for="matricula" class="form-label"><strong>Matrícula:</strong></label>
-                            <input type="text" class="form-control" id="matricula" name="matricula"
-                              pattern="^\d{4}[A-Z]{3}$" title="Debe tener 4 números y 3 letras mayúsculas, ej: 1234ABC"
-                              required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="marca" class="form-label"><strong>Marca:</strong></label>
-                            <input type="text" class="form-control" id="marca" name="marca" required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="modelo" class="form-label"><strong>Modelo:</strong></label>
-                            <input type="text" class="form-control" id="modelo" name="modelo" required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="plazas" class="form-label"><strong>Plazas:</strong></label>
-                            <input type="number" class="form-control" id="plazas" name="plazas" min="1" required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="autonomia" class="form-label"><strong>Autonomía:</strong></label>
-                            <input type="number" class="form-control" id="autonomia" name="autonomia" min="1" required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="color" class="form-label"><strong>Color:</strong></label>
-                            <input type="text" class="form-control" id="color" name="color" required>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="imagen" class="form-label"><strong>Imagen:</strong></label>
-                            <select class="form-select" name="imagen" id="imagen" required>
-                              <% imagenesVehiculos.forEach(img=> { %>
-                                <option value="<%= img %>">
-                                  <%= img %>
-                                </option>
-                                <% }) %>
-                            </select>
-                          </div>
-
-                          <div class="mb-3">
-                            <label for="id_concesionario" class="form-label"><strong>Concesionario:</strong></label>
-                            <select class="form-select" id="id_concesionario" name="id_concesionario" required>
-                              <% concesionarios.forEach(c=> { %>
-                                <option value="<%= c.id %>">
-                                  <%= c.nombre %> (<%= c.ciudad %>)
-                                </option>
-                                <% }) %>
-                            </select>
-                          </div>
-
-                          <button type="submit" class="btn btn-primary">Enviar</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table class="table table-sm table-striped table-bordered align-middle" id="tabla-vehiculos">
-                      <thead class="table-dark sticky-top">
-                        <tr>
-                          <th>Matrícula</th>
-                          <th>Marca</th>
-                          <th>Modelo</th>
-                          <th>Fecha</th>
-                          <th>Plazas</th>
-                          <th>Autonomía</th>
-                          <th>Color</th>
-                          <th>Concesionario</th>
-                          <th>Imagen</th>
-                          <th>Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="tab-pane fade" id="usuarios" role="tabpanel">
-                  <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
-                    <table class="table table-sm table-striped table-bordered align-middle" id="tabla-usuarios">
-                      <thead class="table-dark sticky-top">
-                        <tr>
-                          <th>ID</th>
-                          <th class="d-sm-table-cell">Nombre</th>
-                          <th class="d-sm-table-cell">Correo</th>
-                          <th class="d-md-table-cell">Rol</th>
-                          <th class="d-lg-table-cell">Concesionario</th>
-                          <th>Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="tab-pane fade" id="estadisticas" role="tabpanel">
-
-                  <h3 class="mt-3">Concesionarios con más reservas</h3>
-                  <ul id="stats-concesionarios" class="list-group mb-4"></ul>
-                  <ul id="stats-reservas" class="list-group mb-4"></ul>
-                  <ul id="stats-media" class="list-group mb-4"></ul>
-                  <ul id="stats-km" class="list-group mb-4"></ul>
-                </div>
-
-                <div class="tab-pane fade" id="incidencias" role="tabpanel">
-                  <h3 class="mt-3">Incidencias</h3>
+            <div class="collapse" id="collapseAltaConcesionario">
+              <div class="card-body">
+                <form id="altaConcesionario">
                   <div class="mb-3">
-                    <label for="filtroVehiculo">Seleccionar vehículo:</label>
-                    <select id="filtroVehiculo" class="form-control">
-                      <option value="all">Todos</option>
+                    <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="ciudad" class="form-label"><strong>Ciudad:</strong></label>
+                    <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="direccion" class="form-label"><strong>Dirección:</strong></label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="latitud" class="form-label"><strong>Latitud:</strong></label>
+                    <input type="text" class="form-control" id="latitud" name="latitud" placeholder="Opcional">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="longitud" class="form-label"><strong>Longitud:</strong></label>
+                    <input type="text" class="form-control" id="longitud" name="longitud" placeholder="Opcional">
+                  </div>
+                  <div class="mb-3">
+                    <label for="telefono" class="form-label"><strong>Teléfono:</strong></label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
+            <table id="tabla-concesionarios" class="table table-sm table-striped table-bordered align-middle">
+              <thead class="table-dark sticky-top">
+                <tr>
+                  <th>ID</th>
+                  <th class="d-sm-table-cell">Nombre</th>
+                  <th class="d-sm-table-cell">Ciudad</th>
+                  <th class="d-md-table-cell">Dirección</th>
+                  <th>Lat</th>
+                  <th>Lng</th>
+                  <th class="d-md-table-cell">Teléfono</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="vehiculos" role="tabpanel">
+          <div class="card mb-4">
+            <div class="card-header bg-primary d-flex justify-content-between align-items-center"
+              style="cursor: pointer; color: white;" data-bs-toggle="collapse" data-bs-target="#collapseAltaVehiculo"
+              aria-expanded="false">
+              <h5 class="mb-0">Alta de vehículo</h5>
+              <i class="bi bi-chevron-down"></i>
+            </div>
+
+            <div class="collapse" id="collapseAltaVehiculo">
+              <div class="card-body">
+                <form id="altaVehiculo">
+
+                  <div class="mb-3">
+                    <label for="matricula" class="form-label"><strong>Matrícula:</strong></label>
+                    <input type="text" class="form-control" id="matricula" name="matricula" pattern="^\d{4}[A-Z]{3}$"
+                      title="Debe tener 4 números y 3 letras mayúsculas, ej: 1234ABC" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="marca" class="form-label"><strong>Marca:</strong></label>
+                    <input type="text" class="form-control" id="marca" name="marca" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="modelo" class="form-label"><strong>Modelo:</strong></label>
+                    <input type="text" class="form-control" id="modelo" name="modelo" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="plazas" class="form-label"><strong>Plazas:</strong></label>
+                    <input type="number" class="form-control" id="plazas" name="plazas" min="1" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="autonomia" class="form-label"><strong>Autonomía:</strong></label>
+                    <input type="number" class="form-control" id="autonomia" name="autonomia" min="1" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="color" class="form-label"><strong>Color:</strong></label>
+                    <input type="text" class="form-control" id="color" name="color" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="imagen" class="form-label"><strong>Imagen:</strong></label>
+                    <select class="form-select" name="imagen" id="imagen" required>
+                      <option value="">Cargando imágenes...</option>
                     </select>
                   </div>
-                  <ul id="listaIncidencias" class="list-group">
-                  </ul>
-                </div>
+
+                  <div class="mb-3">
+                    <label for="id_concesionario" class="form-label"><strong>Concesionario:</strong></label>
+                    <select class="form-select" id="id_concesionario" name="id_concesionario" required>
+                      <option value="">Cargando concesionarios...</option>
+                    </select>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
               </div>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
+            <table class="table table-sm table-striped table-bordered align-middle" id="tabla-vehiculos">
+              <thead class="table-dark sticky-top">
+                <tr>
+                  <th>Matrícula</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Fecha</th>
+                  <th>Plazas</th>
+                  <th>Autonomía</th>
+                  <th>Color</th>
+                  <th>Concesionario</th>
+                  <th>Imagen</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="usuarios" role="tabpanel">
+          <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
+            <table class="table table-sm table-striped table-bordered align-middle" id="tabla-usuarios">
+              <thead class="table-dark sticky-top">
+                <tr>
+                  <th>ID</th>
+                  <th class="d-sm-table-cell">Nombre</th>
+                  <th class="d-sm-table-cell">Correo</th>
+                  <th class="d-md-table-cell">Rol</th>
+                  <th class="d-lg-table-cell">Concesionario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="estadisticas" role="tabpanel">
+
+          <h3 class="mt-3">Concesionarios con más reservas</h3>
+          <ul id="stats-concesionarios" class="list-group mb-4"></ul>
+          <ul id="stats-reservas" class="list-group mb-4"></ul>
+          <ul id="stats-media" class="list-group mb-4"></ul>
+          <ul id="stats-km" class="list-group mb-4"></ul>
+        </div>
+
+        <div class="tab-pane fade" id="incidencias" role="tabpanel">
+          <h3 class="mt-3">Incidencias</h3>
+          <div class="mb-3">
+            <label for="filtroVehiculo">Seleccionar vehículo:</label>
+            <select id="filtroVehiculo" class="form-control">
+              <option value="all">Todos</option>
+            </select>
+          </div>
+          <ul id="listaIncidencias" class="list-group">
+          </ul>
+        </div>
+      </div>
     </main>
 
     <%- include("partials/footer") %>
