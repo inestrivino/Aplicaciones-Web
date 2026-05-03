@@ -108,6 +108,10 @@ section {
   padding: 2rem;
 }
 
+.badge {
+  font-size: 1em;
+}
+
 /* Header */
 header {
   height: 66vh;

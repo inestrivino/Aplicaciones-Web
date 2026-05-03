@@ -1,5 +1,6 @@
 import { fetchConcesionarios } from './ajax.js';
 import { fetchUser } from './ajax.js';
+import { mostrarFeedbackModal } from './ui.js';
 
 /* RENDER DE REGISTRO E INICIO DE SESION */
 async function cargarConcesionariosSelect() {
@@ -68,6 +69,84 @@ function inicializarSignInUp() {
                 }
             }
         });
+
+        document.getElementById("signUpForm")
+            .querySelector("form")
+            .addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const form = e.target;
+
+                const body = {
+                    signUpName: form.signUpName.value,
+                    signUpEmail: form.signUpEmail.value,
+                    signUpPassword: form.signUpPassword.value,
+                    signUpConfirmPassword: form.signUpConfirmPassword.value,
+                    signUpDealer: form.signUpDealer.value
+                };
+
+                try {
+                    const res = await fetch("/user/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(body)
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok || !data.ok) {
+                        throw new Error(data.error);
+                    }
+
+                    if (data.ok) {
+                        mostrarFeedbackModal(data.message, "success");
+
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    }
+
+                    form.reset();
+
+                } catch (err) {
+                    mostrarFeedbackModal(err.message, "danger");
+                }
+            });
+
+        document.getElementById("signInForm")
+            .querySelector("form")
+            .addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const form = e.target;
+
+                const body = {
+                    signInEmail: form.signInEmail.value,
+                    signInPassword: form.signInPassword.value
+                };
+
+                try {
+                    const res = await fetch("user/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(body)
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok || !data.ok) {
+                        throw new Error(data.error);
+                    }
+
+                    mostrarFeedbackModal("Login correcto", "success");
+
+                    // opcional: recargar UI o redirigir
+                    window.location.reload();
+
+                } catch (err) {
+                    mostrarFeedbackModal(err.message, "danger");
+                }
+            });
     }
 }
 
@@ -225,7 +304,7 @@ async function mapaConcesionarios() {
 /* RENDER DE PERFIL */
 function renderUserForm(user, concesionarios) {
     return `
-    <form action="/user/updateProfile" method="POST">
+    <form id="profileForm">
 
       <div class="mb-3">
         <label class="form-label">Nombre</label>
@@ -253,29 +332,75 @@ function renderUserForm(user, concesionarios) {
       </button>
 
     </form>
-  `;
+    `;
 }
 
-async function loadUserForm() {
+async function inicializarUserForm() {
     try {
         const [user, concesionarios] = await Promise.all([
             fetchUser(),
             fetchConcesionarios()
         ]);
-        const html = renderUserForm(user, concesionarios);
 
-        document.getElementById("form-container").innerHTML = html;
+        if (!user || !user.id) {
+            console.warn("Usuario no autenticado, no se renderiza perfil");
+            return;
+        }
+
+        document.getElementById("form-container").innerHTML =
+            renderUserForm(user, concesionarios);
+
+        const form = document.getElementById("profileForm");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                name: form.name.value,
+                email: form.email.value,
+                id_concesionario: form.id_concesionario.value
+            };
+
+            try {
+                const res = await fetch("/api/user/updateProfile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const json = await res.json();
+
+                if (!res.ok || !json.ok) {
+                    throw new Error(json.error || "Error al actualizar perfil");
+                }
+
+                mostrarFeedbackModal("Perfil actualizado correctamente", "success");
+
+            } catch (err) {
+                console.error(err);
+                mostrarFeedbackModal(err.message, "danger");
+            }
+        });
 
     } catch (error) {
         console.error("Error cargando datos:", error);
+        mostrarFeedbackModal("Error cargando perfil", "danger");
     }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     inicializarSignInUp();
-    loadUserForm();
+    inicializarUserForm();
 
     if (document.getElementById("map-container")) {
         mapaConcesionarios();
+    }
+    if (document.getElementById("signUpFormReal")) {
+        document.getElementById("signUpFormReal")
+            .addEventListener("submit", function (e) {
+                if (!validateSignUp()) {
+                    e.preventDefault();
+                }
+            });
     }
 });

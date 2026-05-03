@@ -41,8 +41,6 @@ function comprobarUsuarioAdmin(request, response, next) {
     next();
 }
 
-const concesionariosDb = require("./db/concesionariosDb.js");
-
 //INICIO
 app.get("/", async function (request, response, next) {
     try {
@@ -52,25 +50,10 @@ app.get("/", async function (request, response, next) {
             request.session.error = undefined;
         }
 
-        const concesionariosRaw = await concesionariosDb.getConcesionarios();
-        const concesionarios = concesionariosRaw[0];
-
         response.render("inicio", {
             error: error,
             user: request.session.user,
-            concesionarios: concesionarios
         });
-    } catch (err) {
-        next(err);
-    }
-});
-
-//CARGA NECESARIA DE CONCESIONARIOS EN TODAS LAS RUTAS
-app.use(async (req, res, next) => {
-    try {
-        const data = await concesionariosDb.getConcesionarios();
-        res.locals.concesionarios = data[0];
-        next();
     } catch (err) {
         next(err);
     }
@@ -79,7 +62,6 @@ app.use(async (req, res, next) => {
 //RUTAS DE LA APLICACION
 app.use("/reserva", comprobarUsuarioLogueado, require("./routes/reserva"));
 app.use("/vehiculos", comprobarUsuarioLogueado, require("./routes/vehiculos"));
-app.use("/concesionarios", comprobarUsuarioLogueado, require("./routes/concesionarios"));
 app.use("/user", require("./routes/user"));
 app.use("/misReservas", comprobarUsuarioLogueado, require("./routes/misReservas"));
 app.use("/admin", comprobarUsuarioLogueado, comprobarUsuarioAdmin, require("./routes/admin"));

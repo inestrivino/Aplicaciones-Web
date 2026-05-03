@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const reservasDb = require("../db/reservasDb.js");
 const userDb = require("../db/userDb.js");
-const vehiculosDb = require("../db/vehiculosDb.js");
 
 router.get("/", async function (request, response, next) {
     try {

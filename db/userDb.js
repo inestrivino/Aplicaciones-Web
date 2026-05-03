@@ -18,13 +18,34 @@ class UserDb {
         )
     }
 
-    //actualiza un usuario
+    //actualiza un usuario (solo los valores recibidos)
     updateUser(id, request) {
-        return pool.query(
-            'UPDATE users SET name = ?, email = ?, rol = ?, id_concesionario = ? ' +
-            'WHERE id = ?',
-            [request.name, request.email, request.rol, request.id_concesionario, id]
-        );
+        const fields = [];
+        const values = [];
+
+        if (request.name !== undefined) {
+            fields.push("name = ?");
+            values.push(request.name);
+        }
+
+        if (request.email !== undefined) {
+            fields.push("email = ?");
+            values.push(request.email);
+        }
+
+        if (request.rol !== undefined) {
+            fields.push("rol = ?");
+            values.push(request.rol);
+        }
+
+        if (request.id_concesionario !== undefined) {
+            fields.push("id_concesionario = ?");
+            values.push(request.id_concesionario);
+        }
+
+        const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+        values.push(id);
+        return pool.query(sql, values);
     }
 
     //elimina un usuario

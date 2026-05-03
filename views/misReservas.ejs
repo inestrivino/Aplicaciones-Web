@@ -22,9 +22,11 @@
 
 <body>
   <!-- NAVBAR -->
-  <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
+  <%- include('partials/header', { user: user }) %>
     <main aria-label="Contenido principal">
       <h1>Mis Reservas de Vehículos</h1>
+
+      <div id="feedback-container"></div>
 
       <ul class="nav nav-tabs" id="reservasTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -42,8 +44,8 @@
             Pasadas
           </button>
         </li>
-
       </ul>
+
       <div id="modales">
         <div class="modal fade" id="devolucionModal" tabindex="-1">
           <div class="modal-dialog">

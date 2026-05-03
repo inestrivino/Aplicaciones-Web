@@ -23,10 +23,12 @@
 
 <body>
   <!-- NAVBAR -->
-  <%- include('partials/header', { user: user, concesionarios: concesionarios }) %>
+  <%- include('partials/header', { user: user }) %>
 
     <main aria-label="Contenido principal de la página">
       <h1>Reservar vehículos</h1>
+
+      <div id="feedback-container"></div>
 
       <form id="reservaForm" aria-label="Formulario de reserva de vehículos">
 

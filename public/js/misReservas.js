@@ -1,4 +1,5 @@
 import { fetchMisReservas } from './ajax.js';
+import { mostrarFeedback } from './ui.js';
 
 /* RENDER DE LAS RESERVAS DEL USUARIO */
 async function cargarReservas() {
@@ -107,7 +108,7 @@ function renderReservas(reservas) {
         const inicio = new Date(r.fecha_ini);
         const fin = new Date(r.fecha_fin);
 
-        if (r.estado=="finalizada") {
+        if (r.estado == "finalizada") {
             pasadasArr.push(r);
         } else if (inicio > hoy) {
             futuras.push(r);
@@ -127,14 +128,24 @@ async function handleReservasClick(e) {
     // CANCELAR
     if (e.target.classList.contains("cancelar-btn")) {
         const id = e.target.dataset.id;
-
         if (!confirm("¿Seguro que quieres cancelar esta reserva?")) return;
+        try {
+            const res = await fetch(`/api/misReservas/cancelar/${id}`, {
+                method: "POST"
+            });
 
-        const res = await fetch(`/api/misReservas/cancelar/${id}`, { method: "POST" });
-        const data = await res.json();
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+                throw new Error(data.error || "No se pudo cancelar la reserva");
+            }
 
-        if (data.ok) await cargarReservas();
-        else alert(data.error);
+            mostrarFeedback("Reserva cancelada correctamente", "success");
+            await cargarReservas();
+
+        } catch (err) {
+            console.error(err);
+            mostrarFeedback(err.message, "danger");
+        }
     }
 
     // DEVOLVER
@@ -168,34 +179,36 @@ async function inicializarMisReservas() {
     document.addEventListener("click", handleReservasClick);
     document.getElementById("confirmarIncidenciaBtn")
         .addEventListener("click", async () => {
-
             const texto = document.getElementById("incidenciaTexto").value.trim();
             const error = document.getElementById("incidenciaError");
 
-            if (!texto) {
-                error.classList.remove("d-none");
-                return;
-            }
+            if (!texto) { error.classList.remove("d-none"); return; }
 
-            console.log(JSON.stringify({ comentario: texto }));
-            const res = await fetch(`/api/misReservas/incidencia/${incidenciaReservaId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ comentario: texto })
-            });
+            try {
+                const res = await fetch(`/api/misReservas/incidencia/${incidenciaReservaId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ comentario: texto })
+                });
 
-            const data = await res.json();
+                const data = await res.json();
 
-            if (data.ok) {
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || "No se pudo enviar la incidencia");
+                }
+
                 bootstrap.Modal.getInstance(
                     document.getElementById("incidenciaModal")
                 ).hide();
 
+                mostrarFeedback("Incidencia enviada correctamente", "success");
                 await cargarReservas();
-            } else {
-                alert(data.error);
+
+            } catch (err) {
+                console.error(err);
+                mostrarFeedback(err.message, "danger");
             }
         });
     document.getElementById("confirmarDevolucionBtn")
@@ -205,10 +218,7 @@ async function inicializarMisReservas() {
             const comentario = document.getElementById("comentario").value.trim();
             const kilometros = document.getElementById("kilometros").value;
 
-            if (!kilometros || kilometros < 0) {
-                alert("Introduce los kilómetros recorridos");
-                return;
-            }
+            if (!kilometros || kilometros < 0) { alert("Introduce los kilómetros recorridos"); return; }
 
             const body = {
                 accion: "feedback",
@@ -218,25 +228,31 @@ async function inicializarMisReservas() {
             if (puntuacion) body.puntuacion = parseInt(puntuacion);
             if (comentario) body.comentario = comentario;
 
-            const res = await fetch(`/api/misReservas/devolver/${devolucionReservaId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            });
+            try {
+                const res = await fetch(`/api/misReservas/devolver/${devolucionReservaId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
 
-            const data = await res.json();
+                const data = await res.json();
 
-            if (data.ok) {
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || "No se pudo procesar la devolución");
+                }
+
                 bootstrap.Modal.getInstance(
                     document.getElementById("devolucionModal")
                 ).hide();
 
+                mostrarFeedback("Vehículo devuelto correctamente", "success");
                 await cargarReservas();
 
-            } else {
-                alert(data.error);
+            } catch (err) {
+                console.error(err);
+                mostrarFeedback(err.message, "danger");
             }
         });
     await cargarReservas();

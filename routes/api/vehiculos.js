@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// OBTENER FILTROS
+// OBTENER FILTROS, LAS FECHAS OCUPADAS DE UN COCHE, LAS IMAGENES POSIBLES
 router.get("/filtros", async (req, res) => {
     try {
         const [marcas] = await vehiculosDb.getMarcas();
@@ -91,6 +91,7 @@ router.get("/imagenes", async (req, res) => {
 
 const matriculaRegex = /^\d{4}[A-Z]{3}$/;
 
+// ACCIONES DE CREACION, EDICION, ELIMINACION
 router.post("/create", async function (req, res) {
     try {
         const {
@@ -116,11 +117,11 @@ router.post("/create", async function (req, res) {
             throw new Error("El modelo no puede estar vacío.");
         }
 
-        if (!plazas || isNaN(plazas)) {
+        if (!plazas || isNaN(plazas) || plazas < 1) {
             throw new Error("Plazas inválidas.");
         }
 
-        if (!autonomia || isNaN(autonomia)) {
+        if (!autonomia || isNaN(autonomia) || autonomia < 0) {
             throw new Error("Autonomía inválida.");
         }
 
@@ -170,6 +171,89 @@ router.post("/create", async function (req, res) {
         return res.status(400).json({
             ok: false,
             error: error.message
+        });
+    }
+});
+
+router.put("/:matricula", async function (req, res) {
+    try {
+        const matricula = req.params.matricula;
+        const { marca, modelo, fecha, plazas, autonomia, color, id_concesionario, imagen } = req.body;
+
+        // Validaciones
+        if (!marca || marca.trim() === "") throw new Error("La marca no puede estar vacía.");
+        if (!modelo || modelo.trim() === "") throw new Error("El modelo no puede estar vacío.");
+        if (!fecha) throw new Error("La fecha es obligatoria.");
+        if (!plazas || isNaN(plazas) || plazas < 1) throw new Error("Plazas inválidas.");
+        if (!autonomia || isNaN(autonomia) || autonomia < 0) throw new Error("Autonomía inválida.");
+        if (!color || color.trim() === "") throw new Error("El color no puede estar vacío.");
+        if (!id_concesionario || isNaN(id_concesionario)) throw new Error("ID de concesionario inválido.");
+
+        // Verificar vehículo
+        const [existingVeh] = await vehiculosDb.getVehiculoByMatricula(matricula);
+        if (!existingVeh || existingVeh.length === 0) {
+            return res.status(404).json({ ok: false, error: "El vehículo no existe." });
+        }
+
+        // Verificar concesionario
+        const [existingCon] = await concesionariosDb.getConcesionarioById(id_concesionario);
+        if (!existingCon || existingCon.length === 0) {
+            return res.status(404).json({ ok: false, error: "El concesionario no existe." });
+        }
+
+        // Validar imagen
+        const imgPath = path.join(__dirname, "../../public/img/vehiculos", imagen);
+        if (!fs.existsSync(imgPath)) {
+            return res.status(400).json({ ok: false, error: "La imagen seleccionada no existe." });
+        }
+
+        const imagenCompleto = "/img/vehiculos/" + imagen;
+
+        const vehiculo = { 
+            marca, modelo, fecha, plazas, autonomia, color, id_concesionario, imagenCompleto: imagenCompleto 
+        };
+
+        await vehiculosDb.updateVehiculo(matricula, vehiculo);
+
+        return res.json({
+            ok: true,
+            message: "Vehículo modificado con éxito"
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            error: error.message || "Error interno del servidor"
+        });
+    }
+});
+
+router.delete("/:matricula", async function (req, res) {
+    try {
+        const matricula = req.params.matricula.toUpperCase();
+
+        const [existingVeh] = await vehiculosDb.getVehiculoByMatricula(matricula);
+
+        if (!existingVeh || existingVeh.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                error: "El vehículo no existe."
+            });
+        }
+
+        await vehiculosDb.deleteVehiculo(matricula);
+
+        return res.json({
+            ok: true,
+            message: "Vehículo eliminado con éxito"
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            error: error.message || "Error interno del servidor"
         });
     }
 });

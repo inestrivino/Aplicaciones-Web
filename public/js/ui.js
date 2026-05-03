@@ -1,6 +1,46 @@
-/* FUNCIONES AQUÍ:
-- FUNCION PARA ABRIR Y CERRAR UN FORMULARIO CON TOGGLE
-*/
+export function mostrarFeedback(mensaje, tipo = 'success') {
+    const container = document.getElementById('feedback-container');
+
+    const alerta = document.createElement('div');
+    alerta.className = `alert alert-${tipo} alert-dismissible fade show`;
+    alerta.role = 'alert';
+
+    alerta.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    container.appendChild(alerta);
+
+    // Auto eliminar después de 3s
+    setTimeout(() => {
+        alerta.classList.remove('show');
+        alerta.classList.add('hide');
+        alerta.remove();
+    }, 3000);
+}
+
+export function mostrarFeedbackModal(mensaje, tipo = 'success') {
+    const container = document.getElementById('feedback-container-modal');
+
+    const alerta = document.createElement('div');
+    alerta.className = `alert alert-${tipo} alert-dismissible fade show`;
+    alerta.role = 'alert';
+
+    alerta.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    container.appendChild(alerta);
+
+    // Auto eliminar después de 3s
+    setTimeout(() => {
+        alerta.classList.remove('show');
+        alerta.classList.add('hide');
+        alerta.remove();
+    }, 3000);
+}
 
 function toggleFormulario() {
     // Selecciona todos los elementos que tienen data-bs-toggle="collapse"

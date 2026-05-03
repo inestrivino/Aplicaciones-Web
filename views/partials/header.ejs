@@ -162,6 +162,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
+        <div id="feedback-container-modal"></div>
+
         <% if (user) { %>
           <div id="form-container"></div>
           <% } else { %>
@@ -184,8 +186,8 @@
             </div>
 
             <!-- Formulario de registro -->
-            <div id="signUpForm" class="auth-form" style="display: none;">
-              <form action="/user/register" method="POST" onsubmit="return validateSignUp()">
+            <div class="auth-form" style="display: none;" id="signUpForm">
+              <form action="/user/register" method="POST" id="signUpFormReal">
                 <div>
                   <label for="signUpName" class="form-label">Nombre completo</label>
                   <input type="text" class="form-control" name="signUpName" id="signUpName"
@@ -193,7 +195,7 @@
                 </div>
                 <div>
                   <label for="signUpDealer" class="form-label">Concesionario</label>
-                  <select id="signUpDealer" class="form-select" required>
+                  <select id="signUpDealer" class="form-select" name="signUpDealer" required>
                     <option selected disabled value="">
                       Seleccione un concesionario
                     </option>

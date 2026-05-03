@@ -4,94 +4,9 @@ import { fetchImagenesVehiculos } from './ajax.js';
 import { fetchUsuarios } from './ajax.js';
 import { fetchEstadisticas } from './ajax.js';
 import { fetchIncidencias } from './ajax.js';
+import { mostrarFeedback } from './ui.js';
 
 /* RENDER DEL ADMINISTRADOR */
-//CONCESIONARIOS
-async function renderTablaConcesionarios() {
-    concesionarios = await fetchConcesionarios();
-    const tbody = document.querySelector('#tabla-concesionarios tbody');
-
-    tbody.innerHTML = concesionarios.map(c => `
-        <tr>
-            <td>${c.id}</td>
-
-            <td class="d-sm-table-cell">
-                <input class="form-control form-control-sm" type="text" name="nombre" value="${c.nombre}">
-            </td>
-
-            <td class="d-sm-table-cell">
-                <input class="form-control form-control-sm" type="text" name="ciudad" value="${c.ciudad}">
-            </td>
-
-            <td class="d-md-table-cell">
-                <input class="form-control form-control-sm" type="text" name="direccion" value="${c.direccion}">
-            </td>
-
-            <td>
-                <input class="form-control form-control-sm" type="text" name="latitud" value="${c.latitud || ''}">
-            </td>
-
-            <td>
-                <input class="form-control form-control-sm" type="text" name="longitud" value="${c.longitud || ''}">
-            </td>
-
-            <td class="d-md-table-cell">
-                <input class="form-control form-control-sm" type="text" name="telefono" value="${c.telefono}">
-            </td>
-
-            <td>
-                <button class="btn btn-sm btn-secondary mb-1" onclick="updateConcesionario(${c.id}, this)">Modificar</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteConcesionario(${c.id})">Eliminar</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function inicializarAltaConcesionario() {
-    const form = document.getElementById("altaConcesionario");
-
-    if (!form) return;
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const body = {
-            nombre: form.nombre.value.trim(),
-            ciudad: form.ciudad.value.trim(),
-            direccion: form.direccion.value.trim(),
-            telefono: form.telefono.value.trim(),
-            latitud: form.latitud.value,
-            longitud: form.longitud.value
-        };
-
-        try {
-            const res = await fetch("/api/concesionarios/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await res.json();
-
-            if (data.ok) {
-                alert(data.message);
-
-                form.reset();
-                await renderTablaConcesionarios();
-
-            } else {
-                alert(data.error);
-            }
-
-        } catch (err) {
-            console.error(err);
-            alert("Error al crear concesionario");
-        }
-    });
-}
-
 //VEHICULOS
 async function renderTablaVehiculos() {
     const [vehiculos, concesionarios, imagenesVehiculos] = await Promise.all([
@@ -123,33 +38,33 @@ async function renderTablaVehiculos() {
         <tr>
             <td>${v.matricula}</td>
 
-            <td><input class="form-control form-control-sm" name="marca" value="${v.marca}"></td>
-            <td><input class="form-control form-control-sm" name="modelo" value="${v.modelo}"></td>
-            <td><input class="form-control form-control-sm" type="date" name="fecha" value="${v.fecha || ''}"></td>
-            <td><input class="form-control form-control-sm" type="number" name="plazas" value="${v.plazas}"></td>
-            <td><input class="form-control form-control-sm" type="number" name="autonomia" value="${v.autonomia}"></td>
-            <td><input class="form-control form-control-sm" name="color" value="${v.color}"></td>
+            <td><input class="form-control" name="marca" value="${v.marca}"></td>
+            <td><input class="form-control" name="modelo" value="${v.modelo}"></td>
+            <td><input class="form-control" type="date" name="fecha" value="${v.fecha || ''}"></td>
+            <td><input class="form-control" type="number" name="plazas" value="${v.plazas}"></td>
+            <td><input class="form-control" type="number" name="autonomia" value="${v.autonomia}"></td>
+            <td><input class="form-control" name="color" value="${v.color}"></td>
 
             <td>
-                <select class="form-select form-select-sm" name="id_concesionario">
+                <select class="form-select" name="id_concesionario">
                     ${opcionesConcesionarios}
                 </select>
             </td>
 
             <td>
-                <select class="form-select form-select-sm" name="imagen">
+                <select class="form-select" name="imagen">
                     ${opcionesImagenes}
                 </select>
             </td>
 
             <td>
-                <button class="btn btn-sm btn-secondary"
-                        onclick="updateVehiculo('${v.matricula}', this)">
+                <button class="btn btn-secondary btn-update"
+                        data-matricula="${v.matricula}">
                     Modificar
                 </button>
 
-                <button class="btn btn-sm btn-danger"
-                        onclick="deleteVehiculo('${v.matricula}')">
+                <button class="btn btn-danger btn-delete"
+                        data-matricula="${v.matricula}">
                     Eliminar
                 </button>
             </td>
@@ -186,25 +101,69 @@ async function enviarFormularioVehiculo(event) {
 
         const data = await res.json();
 
-        if (data.ok) {
-            alert("Vehículo creado con éxito.");
-            form.reset();
-            renderTablaVehiculos();
-        } else {
-            alert(`Error: ${data.error}`);
+        if (!res.ok || !data.ok) {
+            throw new Error(data.error || "Error al crear vehículo");
         }
 
+        mostrarFeedback(data.message || "Vehículo creado con éxito", "success");
+
+        form.reset();
     } catch (error) {
         console.error("Error al crear el vehículo", error);
-        alert("Error al enviar los datos.");
+        mostrarFeedback(error.message || "Error al enviar los datos", "danger");
     }
+
+    await renderTablaVehiculos();
 }
 
-async function inicializarFormularioVehiculo() {
+async function updateVehiculo(matricula, data) {
+    try {
+        const res = await fetch(`/api/vehiculos/${matricula}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || !json.ok) {
+            throw new Error(json.error || 'Error al actualizar vehículo');
+        }
+
+        mostrarFeedback('Vehículo actualizado con éxito', 'success');
+    } catch (error) {
+        console.error(error);
+        mostrarFeedback(error.message, 'danger');
+    }
+
+    await renderTablaVehiculos();
+}
+
+async function deleteVehiculo(matricula) {
+    try {
+        const res = await fetch(`/api/vehiculos/${matricula}`, {
+            method: 'DELETE'
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || !json.ok) {
+            throw new Error(json.error || 'Error al eliminar vehículo');
+        }
+
+        mostrarFeedback('Vehículo eliminado con éxito', 'success');
+    } catch (error) {
+        console.error(error);
+        mostrarFeedback(error.message, 'danger');
+    }
+
+    await renderTablaVehiculos();
+}
+
+async function inicializarAltaVehiculo() {
     const form = document.getElementById("altaVehiculo");
     if (!form) return;
 
-    // Cargar imágenes de vehículos
     const imagenSelect = form.querySelector("#imagen");
     const concesionariosSelect = form.querySelector("#id_concesionario");
 
@@ -212,27 +171,224 @@ async function inicializarFormularioVehiculo() {
         // Obtener las imágenes disponibles
         const imagenes = await fetchImagenesVehiculos();
 
-        // Llenar el select de imágenes
         imagenSelect.innerHTML = imagenes.map(img => `
             <option value="${img}">${img}</option>
         `).join('');
 
-        // Obtener los concesionarios disponibles
+        // Obtener concesionarios
         const concesionarios = await fetchConcesionarios();
 
-        // Llenar el select de concesionarios
         concesionariosSelect.innerHTML = concesionarios.map(con => `
             <option value="${con.id}">${con.nombre} (${con.ciudad})</option>
         `).join('');
 
-        if (form) {
-            form.addEventListener("submit", enviarFormularioVehiculo);
-        }
+        form.removeEventListener("submit", enviarFormularioVehiculo);
+        form.addEventListener("submit", enviarFormularioVehiculo);
 
     } catch (error) {
         console.error("Error al cargar los datos del formulario", error);
-        alert("Error al cargar imágenes o concesionarios.");
+        mostrarFeedback("Error al cargar imágenes o concesionarios", "danger");
     }
+}
+
+function inicializarTablaVehiculos() {
+    renderTablaVehiculos();
+    document.querySelector('#tabla-vehiculos tbody')
+        .addEventListener('click', async (e) => {
+
+            const btn = e.target;
+
+            // MODIFICAR
+            if (btn.classList.contains('btn-update')) {
+                const matricula = btn.dataset.matricula;
+                const row = btn.closest('tr');
+
+                const data = {
+                    marca: row.querySelector('[name="marca"]').value,
+                    modelo: row.querySelector('[name="modelo"]').value,
+                    fecha: row.querySelector('[name="fecha"]').value,
+                    plazas: row.querySelector('[name="plazas"]').value,
+                    autonomia: row.querySelector('[name="autonomia"]').value,
+                    color: row.querySelector('[name="color"]').value,
+                    id_concesionario: row.querySelector('[name="id_concesionario"]').value,
+                    imagen: row.querySelector('[name="imagen"]').value
+                };
+
+                await updateVehiculo(matricula, data);
+            }
+
+            // ELIMINAR
+            if (btn.classList.contains('btn-delete')) {
+                const matricula = btn.dataset.matricula;
+
+                if (confirm('¿Eliminar este vehículo?')) {
+                    await deleteVehiculo(matricula);
+                }
+            }
+        });
+}
+
+//CONCESIONARIOS
+async function renderTablaConcesionarios() {
+    concesionarios = await fetchConcesionarios();
+    const tbody = document.querySelector('#tabla-concesionarios tbody');
+
+    tbody.innerHTML = concesionarios.map(c => `
+        <tr>
+            <td>${c.id}</td>
+
+            <td class="d-sm-table-cell">
+                <input class="form-control" type="text" name="nombre" value="${c.nombre}">
+            </td>
+
+            <td class="d-sm-table-cell">
+                <input class="form-control" type="text" name="ciudad" value="${c.ciudad}">
+            </td>
+
+            <td class="d-md-table-cell">
+                <input class="form-control" type="text" name="direccion" value="${c.direccion}">
+            </td>
+
+            <td>
+                <input class="form-control" type="text" name="latitud" value="${c.latitud || ''}">
+            </td>
+
+            <td>
+                <input class="form-control" type="text" name="longitud" value="${c.longitud || ''}">
+            </td>
+
+            <td class="d-md-table-cell">
+                <input class="form-control" type="text" name="telefono" value="${c.telefono}">
+            </td>
+
+            <td>
+                <button class="btn btn-secondary mb-1 btn-update" data-id="${c.id}">
+                    Modificar
+                </button>
+                <button class="btn btn-danger btn-delete" data-id="${c.id}">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function inicializarAltaConcesionario() {
+    const form = document.getElementById("altaConcesionario");
+
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const body = {
+            nombre: form.nombre.value.trim(),
+            ciudad: form.ciudad.value.trim(),
+            direccion: form.direccion.value.trim(),
+            telefono: form.telefono.value.trim(),
+            latitud: form.latitud.value,
+            longitud: form.longitud.value
+        };
+
+        try {
+            const res = await fetch("/api/concesionarios/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                mostrarFeedback(data.message || "Concesionario creado con éxito", "success");
+                form.reset();
+
+            } else {
+                mostrarFeedback(data.error || "Error al crear concesionario", "danger");
+            }
+
+        } catch (err) {
+            console.error(err);
+            mostrarFeedback("Error al crear concesionario", "danger");
+        }
+
+        await renderTablaConcesionarios();
+    });
+}
+
+async function updateConcesionario(id, data) {
+    try {
+        const res = await fetch(`/api/concesionarios/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error('Error al actualizar');
+
+        mostrarFeedback('Concesionario actualizado con éxito', 'success');
+
+    } catch (error) {
+        mostrarFeedback('Error al actualizar el concesionario', 'danger');
+        console.error(error);
+    }
+
+    await renderTablaConcesionarios();
+}
+
+async function deleteConcesionario(id) {
+    try {
+        const res = await fetch(`/api/concesionarios/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!res.ok) throw new Error('Error al eliminar');
+
+        mostrarFeedback('Concesionario eliminado con éxito', 'success');
+    } catch (error) {
+        mostrarFeedback('Error al eliminar el concesionario', 'danger');
+        console.error(error);
+    }
+
+    await renderTablaConcesionarios();
+    await renderTablaVehiculos();
+}
+
+function inicializarTablaConcesionario() {
+    renderTablaConcesionarios();
+    document.querySelector('#tabla-concesionarios tbody')
+        .addEventListener('click', async (e) => {
+
+            const btn = e.target;
+
+            // BOTÓN MODIFICAR
+            if (btn.classList.contains('btn-update')) {
+                const id = btn.dataset.id;
+                const row = btn.closest('tr');
+
+                const data = {
+                    nombre: row.querySelector('[name="nombre"]').value,
+                    ciudad: row.querySelector('[name="ciudad"]').value,
+                    direccion: row.querySelector('[name="direccion"]').value,
+                    latitud: row.querySelector('[name="latitud"]').value,
+                    longitud: row.querySelector('[name="longitud"]').value,
+                    telefono: row.querySelector('[name="telefono"]').value,
+                };
+
+                await updateConcesionario(id, data);
+            }
+
+            // BOTÓN ELIMINAR
+            if (btn.classList.contains('btn-delete')) {
+                const id = btn.dataset.id;
+
+                if (confirm('¿Seguro que quieres eliminar este concesionario?')) {
+                    await deleteConcesionario(id);
+                }
+            }
+        });
 }
 
 //USUARIOS
@@ -258,46 +414,123 @@ async function renderTablaUsuarios() {
             <td>${u.id}</td>
 
             <td>
-                <input class="form-control form-control-sm"
+                <input class="form-control"
                        type="text"
                        name="name"
                        value="${u.name}">
             </td>
 
             <td>
-                <input class="form-control form-control-sm"
+                <input class="form-control"
                        type="text"
                        name="email"
                        value="${u.email}">
             </td>
 
             <td>
-                <select class="form-select form-select-sm" name="rol">
+                <select class="form-select" name="rol">
                     <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>admin</option>
                     <option value="user" ${u.rol === 'user' ? 'selected' : ''}>user</option>
                 </select>
             </td>
 
             <td>
-                <select class="form-select form-select-sm" name="id_concesionario">
+                <select class="form-select" name="id_concesionario">
                     ${opcionesConcesionarios}
                 </select>
             </td>
 
             <td>
-                <button class="btn btn-sm btn-secondary"
-                        onclick="updateUsuario(${u.id}, this)">
+                <button class="btn btn-secondary btn-update"
+                        data-id="${u.id}">
                     Modificar
                 </button>
 
-                <button class="btn btn-sm btn-danger"
-                        onclick="deleteUsuario(${u.id})">
+                <button class="btn btn-danger btn-delete"
+                        data-id="${u.id}">
                     Eliminar
                 </button>
             </td>
         </tr>
         `;
     }).join('');
+}
+
+async function updateUsuario(id, data) {
+    try {
+        const res = await fetch(`/api/user/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || !json.ok) {
+            throw new Error(json.error || "Error al actualizar usuario");
+        }
+
+        mostrarFeedback("Usuario actualizado con éxito", "success");
+
+    } catch (error) {
+        console.error(error);
+        mostrarFeedback(error.message, "danger");
+    }
+    await renderTablaUsuarios();
+}
+
+async function deleteUsuario(id) {
+    try {
+        const res = await fetch(`/api/user/${id}`, {
+            method: 'DELETE'
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || !json.ok) {
+            throw new Error(json.error || "Error al eliminar usuario");
+        }
+
+        mostrarFeedback("Usuario eliminado con éxito", "success");
+
+    } catch (error) {
+        console.error(error);
+        mostrarFeedback(error.message, "danger");
+    }
+    await renderTablaUsuarios();
+}
+
+function inicializarTablaUsuarios() {
+    renderTablaUsuarios();
+    document.querySelector('#tabla-usuarios tbody')
+        .addEventListener('click', async (e) => {
+
+            const btn = e.target;
+
+            // MODIFICAR
+            if (btn.classList.contains('btn-update')) {
+                const id = btn.dataset.id;
+                const row = btn.closest('tr');
+
+                const data = {
+                    name: row.querySelector('[name="name"]').value,
+                    email: row.querySelector('[name="email"]').value,
+                    rol: row.querySelector('[name="rol"]').value,
+                    id_concesionario: row.querySelector('[name="id_concesionario"]').value
+                };
+
+                await updateUsuario(id, data);
+            }
+
+            // ELIMINAR
+            if (btn.classList.contains('btn-delete')) {
+                const id = btn.dataset.id;
+
+                if (confirm('¿Eliminar este usuario?')) {
+                    await deleteUsuario(id);
+                }
+            }
+        });
 }
 
 //ESTADISTICAS
@@ -458,11 +691,18 @@ function initIncidencias() {
 document.addEventListener("DOMContentLoaded", function () {
     const path = window.location.pathname;
     if (path.includes("admin")) {
-        renderTablaConcesionarios();
+        //concesionario
+        inicializarTablaConcesionario();
         inicializarAltaConcesionario();
-        renderTablaVehiculos();
-        inicializarFormularioVehiculo();
-        renderTablaUsuarios();
+
+        //vehiculo
+        inicializarTablaVehiculos();
+        inicializarAltaVehiculo();
+
+        //usuarios
+        inicializarTablaUsuarios();
+
+        //estadísticas e incidencias
         initEstadisticas();
         initIncidencias();
     }

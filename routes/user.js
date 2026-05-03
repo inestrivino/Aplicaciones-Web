@@ -3,11 +3,7 @@ const router = express.Router();
 const userDb = require("../db/userDb.js");
 const bcrypt = require("bcrypt");
 
-
-// ============================
-// 🔐 VALIDACIONES
-// ============================
-
+//FUNCIONES DE VALIDACION
 function validarEmail(campo) {
     return function (req, res, next) {
         const value = req.body[campo];
@@ -82,11 +78,7 @@ function validarNombre(req, res, next) {
     next();
 }
 
-
-// ============================
 // AUTENTIFICACION
-// ============================
-
 // REGISTER
 router.post(
     "/register",
@@ -94,11 +86,24 @@ router.post(
     validarPassword("signUpPassword"),
     validarPassword2("signUpPassword"),
     validarNombre,
-    async (req, res, next) => {
+    async (req, res) => {
         try {
+
             if (req.body.signUpPassword !== req.body.signUpConfirmPassword) {
-                req.session.error = "Las contraseñas no coinciden.";
-                return res.redirect("/");
+                return res.status(400).json({
+                    ok: false,
+                    error: "Las contraseñas no coinciden"
+                });
+            }
+
+            const [rows] = await userDb.getUserByEmail(req.body.signUpEmail);
+            const emailUser = rows?.[0];
+
+            if (emailUser) {
+                return res.status(400).json({
+                    ok: false,
+                    error: "Ya existe un usuario con ese correo"
+                });
             }
 
             const hash = await bcrypt.hash(req.body.signUpPassword, 10);
@@ -107,24 +112,35 @@ router.post(
                 email: req.body.signUpEmail,
                 name: req.body.signUpName,
                 password: hash,
-                concesionario: req.body.signUpDealer
+                concesionario: Number(req.body.signUpDealer)
             });
 
+            const [newRows] = await userDb.getUserByEmail(req.body.signUpEmail);
+            const newUser = newRows?.[0];
+
             req.session.user = {
-                id: result.insertId,
-                name: req.body.signUpName,
-                email: req.body.signUpEmail,
-                rol: "user",
-                id_concesionario: req.body.signUpDealer
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                rol: newUser.rol,
+                id_concesionario: newUser.id_concesionario
             };
 
-            res.redirect("/");
+            return res.json({
+                ok: true,
+                message: "Usuario registrado y sesión iniciada",
+                user: req.session.user
+            });
+
         } catch (err) {
-            next(err);
+            console.error(err);
+            return res.status(500).json({
+                ok: false,
+                error: err.message
+            });
         }
     }
 );
-
 
 // LOGIN
 router.post(
@@ -133,131 +149,58 @@ router.post(
     validarPassword2("signInPassword"),
     async (req, res) => {
         try {
+
             const [rows] = await userDb.getUserByEmail(req.body.signInEmail);
 
             if (!rows.length) {
-                req.session.error = "No existe usuario";
-                return res.redirect("/");
+                return res.status(400).json({
+                    ok: false,
+                    error: "No existe el usuario"
+                });
             }
 
-            const ok = bcrypt.compareSync(
+            const user = rows[0];
+
+            const ok = await bcrypt.compare(
                 req.body.signInPassword,
-                rows[0].password
+                user.password
             );
 
             if (!ok) {
-                req.session.error = "Contraseña incorrecta";
-                return res.redirect("/");
+                return res.status(400).json({
+                    ok: false,
+                    error: "Contraseña incorrecta"
+                });
             }
 
             req.session.user = {
-                id: rows[0].id,
-                name: rows[0].name,
-                email: rows[0].email,
-                rol: rows[0].rol,
-                id_concesionario: rows[0].id_concesionario
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                rol: user.rol,
+                id_concesionario: user.id_concesionario
             };
 
-            res.redirect("/");
+            return res.json({
+                ok: true,
+                message: "Login correcto",
+                user: req.session.user
+            });
+
         } catch (err) {
-            res.status(500).send(err.message);
+            console.error(err);
+            return res.status(500).json({
+                ok: false,
+                error: err.message
+            });
         }
     }
 );
-
 
 // LOGOUT
 router.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/");
 });
-
-
-// ============================
-// PERFIL
-// ============================
-
-router.post(
-    "/updateProfile",
-    validarEmail("email"),
-    async (req, res, next) => {
-        try {
-            const userId = req.session.user.id;
-
-            await userDb.updateUser(userId, {
-                name: req.body.name,
-                email: req.body.email,
-                rol: req.session.user.rol,
-                id_concesionario: req.body.id_concesionario
-            });
-
-            req.session.user = {
-                ...req.session.user,
-                name: req.body.name,
-                email: req.body.email,
-                id_concesionario: req.body.id_concesionario
-            };
-
-            res.redirect(req.get("Referrer") || "/");
-        } catch (err) {
-            next(err);
-        }
-    }
-);
-
-
-// ============================
-// ACCIONES CRUD ADMIN
-// ============================
-
-// CREATE
-router.post("/create", async (req, res) => {
-    try {
-        await userDb.createUser(req.body);
-
-        req.session.responseMessage = "Usuario creado";
-        res.redirect("/admin");
-    } catch (err) {
-        req.session.errorMessage = err.message;
-        res.redirect("/admin");
-    }
-});
-
-// UPDATE
-router.post("/:id/update", async (req, res) => {
-    try {
-        await userDb.updateUser(req.params.id, req.body);
-        const [updated] = await userDb.getUserById(req.params.id);
-        const u = updated[0];
-        // si es el mismo usuario logueado entonces actualizar sesión
-        if (req.session.user && req.session.user.id == u.id) {
-            req.session.user = {
-                ...req.session.user,
-                name: u.name,
-                email: u.email,
-                id_concesionario: u.id_concesionario
-            };
-        }
-        req.session.responseMessage = "Usuario actualizado";
-        res.redirect("/admin");
-    } catch (err) {
-        req.session.errorMessage = err.message;
-        res.redirect("/admin");
-    }
-});
-
-// DELETE
-router.post("/:id/delete", async (req, res) => {
-    try {
-        await userDb.deleteUser(req.params.id);
-
-        req.session.responseMessage = "Usuario eliminado";
-        res.redirect("/admin");
-    } catch (err) {
-        req.session.errorMessage = err.message;
-        res.redirect("/admin");
-    }
-});
-
 
 module.exports = router;

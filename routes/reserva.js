@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const reservasDb = require("../db/reservasDb.js");
 const vehiculosDb = require("../db/vehiculosDb.js");
-const userDb = require("../db/userDb.js");
 
 router.get("/", async function (request, response) {
     const vehiculosData = await vehiculosDb.getVehiculos();
