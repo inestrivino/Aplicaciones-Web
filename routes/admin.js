@@ -1,27 +1,44 @@
 const express = require('express');
 const router = express.Router();
-router.use(express.json()); 
+router.use(express.json());
 const multer = require("multer");
-const upload = multer({ dest: 'uploads/' }); 
+const upload = multer({ dest: 'uploads/' });
 
-const vechiculosDb = require("../db/vehiculosDb.js"); 
+const vechiculosDb = require("../db/vehiculosDb.js");
 const concesionariosDb = require("../db/concesionariosDb.js");
 const fs = require("fs");
 
 // CARGA LA PÁGINA DE ADMIN
 router.get("/", (req, res) => {
+    // Recuperar resultados de inserción si vienen de /rellenar 
+    const insertadosCon = req.session.insertadosCon || [];
+    const erroresCon = req.session.erroresCon || [];
+    const VehiculosInsertados = req.session.VehiculosInsertados || [];
+    const VehiculosErrores = req.session.VehiculosErrores || [];
+
+    // Limpiar después de leer 
+    delete req.session.insertadosCon; 
+    delete req.session.erroresCon; 
+    delete req.session.VehiculosInsertados; 
+    delete req.session.VehiculosErrores;
+
     res.render("admin", {
-        user: req.session.user || null
+        user: req.session.user || null,
+        vehiculosList: true, 
+        concesionarios: true, 
+        insertadosCon, erroresCon, 
+        VehiculosInsertados, 
+        VehiculosErrores
     });
 });
 
 // PARA AÑADIR ELEMENTOS MASIVAMENTE CON UN JSON
-router.post("/rellenar", upload.single("file"), async function (request, response, next) {
+router.post("/rellenar", upload.single("file"), async function (req, res, next) {
     try {
-        if (!request.file) {
+        if (!req.file) {
             throw new Error("Ningún archivo seleccionado");
         }
-        const pathArchivo = request.file.path;
+        const pathArchivo = req.file.path;
         const file = fs.readFileSync(pathArchivo, "utf8");
         const json = JSON.parse(file);
         fs.unlinkSync(pathArchivo);
@@ -35,15 +52,15 @@ router.post("/rellenar", upload.single("file"), async function (request, respons
         const [VehiculosInsertados, VehiculosErrores] = await introducirVehiculos(vehiculos);
 
         // Guardar resultados en session
-        request.session.insertadosCon = insertadosCon;
-        request.session.erroresCon = erroresCon;
-        request.session.VehiculosInsertados = VehiculosInsertados;
-        request.session.VehiculosErrores = VehiculosErrores;
-        request.session.insertados = VehiculosInsertados.slice();
-        request.session.errores = VehiculosErrores.slice();
+        req.session.insertadosCon = insertadosCon;
+        req.session.erroresCon = erroresCon;
+        req.session.VehiculosInsertados = VehiculosInsertados;
+        req.session.VehiculosErrores = VehiculosErrores;
+        req.session.insertados = VehiculosInsertados.slice();
+        req.session.errores = VehiculosErrores.slice();
 
         // Redirigir a /admin para mostrar resultados
-        response.redirect("/admin/");
+        res.redirect("/admin/");
     } catch (err) {
         next(err);
     }

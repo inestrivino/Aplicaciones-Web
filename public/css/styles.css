@@ -112,6 +112,32 @@ section {
   font-size: 1em;
 }
 
+.bell-icon {
+  font-size: 1.3rem;
+  color: var(--bs-secondary);
+  transition: color 0.2s ease;
+}
+
+.bell-link:hover .bell-icon {
+  color: var(--bs-primary);
+}
+
+.bell-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.bell-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--bs-danger);
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
 /* Header */
 header {
   height: 66vh;

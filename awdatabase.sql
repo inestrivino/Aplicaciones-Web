@@ -111,6 +111,31 @@ CREATE TABLE `incidentes` (
     ON DELETE CASCADE
 );
 
+CREATE TABLE `alertas` (
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
+  `id_usuario` int(11) NOT NULL,
+  `id_reserva` int(11) NOT NULL,
+  `matricula` varchar(20) NOT NULL,
+  `texto` varchar(200) NOT NULL,
+  `fecha` date NOT NULL,
+  `vista` boolean NOT NULL,
+
+  CONSTRAINT fk_alerta_usuario
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES users(`id`)
+    ON DELETE CASCADE,
+
+  CONSTRAINT fk_alerta_matricula
+    FOREIGN KEY (`matricula`)
+    REFERENCES vehiculos(`matricula`)
+    ON DELETE CASCADE,
+  
+  CONSTRAINT fk_alerta_reserva
+    FOREIGN KEY (`id_reserva`)
+    REFERENCES reservas(`id`)
+    ON DELETE CASCADE
+);
+
 INSERT INTO `concesionarios` (`id`, `nombre`, `ciudad`, `direccion`, `telefono`) VALUES
 (1, 'Concesionario Central', 'Madrid', 'Calle Gran Via 1', '912345678');
 

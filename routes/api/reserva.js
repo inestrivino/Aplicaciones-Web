@@ -3,6 +3,7 @@ const router = express.Router();
 const reservasDb = require("../../db/reservasDb.js");
 const vehiculosDb = require("../../db/vehiculosDb.js");
 const userDb = require("../../db/userDb.js");
+const alertasDb = require("../../db/alertasDb.js");
 
 // CREA UNA RESERVA
 router.post("/", async function (request, response) {
@@ -47,10 +48,12 @@ router.post("/", async function (request, response) {
             throw new Error("La fecha de fin no puede ser más de 3 meses después del inicio");
         }
 
-        const [vehiculo] = await vehiculosDb.getVehiculoByMatricula(matricula);
-        if (!vehiculo || vehiculo.length === 0) {
+        const [vehiculos] = await vehiculosDb.getVehiculoByMatricula(matricula);
+        if (!vehiculos || vehiculos.length === 0) {
             throw new Error("El vehículo seleccionado no existe");
         }
+        const vehiculo = vehiculos?.[0];
+
         const disponible = await vehiculosDb.getDisponibilidadVehiculo(
             matricula,
             fecha_ini,
@@ -67,8 +70,21 @@ router.post("/", async function (request, response) {
             fecha_fin
         };
 
-        await reservasDb.createReserva(reserva);
-        response.json({
+        const id_reserva = await reservasDb.createReserva(reserva);
+
+        // Comprobar si se debe insertar una nueva alerta
+        if (vehiculo.autonomia < 300) {
+            await alertasDb.createAlerta({
+                id_usuario,
+                matricula,
+                id_reserva,
+                texto: `El vehículo ${vehiculo.matricula} recientemente reservado tiene baja autonomía (${vehiculo.autonomia} km).`,
+                fecha: new Date(),
+                vista: false
+            });
+        }
+
+        return response.json({
             ok: true,
             message: "Reserva realizada con éxito"
         });

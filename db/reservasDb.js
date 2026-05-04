@@ -2,8 +2,8 @@ const pool = require("./pool.js");
 
 class ReservasDb {
     //crea una reserva
-    createReserva(reserva) {
-        return pool.query(
+    async createReserva(reserva) {
+        const [result] = await pool.query(
             `INSERT INTO reservas(id_usuario, matricula, fecha_ini, fecha_fin, estado) 
              VALUES (?, ?, ?, ?, 'activa')`,
             [
@@ -13,6 +13,7 @@ class ReservasDb {
                 reserva.fecha_fin
             ]
         );
+        return result.insertId;
     }
 
     //devuelve una reserva dada su id
