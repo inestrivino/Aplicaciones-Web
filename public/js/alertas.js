@@ -193,24 +193,27 @@ async function lanzarAlertaDevolucion() {
             const diffMs = fecha_fin - ahora;
             const diasRestantes = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-            if (empezada) {
-                if (diffMs < 0 && !alertasVencidas.has(reserva.id)) {
-                    await crearAlerta({
-                        matricula: reserva.matricula,
-                        id_reserva: reserva.id,
-                        texto: `La fecha de devolución del vehículo con matrícula ${reserva.matricula} ha sido superada. Acceda a "Mis reservas" lo antes posible.`,
-                        tipo: "devolucion_vencida"
-                    });
-                    continue;
-                }
-                else if (diasRestantes > 0 && diasRestantes < 3) {
-                    await crearAlerta({
-                        matricula: reserva.matricula,
-                        id_reserva: reserva.id,
-                        texto: `Recordatorio de devolución: Quedan menos de ${diasRestantes} días para devolver el vehículo con matrícula ${reserva.matricula}. Acceda a "Mis reservas" para devolverlo.`,
-                        tipo: "devolucion"
-                    });
-                }
+            const noFinalizada = reserva.estado !== 'finalizada';
+
+            //la reserva ha vencido pero aún no ha sido devuelta ni se ha enviado una notificacion al respecto
+            if (fecha_fin < ahora && noFinalizada && !alertasVencidas.has(reserva.id)) {
+                await crearAlerta({
+                    matricula: reserva.matricula,
+                    id_reserva: reserva.id,
+                    texto: `La fecha de devolución del vehículo con matrícula ${reserva.matricula} ha sido superada. Acceda a "Mis reservas" lo antes posible.`,
+                    tipo: "devolucion_vencida"
+                });
+                continue;
+            }
+
+            //la reserva ha comenzado, le quedan menos de 3 días para ser devuelta
+            if (empezada && diasRestantes > 0 && diasRestantes < 3 && noFinalizada) {
+                await crearAlerta({
+                    matricula: reserva.matricula,
+                    id_reserva: reserva.id,
+                    texto: `Recordatorio de devolución: Quedan menos de ${diasRestantes} días para devolver el vehículo con matrícula ${reserva.matricula}.`,
+                    tipo: "devolucion"
+                });
             }
         }
 
