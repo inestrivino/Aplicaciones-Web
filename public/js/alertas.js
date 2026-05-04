@@ -1,5 +1,8 @@
+import { fetchUser, fetchMisReservas } from './ajax.js';
+
 function renderAlertas(alertas) {
     const container = document.getElementById("alertas-container");
+    if (!container) return;
     container.innerHTML = "";
 
     alertas.forEach(a => {
@@ -54,17 +57,44 @@ function renderAlertas(alertas) {
     });
 }
 
-async function cargarAlertas() {
+async function obtenerAlertas() {
+    try {
+        const res = await fetch("/api/alertas");
+        const data = await res.json();
+
+        if (!data.ok) return [];
+
+        return data.alertas;
+
+    } catch (err) {
+        console.error("Error obteniendo alertas:", err);
+        return [];
+    }
+}
+
+async function actualizarCampana() {
     try {
         const res = await fetch("/api/alertas");
         const data = await res.json();
 
         if (!data.ok) return;
 
-        renderAlertas(data.alertas);
+        const badge = document.getElementById("alerta-badge");
+
+        if (data.noVistas > 0) {
+            badge.classList.remove("d-none");
+        } else {
+            badge.classList.add("d-none");
+        }
+
     } catch (err) {
-        console.error("Error cargando alertas:", err);
+        console.error("Error campana alertas:", err);
     }
+}
+
+async function cargarAlertas() {
+    const alertas = await obtenerAlertas();
+    renderAlertas(alertas);
 }
 
 async function marcarVista(id) {
@@ -77,10 +107,36 @@ async function marcarVista(id) {
 
         if (data.ok) {
             cargarAlertas();
+            actualizarCampana();
         }
 
     } catch (err) {
         console.error(err);
+    }
+}
+
+async function crearAlerta(body) {
+    try {
+        const res = await fetch(`/api/alertas/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        cargarAlertas();
+        actualizarCampana();
+
+        if (!data.ok) {
+            console.error("Error al crear alerta:", data.error);
+            return;
+        }
+
+    } catch (err) {
+        console.error("Error en crearAlerta:", err);
     }
 }
 
@@ -94,6 +150,7 @@ async function eliminarAlerta(id) {
 
         if (data.ok) {
             cargarAlertas();
+            actualizarCampana();
         }
 
     } catch (err) {
@@ -101,13 +158,96 @@ async function eliminarAlerta(id) {
     }
 }
 
+/* COMRPOBAR ALERTA DEVOLUCIÓN */
+async function lanzarAlertaDevolucion() {
+    try {
+        const reservas = await fetchMisReservas();
+        const alertas = await obtenerAlertas();
+
+        const usuario = fetchUser();
+        if (!usuario) return;
+        const id_usuario = usuario.id;
+
+        // IDs de reservas que ya tienen alerta de devolución
+        const reservasConAlerta = new Set(
+            alertas
+                .filter(a => a.tipo === "devolucion")
+                .map(a => a.id_reserva)
+        );
+
+        const alertasVencidas = new Set(
+            alertas
+                .filter(a => a.tipo === "devolucion_vencida")
+                .map(a => a.id_reserva)
+        );
+
+        const ahora = new Date();
+
+        for (const reserva of reservas) {
+            if (reservasConAlerta.has(reserva.id)) continue;
+
+            const fecha_fin = new Date(reserva.fecha_fin);
+            const fecha_ini = new Date(reserva.fecha_ini);
+            const empezada = fecha_ini <= ahora;
+
+            const diffMs = fecha_fin - ahora;
+            const diasRestantes = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+            if (empezada) {
+                if (diffMs < 0 && !alertasVencidas.has(reserva.id)) {
+                    await crearAlerta({
+                        matricula: reserva.matricula,
+                        id_reserva: reserva.id,
+                        texto: `La fecha de devolución del vehículo con matrícula ${reserva.matricula} ha sido superada. Acceda a "Mis reservas" lo antes posible.`,
+                        tipo: "devolucion_vencida"
+                    });
+                    continue;
+                }
+                else if (diasRestantes > 0 && diasRestantes < 3) {
+                    await crearAlerta({
+                        matricula: reserva.matricula,
+                        id_reserva: reserva.id,
+                        texto: `Recordatorio de devolución: Quedan menos de ${diasRestantes} días para devolver el vehículo con matrícula ${reserva.matricula}. Acceda a "Mis reservas" para devolverlo.`,
+                        tipo: "devolucion"
+                    });
+                }
+            }
+        }
+
+        // Recargar alertas tras crear
+        await cargarAlertas();
+        await actualizarCampana();
+
+    } catch (error) {
+        console.error("Error lanzando alertas de devolución:", error);
+    }
+}
+
+/* INICIALIZACIÓN Y RECARGA */
+async function recargarAlertasManualmente() {
+    try {
+        await lanzarAlertaDevolucion();
+        await cargarAlertas();
+        await actualizarCampana();
+
+    } catch (err) {
+        console.error("Error recargando alertas:", err);
+    }
+}
+
 function inicializarAlertas() {
     const container = document.getElementById("alertas-container");
+    const btn = document.getElementById("btn-recargar");
+
     if (!container) return;
 
-    cargarAlertas()
+    cargarAlertas();
 
-    // marcar como vista
+    // botón recargar
+    if (btn) {
+        btn.addEventListener("click", recargarAlertasManualmente);
+    }
+
     container.addEventListener("click", async (e) => {
         if (e.target.classList.contains("btn-vista")) {
             const id = e.target.dataset.id;
@@ -125,6 +265,13 @@ function inicializarAlertas() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const path = window.location.pathname;
+    lanzarAlertaDevolucion();
+
+    // Repetir cada 12 horas
+    setInterval(lanzarAlertaDevolucion, 12 * 60 * 60 * 1000);
+    // Repetir cada 10 segundos
+    setInterval(actualizarCampana, 10000);
+
     if (path.includes("alertas")) {
         inicializarAlertas();
     }

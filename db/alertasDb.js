@@ -5,15 +5,17 @@ class alertasDb {
     async createAlerta(alerta) {
         return await pool.query(
             `INSERT INTO alertas
-        (id_usuario, id_reserva, matricula, texto, fecha, vista)
-        VALUES (?, ?, ?, ?, ?, ?)`,
+        (id_usuario, id_reserva, matricula, texto, fecha, vista, tipo)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [
                 alerta.id_usuario,
                 alerta.id_reserva,
                 alerta.matricula,
                 alerta.texto,
                 alerta.fecha,
-                alerta.vista]
+                alerta.vista,
+                alerta.tipo
+            ]
         );
     }
 

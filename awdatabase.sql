@@ -119,6 +119,7 @@ CREATE TABLE `alertas` (
   `texto` varchar(200) NOT NULL,
   `fecha` date NOT NULL,
   `vista` boolean NOT NULL,
+  `tipo`varchar(20) NOT NULL,
 
   CONSTRAINT fk_alerta_usuario
     FOREIGN KEY (`id_usuario`)

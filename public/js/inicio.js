@@ -387,31 +387,10 @@ async function inicializarUserForm() {
 }
 
 /* CAMPANA DE ALERTA */
-async function actualizarCampana() {
-    try {
-        const res = await fetch("/api/alertas");
-        const data = await res.json();
-
-        if (!data.ok) return;
-
-        const badge = document.getElementById("alerta-badge");
-
-        if (data.noVistas > 0) {
-            badge.classList.remove("d-none");
-        } else {
-            badge.classList.add("d-none");
-        }
-
-    } catch (err) {
-        console.error("Error campana alertas:", err);
-    }
-}
 
 document.addEventListener("DOMContentLoaded", function () {
     inicializarSignInUp();
     inicializarUserForm();
-    actualizarCampana();
-    setInterval(actualizarCampana, 10000);
 
     if (document.getElementById("map-container")) {
         mapaConcesionarios();

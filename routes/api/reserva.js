@@ -80,6 +80,7 @@ router.post("/", async function (request, response) {
                 id_reserva,
                 texto: `El vehículo ${vehiculo.matricula} recientemente reservado tiene baja autonomía (${vehiculo.autonomia} km).`,
                 fecha: new Date(),
+                tipo: `otro`,
                 vista: false
             });
         }
