@@ -25,7 +25,7 @@ function renderAlertas(alertas) {
                 ${icon}
             </div>
 
-            <div style="hidden: true">
+            <div class="visually-hidden">
                 ${a.vista ? "Alerta leída" : "Alerta no leída"}
             </div>
 
