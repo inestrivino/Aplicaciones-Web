@@ -1,121 +1,121 @@
-/* IDIOMA */
-function aplicarIdioma(lang) {
-    document.documentElement.lang = lang;
+let settings = {
+    theme: "light",
+    lang: "es",
+    fontSize: 1.2,
+    shortcuts: {
+        inicio: "i",
+        vehiculos: "v",
+        reservar: "r",
+        misReservas: "m",
+        admin: "a",
+        ajustes: "s"
+    }
+};
+
+/* MANEJO DE ACCESIBILIDAD PERSISTENTE EN BD */
+function actualizarSettings(partial) {
+    settings = {
+        ...settings,
+        ...partial,
+        shortcuts: {
+            ...settings.shortcuts,
+            ...(partial.shortcuts || {})
+        }
+    };
+
+    aplicarAccesibilidad();
+    guardarAccesibilidad(settings);
 }
 
-function actualizarTextoUI(lang, label) {
-    if (!label) return;
-    label.textContent = lang === "en" ? "English" : "Español";
+async function cargarAccesibilidad() {
+    let dbSettings = null;
+
+    try {
+        const res = await fetch("/api/user/accesibilidad");
+        dbSettings = await res.json();
+    } catch (e) { }
+
+    const local = JSON.parse(
+        localStorage.getItem("accesibilidad") || "null"
+    );
+
+    const defaults = {
+        theme: "light",
+        lang: "es",
+        fontSize: 1.2,
+        shortcuts: {
+            inicio: "i",
+            vehiculos: "v",
+            reservar: "r",
+            misReservas: "m",
+            admin: "a",
+            ajustes: "s"
+        }
+    };
+
+    settings = dbSettings || local || defaults;
+
+    localStorage.setItem(
+        "accesibilidad",
+        JSON.stringify(settings)
+    );
+
+    return settings;
 }
 
-function inicializarLanguageToggle() {
-    const idiomaSeleccionado =
-        document.getElementById("idiomaSeleccionado");
-    const languageLinks =
-        document.querySelectorAll(".dropdown-item");
-    const savedLang =
-        localStorage.getItem("lang") || "es";
-    aplicarIdioma(savedLang);
-    actualizarTextoUI(savedLang, idiomaSeleccionado);
-
-    languageLinks.forEach(link => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const lang =
-                link.getAttribute("data-lang");
-
-            localStorage.setItem("lang", lang);
-            aplicarIdioma(lang);
-            actualizarTextoUI(lang, idiomaSeleccionado);
-        });
-    });
-}
-
-/* TEMA */
-function applyTheme(theme) {
-
+function aplicarAccesibilidad() {
     document.documentElement.setAttribute(
         "data-bs-theme",
-        theme
-    );
-}
-
-function inicializarTema() {
-    const savedTheme =
-        localStorage.getItem("theme") || "light";
-
-    applyTheme(savedTheme);
-
-    // sincronizar radio con tema actual
-    const radio = document.querySelector(
-        `input[name="tema"][value="${savedTheme}"]`
+        settings.theme
     );
 
-    if (radio) radio.checked = true;
+    document.documentElement.lang = settings.lang;
 
-    // cambio inmediato
-    document
-        .querySelectorAll('input[name="tema"]')
-        .forEach(r => {
+    document.documentElement.style.setProperty(
+        "--font-scale",
+        parseFloat(settings.fontSize)
+    );
 
-            r.addEventListener("change", (e) => {
+    const keyMap = {
+        shortcutInicio: "inicio",
+        shortcutVehiculos: "vehiculos",
+        shortcutReservar: "reservar",
+        shortcutMisReservas: "misReservas",
+        shortcutAdmin: "admin",
+        shortcutAjustes: "ajustes"
+    };
 
-                const theme = e.target.value;
+    document.querySelectorAll(".form-control[id^='shortcut']")
+        .forEach((input) => {
 
-                applyTheme(theme);
+            const key = keyMap[input.id];
+            const value = settings.shortcuts?.[key];
 
-                localStorage.setItem("theme", theme);
-            });
+            if (value !== undefined) {
+                input.value = value;
+            }
         });
 }
 
-/* TAMAÑO DE LA LETRA */
-function aplicarTamanoFuente(size) {
-    document.documentElement.style.fontSize =
-        `${size}rem`;
-}
+async function guardarAccesibilidad(settings) {
+    // localStorage 
+    console.log(JSON.stringify(settings));
+    localStorage.setItem(
+        "accesibilidad",
+        JSON.stringify(settings)
+    );
 
-function actualizarLabel(size, label) {
-    if (!label) return;
-    label.textContent = `${size}rem`;
-}
-
-function inicializarTamanoLetra() {
-    const range = document.getElementById("fontSizeRange");
-
-    const valueLabel = document.getElementById("fontSizeValue");
-
-    const savedSize = localStorage.getItem("fontSize") || "1.2";
-
-    aplicarTamanoFuente(savedSize);
-    range.value = savedSize;
-    actualizarLabel(savedSize, valueLabel);
-
-    range.addEventListener("input", (e) => {
-        const size = e.target.value;
-        aplicarTamanoFuente(size);
-        actualizarLabel(size, valueLabel);
-        localStorage.setItem("fontSize", size);
+    // base de datos
+    await fetch("/api/user/accesibilidad", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(settings)
     });
 }
 
 /* SHORTCUTS */
-
-function obtenerShortcuts() {
-    return {
-        inicio: localStorage.getItem("shortcutInicio") || "i",
-        vehiculos: localStorage.getItem("shortcutVehiculos") || "v",
-        reservar: localStorage.getItem("shortcutReservar") || "r",
-        misReservas: localStorage.getItem("shortcutMisReservas") || "m",
-        admin: localStorage.getItem("shortcutAdmin") || "a",
-        ajustes: localStorage.getItem("shortcutAjustes") || "s"
-    };
-}
-
-function guardarShortcut(nombre, valor) {
-    localStorage.setItem(`shortcut${nombre}`, valor.toLowerCase());
-}
-
 function hayDuplicados(shortcuts) {
     const values = Object.values(shortcuts)
         .map(v => v.toLowerCase().trim())
@@ -162,15 +162,15 @@ function inicializarDefaultsShortcuts() {
 }
 
 function inicializarAtajosTeclado() {
-    const shortcuts = obtenerShortcuts();
+    const shortcuts = settings.shortcuts;
 
     const fields = [
-        "Inicio",
-        "Vehiculos",
-        "Reservar",
-        "MisReservas",
-        "Admin",
-        "Ajustes"
+        "inicio",
+        "vehiculos",
+        "reservar",
+        "misReservas",
+        "admin",
+        "ajustes"
     ];
 
     fields.forEach(name => {
@@ -182,21 +182,28 @@ function inicializarAtajosTeclado() {
         }
     });
 
-    document.querySelectorAll(".form-control[id^='shortcut']")
-        .forEach(input => {
+    document
+        .querySelectorAll(".form-control[id^='shortcut']")
+        .forEach((input) => {
 
             input.addEventListener("input", (e) => {
 
-                const id = e.target.id.replace("shortcut", "");
+                const id = e.target.id.replace("shortcut", "").toLowerCase();
                 const value = e.target.value.toLowerCase();
 
-                guardarShortcut(id, value);
-                validarShortcuts();
+                if (!validarShortcuts()) return;
+
+                actualizarSettings({
+                    shortcuts: {
+                        ...settings.shortcuts,
+                        [id]: value
+                    }
+                });
             });
+
         });
 
     document.addEventListener("keydown", (event) => {
-
         const key = event.key.toLowerCase();
 
         const tag = event.target.tagName;
@@ -204,7 +211,7 @@ function inicializarAtajosTeclado() {
 
         if (!validarShortcuts()) return;
 
-        const s = obtenerShortcuts();
+        const s = settings.shortcuts;
 
         /* CTRL SHORTCUTS */
         if (event.ctrlKey) {
@@ -246,8 +253,81 @@ function inicializarAtajosTeclado() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    inicializarDefaultsShortcuts();
+/* IDIOMA */
+function actualizarTextoUI(lang, label) {
+    if (!label) return;
+    label.textContent = lang === "en" ? "English" : "Español";
+}
+
+function inicializarLanguageToggle() {
+    const idiomaSeleccionado =
+        document.getElementById("idiomaSeleccionado");
+    const languageLinks =
+        document.querySelectorAll(".dropdown-item");
+    const savedLang =
+        settings.lang || "es";
+    actualizarTextoUI(savedLang, idiomaSeleccionado);
+
+    languageLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const lang =
+                link.getAttribute("data-lang");
+            actualizarSettings({ lang });
+            actualizarTextoUI(lang, idiomaSeleccionado);
+        });
+    });
+}
+
+/* TEMA */
+function inicializarTema() {
+    // sincronizar radio con tema actual
+    const radio = document.querySelector(
+        `input[name="tema"][value="${settings.theme}"]`
+    );
+
+    if (radio) radio.checked = true;
+
+    // cambio inmediato
+    document
+        .querySelectorAll('input[name="tema"]')
+        .forEach(r => {
+
+            r.addEventListener("change", (e) => {
+
+                const theme = e.target.value;
+
+                actualizarSettings({ theme });
+            });
+        });
+}
+
+/* TAMAÑO DE LA LETRA */
+function actualizarLabel(size, label) {
+    if (!label) return;
+    label.textContent = `${size}rem`;
+}
+
+function inicializarTamanoLetra() {
+    const range = document.getElementById("fontSizeRange");
+
+    const valueLabel = document.getElementById("fontSizeValue");
+
+    const savedSize = settings.fontSize || 1.2;
+    range.value = savedSize;
+    actualizarLabel(savedSize, valueLabel);
+
+    range.addEventListener("input", (e) => {
+        const size = e.target.value;
+        actualizarSettings({ fontSize: size });
+        actualizarLabel(size, valueLabel);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await cargarAccesibilidad();
+    aplicarAccesibilidad();
+
     inicializarAtajosTeclado();
     inicializarLanguageToggle();
     inicializarTema();

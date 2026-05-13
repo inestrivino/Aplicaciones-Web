@@ -112,7 +112,8 @@ router.post(
                 email: req.body.signUpEmail,
                 name: req.body.signUpName,
                 password: hash,
-                concesionario: Number(req.body.signUpDealer)
+                concesionario: Number(req.body.signUpDealer),
+                accesibilidad: JSON.stringify(req.body.accesibilidad || null)
             });
 
             const [newRows] = await userDb.getUserByEmail(req.body.signUpEmail);
@@ -123,7 +124,8 @@ router.post(
                 name: newUser.name,
                 email: newUser.email,
                 rol: newUser.rol,
-                id_concesionario: newUser.id_concesionario
+                id_concesionario: newUser.id_concesionario,
+                accesibilidad: newUser.accesibilidad
             };
 
             return res.json({

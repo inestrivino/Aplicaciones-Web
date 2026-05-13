@@ -76,13 +76,15 @@ function inicializarSignInUp() {
                 e.preventDefault();
 
                 const form = e.target;
+                const accesibilidad = localStorage.getItem("accesibilidad");
 
                 const body = {
                     signUpName: form.signUpName.value,
                     signUpEmail: form.signUpEmail.value,
                     signUpPassword: form.signUpPassword.value,
                     signUpConfirmPassword: form.signUpConfirmPassword.value,
-                    signUpDealer: form.signUpDealer.value
+                    signUpDealer: form.signUpDealer.value,
+                    accesibilidad: accesibilidad ? JSON.parse(accesibilidad) : null
                 };
 
                 try {

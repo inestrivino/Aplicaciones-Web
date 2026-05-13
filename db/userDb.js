@@ -4,8 +4,8 @@ class UserDb {
     //crear un nuevo usuario
     async createUser(user) {
         const [result] = await pool.query(
-            'INSERT INTO users(name, email, password, rol, id_concesionario) VALUES (?, ?, ?, "user", ?)',
-            [user.name, user.email, user.password, user.concesionario]
+            'INSERT INTO users(name, email, password, rol, id_concesionario, accesibilidad) VALUES (?, ?, ?, "user", ?, ?)',
+            [user.name, user.email, user.password, user.concesionario, user.accesibilidad]
         );
         return result;
     }
@@ -69,6 +69,21 @@ class UserDb {
             'SELECT id, name, email, rol, id_concesionario FROM users WHERE id = ?', [id]
         );
     }
+
+    getAccesibilidad(id) {
+        return pool.query(
+            "SELECT accesibilidad FROM users WHERE id = ?",
+            [id]
+        )
+    }
+
+    updateAccesibilidad(data, id) {
+        return pool.query(
+            "UPDATE users SET accesibilidad = ? WHERE id = ?",
+            [JSON.stringify(data), id]
+        )
+    }
+
 }
 
 module.exports = new UserDb();

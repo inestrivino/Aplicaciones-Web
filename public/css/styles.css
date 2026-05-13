@@ -274,11 +274,12 @@ footer {
 }
 
 /* ---------- General ---------- */
-html {
-  font-size: 1.2rem;
+:root {
+  --font-scale: 1;
 }
 
 body {
+  font-size: calc(1rem * var(--font-scale));
   line-height: 1.6;
   margin: 0;
   padding: 0;

@@ -94,6 +94,29 @@ router.put("/updateProfile", comprobarUsuarioLogueado, async (req, res) => {
 }
 );
 
+// DEVUELVE LA ACCESIBILIDAD DEL USUARIO
+router.get("/accesibilidad", comprobarUsuarioLogueado, async (req, res) => {
+    const userId = req.session?.user?.id;
+
+    const [rows] = await userDb.getAccesibilidad(userId);
+
+    res.json(
+        rows[0]?.accesibilidad
+            ? JSON.parse(rows[0].accesibilidad)
+            : null
+    );
+});
+
+// ACTUALIZA LA ACCESIBILIDAD DEL USUARIO
+router.post("/accesibilidad", async (req, res) => {
+    const userId = req.session?.user?.id;
+    const data = req.body;
+
+    await userDb.updateAccesibilidad(data, userId);
+
+    res.sendStatus(200);
+});
+
 // ACCIONES CRUD DE ADMIN
 router.post("/", comprobarUsuarioAdmin, async (req, res) => {
     try {

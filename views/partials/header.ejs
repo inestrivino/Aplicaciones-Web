@@ -1,14 +1,25 @@
 <script>
-  (function () {
-    const savedTheme =
-      localStorage.getItem("theme") || "light";
-
+(function () {
+    const stored = localStorage.getItem("accesibilidad");
+    let settings = null;
+    try {
+        settings = stored ? JSON.parse(stored) : null;
+    } catch (e) {
+        settings = null;
+    }
+    const theme = settings?.theme || "light";
     document.documentElement.setAttribute(
-      "data-bs-theme",
-      savedTheme
+        "data-bs-theme",
+        theme
+    );
+    document.documentElement.lang = settings?.lang || "es";
+    const fontSize = settings?.fontSize || 1.2;
+    document.documentElement.style.setProperty(
+        "--font-scale",
+        fontSize
     );
 
-  })();
+})();
 </script>
 
 <!-- BARRA DE NAVEGACION -->
