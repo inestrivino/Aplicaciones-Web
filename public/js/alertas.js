@@ -16,8 +16,8 @@ function renderAlertas(alertas) {
         `;
 
         const icon = a.vista
-            ? `<i class="bi bi-check-circle-fill text-success fs-4"></i>`
-            : `<i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>`;
+            ? `<i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>`
+            : `<i class="bi bi-exclamation-triangle-fill text-warning fs-4" aria-hidden="true"></i>`;
 
         div.innerHTML = `
             <!-- ICONO -->
@@ -25,12 +25,18 @@ function renderAlertas(alertas) {
                 ${icon}
             </div>
 
+            <div style="hidden: true">
+                ${a.vista ? "Alerta leída" : "Alerta no leída"}
+            </div>
+
             <!-- CONTENIDO -->
-            <div class="flex-grow-1 align-left">
+            <div class="flex-grow-1 text-start">
                 <!-- FECHA ARRIBA -->
                 <div class="text-muted small mb-1">
                     <i class="bi bi-calendar-event me-1"></i>
-                    ${new Date(a.fecha).toLocaleDateString()}
+                    <time datetime="${a.fecha}">
+                        ${new Date(a.fecha).toLocaleDateString()}
+                    </time>
                 </div>
 
                 <!-- TEXTO -->
@@ -42,13 +48,13 @@ function renderAlertas(alertas) {
             <!-- ACCIONES -->
             <div class="d-flex gap-2">
                 ${!a.vista ? `
-                    <button class="btn btn-sm btn-success btn-vista" data-id="${a.id}">
-                        <i class="bi bi-check-lg"></i>
+                    <button class="btn btn-sm btn-success btn-vista" data-id="${a.id}" aria-label="Marcar alerta como leída">
+                        <i class="bi bi-check-lg" aria-hidden="true"></i>
                     </button>
                 ` : ""}
 
-                <button class="btn btn-sm btn-danger btn-delete" data-id="${a.id}">
-                    <i class="bi bi-x-lg"></i>
+                <button class="btn btn-sm btn-danger btn-delete" data-id="${a.id}" aria-label="Eliminar alerta">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
             </div>
         `;

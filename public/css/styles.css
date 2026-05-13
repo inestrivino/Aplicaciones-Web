@@ -569,6 +569,11 @@ footer a:hover {
   border-radius: 10px;
 }
 
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
 /* Estilos responsive para móvil */
 @media (max-width: 767.98px) {
   .navbar-collapse {

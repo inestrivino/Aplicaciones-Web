@@ -25,11 +25,15 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">
+    Saltar al contenido principal
+  </a>
   <!-- NAVBAR -->
   <%- include('partials/header', { user: user }) %>
     <!-- mensaje de error (falta de acceso, etc) -->
     <% if (error) { %>
-      <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="usuarioModalLabel"
+        aria-describedby="errorModalDescription" role="alertdialog" aria-modal="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -37,7 +41,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-              <p>
+              <p id="errorModalDescription>
                 <%= error %>
               </p>
             </div>
@@ -55,8 +59,8 @@
       </script>
       <% } %>
 
-      <!-- HEADER DEL INICIO -->
-        <header class="position-relative w-100" aria-label="Encabezado de la página">
+        <!-- HEADER DEL INICIO -->
+        <header class="position-relative w-100">
           <div class="header-image" aria-hidden="true"></div>
           <div class="position-relative text-white h-100 d-flex align-items-center">
             <div class="container text-start">
@@ -73,14 +77,15 @@
           </div>
         </header>
 
-        <main aria-label="Contenido principal de la página">
+        <main id="main-content">
           <h3>Conoce nuestros concesionarios</h3>
           <div id="map-container">
-            <div id="map"></div>
+            <div id="map" role="application" aria-label="Mapa interactivo con la ubicación de los concesionarios">
+            </div>
           </div>
 
           <h3>Beneficios de los vehículos eléctricos</h3>
-          <ol aria-label="Lista de beneficios de los vehículos eléctricos">
+          <ol>
             <li>Reducción del 100% en emisiones directas de CO₂</li>
             <li>
               Ahorro del 70% en costes de mantenimiento frente a vehículos de
@@ -89,14 +94,14 @@
             <li>Acceso a zonas de bajas emisiones y bonificaciones fiscales</li>
           </ol>
           <h3>Servicios de nuestra plataforma</h3>
-          <ul aria-label="Lista de servicios de la plataforma">
+          <ul>
             <li>Monitorización en tiempo real de la flota</li>
             <li>Gestión de puntos de carga</li>
             <li>Generación de informes de sostenibilidad</li>
             <li>Alertas automáticas de mantenimiento</li>
           </ul>
           <h3>Tecnologías utilizadas</h3>
-          <dl aria-label="Tecnologías utilizadas en la plataforma">
+          <dl>
             <dt>HTML</dt>
             <dd>Lenguaje de marcado para estructurar el contenido de la web</dd>
             <dt>CSS</dt>
@@ -113,8 +118,6 @@
             <iframe class="d-block mx-auto" width="560" height="315"
               src="https://www.youtube-nocookie.com/embed/7gO6iNFyiG8?si=wRqn1kNTBA344Ytw"
               title="Vídeo sobre vehículos eléctricos y movilidad sostenible"
-              aria-label="Vídeo sobre los beneficios y el uso de vehículos eléctricos para la movilidad sostenible"
-              frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             <figcaption>

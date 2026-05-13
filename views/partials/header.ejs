@@ -1,25 +1,25 @@
 <script>
-(function () {
+  (function () {
     const stored = localStorage.getItem("accesibilidad");
     let settings = null;
     try {
-        settings = stored ? JSON.parse(stored) : null;
+      settings = stored ? JSON.parse(stored) : null;
     } catch (e) {
-        settings = null;
+      settings = null;
     }
     const theme = settings?.theme || "light";
     document.documentElement.setAttribute(
-        "data-bs-theme",
-        theme
+      "data-bs-theme",
+      theme
     );
     document.documentElement.lang = settings?.lang || "es";
     const fontSize = settings?.fontSize || 1.2;
     document.documentElement.style.setProperty(
-        "--font-scale",
-        fontSize
+      "--font-scale",
+      fontSize
     );
 
-})();
+  })();
 </script>
 
 <!-- BARRA DE NAVEGACION -->
@@ -40,42 +40,42 @@
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a href="/" class="nav-link" aria-label="Ir a inicio" accesskey="i">
+          <a href="/" class="nav-link" aria-label="Inicio" accesskey="i">
             Inicio <span class="visually-hidden">(Alt + I)</span>
           </a>
         </li>
         <% if (user) { %>
           <li class="nav-item">
-            <a href="/vehiculos" class="nav-link" aria-label="Ir a Vehículos" accesskey="v">
+            <a href="/vehiculos" class="nav-link" aria-label="Vehiculos" accesskey="v">
               Vehículos <span class="visually-hidden">(Alt + V)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a href="/reserva" class="nav-link" aria-label="Ir a Reservas" accesskey="r">
+            <a href="/reserva" class="nav-link" aria-label="Reservas" accesskey="r">
               Reservar <span class="visually-hidden">(Alt + R)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a href="/misReservas" class="nav-link" aria-label="Ir a Mis Reservas" accesskey="m">
+            <a href="/misReservas" class="nav-link" aria-label="Mis Reservas" accesskey="m">
               Mis Reservas <span class="visually-hidden">(Alt + M)</span>
             </a>
           </li>
           <% if (user && user.rol==='admin' ) { %>
             <li class="nav-item">
-              <a href="/admin" class="nav-link" aria-label="Ir al Panel de Administrador" accesskey="a">
+              <a href="/admin" class="nav-link" aria-label="Panel de Administrador" accesskey="a">
                 Admin <span class="visually-hidden">(Alt + A)</span>
               </a>
             </li>
             <% } %>
               <li class="nav-item">
-                <a href="/alertas" class="nav-link bell-link" aria-label="Ir a alertas" accesskey="n">
+                <a href="/alertas" class="nav-link bell-link" aria-label="Alertas" accesskey="n">
 
                   <span class="bell-wrapper">
-                    <i class="bi bi-bell bell-icon"></i>
+                    <i class="bi bi-bell bell-icon" aria-hidden="true"></i>
 
                     <!-- Badge -->
                     <span class="bell-badge d-none" id="alerta-badge">
-                      <span class="visually-hidden">Nuevas alertas</span>
+                      <span class="visually-hidden" aria-live="polite" aria-atomic="true">Nuevas alertas</span>
                     </span>
                   </span>
 
@@ -95,9 +95,10 @@
 
       <!-- Perfil de Usuario -->
       <div class="navbar-profile ms-2">
-        <button id="usuarioBtn" class="btn p-0 d-flex align-items-center" aria-label="Abrir modal de usuario"
+        <button id="usuarioBtn" class="btn p-0 d-flex align-items-center" aria-label="Abrir opciones de cuenta y perfil"
           data-bs-toggle="modal" data-bs-target="#usuarioModal" accesskey="u">
-          <img src="/img/personas_1/Blank.jpeg" alt="Foto de perfil" class="rounded-circle me-2" width="40" height="40">
+          <img src="/img/personas_1/Blank.jpeg" alt="Foto de perfil del usuario" class="rounded-circle me-2" width="40"
+            height="40">
           <p class="d-block d-md-none">Mi perfil</p>
         </button>
       </div>
@@ -117,8 +118,8 @@
       <div class="modal-body">
 
         <!-- Sección: Idioma -->
-        <section>
-          <h6>Idioma</h6>
+        <section aria-labelledby="idiomaHeading">
+          <h6 id="idiomaHeading">Idioma</h6>
           <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownIdioma"
               data-bs-toggle="dropdown" aria-expanded="false">
@@ -132,8 +133,8 @@
         </section>
 
         <!-- Sección: Tema -->
-        <section>
-          <h6>Tema visual</h6>
+        <section aria-labelledby="temaHeading">
+          <h6 id="temaHeading">Tema visual</h6>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="tema" id="temaClaro" value="light" checked>
             <label class="form-check-label" for="temaClaro">Claro</label>
@@ -149,18 +150,18 @@
         </section>
 
         <!-- Sección: Tamaño de letra -->
-        <section>
-          <h6>Tamaño de letra</h6>
+        <section aria-labelledby="letraHeading">
+          <h6 id="letraHeading">Tamaño de letra</h6>
           <label for="fontSizeRange" class="form-label small text-muted">
             Selecciona el tamaño del texto
           </label>
           <input type="range" class="form-range" id="fontSizeRange" min="1" max="1.4" step="0.05" value="1.2">
-          <p>Tamaño actual: <span id="fontSizeValue">1.2rem</span></p>
+          <p aria-live="polite">Tamaño actual: <span id="fontSizeValue">1.2rem</span></p>
         </section>
 
         <!-- Sección: Configuración de Atajos de Teclado -->
-        <section>
-          <h6>Atajos de Teclado</h6>
+        <section aria-labelledby="tecladoHeading">
+          <h6 id="tecladoHeading">Atajos de Teclado</h6>
 
           <div class="mb-3">
             <label for="shortcutInicio" class="form-label">Inicio</label>
@@ -222,13 +223,11 @@
               <form action="/user/login" method="POST">
                 <div>
                   <label for="signInEmail" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" name="signInEmail" id="signInEmail"
-                    placeholder="Correo electrónico" required>
+                  <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Correo electrónico" required autocomplete="email">
                 </div>
                 <div>
                   <label for="signInPassword" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" name="signInPassword" id="signInPassword"
-                    placeholder="Contraseña" required>
+                  <input type="password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Contraseña" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
               </form>
@@ -253,24 +252,22 @@
                 </div>
                 <div>
                   <label for="signUpEmail" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" name="signUpEmail" id="signUpEmail"
-                    placeholder="Correo electrónico" required maxlength="100">
-                  <div id="signUpEmailError" class="text-danger" style="display: none;">El correo electrónico debe
+                  <input type="email" class="form-control" name="signUpEmail" id="signUpEmail" placeholder="Correo electrónico" required maxlength="100" aria-describedby="signUpEmailError">
+                  <div id="signUpEmailError" class="text-danger" style="display: none;" aria-live="polite">El correo electrónico debe
                     terminar en @ucm.</div>
                 </div>
                 <div>
                   <label for="signUpPassword" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" name="signUpPassword" id="signUpPassword"
-                    placeholder="Contraseña" minlength="8" maxlength="30" required>
-                  <div id="signUpPasswordError" class="text-danger" style="display: none;">
+                  <input type="password" class="form-control" name="signUpPassword" id="signUpPassword" placeholder="Contraseña" minlength="8" maxlength="30" required aria-describedby="signUpPasswordError>
+                  <div id="signUpPasswordError" class="text-danger" style="display: none;" aria-live="polite">
                     La contraseña debe contener al menos una mayúscula, una minúscula y un número.
                   </div>
                 </div>
                 <div>
                   <label for="signUpConfirmPassword" class="form-label">Confirmar contraseña</label>
                   <input type="password" class="form-control" name="signUpConfirmPassword" id="signUpConfirmPassword"
-                    placeholder="Confirmar contraseña">
-                  <div id="signUpConfirmPasswordError" class="text-danger" style="display: none;">
+                    placeholder="Confirmar contraseña" aria-describedby="signUpConfirmPasswordError" required>
+                  <div id="signUpConfirmPasswordError" class="text-danger" style="display: none;" aria-live="polite">
                     Las contraseñas no coinciden.
                   </div>
                 </div>
