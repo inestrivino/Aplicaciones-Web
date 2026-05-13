@@ -355,7 +355,7 @@ async function renderVehiculos() {
                         </p>
                     </div>
 
-                    <div class="card-footer bg-white border-0 mt-auto">
+                    <div class="card-footer border-0 mt-auto">
                         <button 
                             class="btn btn-primary w-100 reserve-btn"
                             data-matricula="${vehiculo.matricula}">

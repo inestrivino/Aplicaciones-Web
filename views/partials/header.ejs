@@ -1,5 +1,18 @@
+<script>
+  (function () {
+    const savedTheme =
+      localStorage.getItem("theme") || "light";
+
+    document.documentElement.setAttribute(
+      "data-bs-theme",
+      savedTheme
+    );
+
+  })();
+</script>
+
 <!-- BARRA DE NAVEGACION -->
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-md fixed-top">
   <div class="container-fluid">
     <!-- Logo -->
     <a href="/" class="navbar-brand align-items-center" aria-label="Ir a la página de inicio de EcoMóvil">
@@ -44,7 +57,7 @@
             </li>
             <% } %>
               <li class="nav-item">
-                <a href="/alertas" class="nav-link bell-link" aria-label="Ir a alertas" accesskey="a">
+                <a href="/alertas" class="nav-link bell-link" aria-label="Ir a alertas" accesskey="n">
 
                   <span class="bell-wrapper">
                     <i class="bi bi-bell bell-icon"></i>
@@ -57,7 +70,7 @@
 
                 </a>
               </li>
-              
+
               <% } %>
       </ul>
 
@@ -111,15 +124,15 @@
         <section>
           <h6>Tema visual</h6>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="tema" id="temaClaro" value="claro" checked>
+            <input class="form-check-input" type="radio" name="tema" id="temaClaro" value="light" checked>
             <label class="form-check-label" for="temaClaro">Claro</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="tema" id="temaOscuro" value="oscuro">
+            <input class="form-check-input" type="radio" name="tema" id="temaOscuro" value="dark">
             <label class="form-check-label" for="temaOscuro">Oscuro</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="tema" id="temaAltoContraste" value="alto-contraste">
+            <input class="form-check-input" type="radio" name="tema" id="temaAltoContraste" value="high-contrast">
             <label class="form-check-label" for="temaAltoContraste">Alto contraste</label>
           </div>
         </section>
@@ -137,31 +150,42 @@
         <!-- Sección: Configuración de Atajos de Teclado -->
         <section>
           <h6>Atajos de Teclado</h6>
+
           <div class="mb-3">
-            <label for="shortcutInicio" class="form-label">Inicio (Alt + )</label>
-            <input type="text" class="form-control" id="shortcutInicio" value="i">
+            <label for="shortcutInicio" class="form-label">Inicio</label>
+            <input type="text" class="form-control" id="shortcutInicio">
           </div>
+
           <% if (user) { %>
             <div class="mb-3">
-              <label for="shortcutVehiculos" class="form-label">Vehículos (Alt + )</label>
-              <input type="text" class="form-control" id="shortcutVehiculos" value="v">
+              <label for="shortcutVehiculos" class="form-label">Vehículos</label>
+              <input type="text" class="form-control" id="shortcutVehiculos">
             </div>
+
             <div class="mb-3">
-              <label for="shortcutReservar" class="form-label">Reservar (Alt + )</label>
-              <input type="text" class="form-control" id="shortcutReservar" value="r">
+              <label for="shortcutReservar" class="form-label">Reservar</label>
+              <input type="text" class="form-control" id="shortcutReservar">
             </div>
+
             <div class="mb-3">
-              <label for="shortcutMisReservas" class="form-label">Mis Reservas (Alt + )</label>
-              <input type="text" class="form-control" id="shortcutMisReservas" value="m">
+              <label for="shortcutMisReservas" class="form-label">Mis Reservas</label>
+              <input type="text" class="form-control" id="shortcutMisReservas">
             </div>
+
             <% } %>
+              <% if (user && user.rol==='admin' ) { %>
+                <div class="mb-3">
+                  <label for="shortcutAdmin" class="form-label">Admin</label>
+                  <input type="text" class="form-control" id="shortcutAdmin">
+                </div>
+                <% } %>
+
+                  <div class="mb-3">
+                    <label for="shortcutAjustes" class="form-label">Ajustes</label>
+                    <input type="text" class="form-control" id="shortcutAjustes">
+                  </div>
         </section>
 
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="guardarCambios">Guardar cambios</button>
       </div>
     </div>
   </div>

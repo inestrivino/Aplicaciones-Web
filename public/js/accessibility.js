@@ -1,289 +1,253 @@
+/* IDIOMA */
+function aplicarIdioma(lang) {
+    document.documentElement.lang = lang;
+}
+
+function actualizarTextoUI(lang, label) {
+    if (!label) return;
+    label.textContent = lang === "en" ? "English" : "Español";
+}
+
 function inicializarLanguageToggle() {
-    const idiomaSeleccionado = document.getElementById("idiomaSeleccionado");
-    const languageLinks = document.querySelectorAll('.dropdown-item');
+    const idiomaSeleccionado =
+        document.getElementById("idiomaSeleccionado");
+    const languageLinks =
+        document.querySelectorAll(".dropdown-item");
+    const savedLang =
+        localStorage.getItem("lang") || "es";
+    aplicarIdioma(savedLang);
+    actualizarTextoUI(savedLang, idiomaSeleccionado);
 
-    if (idiomaSeleccionado) {
-        // Carga el idioma seleccionado anteriormente durante la sesión
-        const savedLang = sessionStorage.getItem("lang") || "es";
-        document.documentElement.lang = savedLang;
-        idiomaSeleccionado.textContent = savedLang === "en" ? "English" : "Español";
+    languageLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const lang =
+                link.getAttribute("data-lang");
 
-        let tempSelectedLang = savedLang;
-
-        //Cada vez que se hace click sobre uno de los botones de idioma, se guarda la elección
-        languageLinks.forEach(link => {
-            link.addEventListener("click", (e) => {
-                e.preventDefault();
-                tempSelectedLang = link.getAttribute("data-lang");
-                idiomaSeleccionado.textContent = tempSelectedLang === "en" ? "English" : "Español";
-            });
+            localStorage.setItem("lang", lang);
+            aplicarIdioma(lang);
+            actualizarTextoUI(lang, idiomaSeleccionado);
         });
+    });
+}
 
-        // Cuando damos a guardar cambios se guarda la elección de manera oficial
-        const guardarCambios = document.getElementById("guardarCambios");
-        if (guardarCambios) {
-            guardarCambios.addEventListener("click", () => {
-                sessionStorage.setItem("lang", tempSelectedLang);
-                document.documentElement.lang = tempSelectedLang;
+/* TEMA */
+function applyTheme(theme) {
 
-                // Cerramos el modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('ajustesModal'));
-                modal.hide();
-            });
-        }
-    }
+    document.documentElement.setAttribute(
+        "data-bs-theme",
+        theme
+    );
 }
 
 function inicializarTema() {
-    const guardarBtn = document.getElementById("guardarCambios");
-    const navbar = document.querySelector("nav.navbar");
+    const savedTheme =
+        localStorage.getItem("theme") || "light";
 
-    if (navbar && guardarBtn) {
-        function applyTheme(theme) {
-            let navbarClasses = ["navbar-light", "bg-light"];
-            let dataTheme = "default";
+    applyTheme(savedTheme);
 
-            if (theme === "oscuro") {
-                navbarClasses = ["navbar-dark", "bg-dark"];
-                dataTheme = "dark";
-            } else if (theme === "alto-contraste") {
-                navbarClasses = ["navbar-dark", "bg-dark"];
-                dataTheme = "high-contrast";
-            }
+    // sincronizar radio con tema actual
+    const radio = document.querySelector(
+        `input[name="tema"][value="${savedTheme}"]`
+    );
 
-            navbar.classList.remove("navbar-light", "navbar-dark", "bg-light", "bg-dark");
-            navbar.classList.add(...navbarClasses);
+    if (radio) radio.checked = true;
 
-            document.documentElement.setAttribute("data-theme", dataTheme);
-            document.documentElement.setAttribute(
-                "data-bs-theme",
-                dataTheme === "default" ? "light" : "dark"
-            );
-        }
+    // cambio inmediato
+    document
+        .querySelectorAll('input[name="tema"]')
+        .forEach(r => {
 
-        const savedTheme = sessionStorage.getItem("theme") || "claro";
-        applyTheme(savedTheme);
+            r.addEventListener("change", (e) => {
 
-        const savedRadio = document.querySelector(`input[name="tema"][value="${savedTheme}"]`);
-        if (savedRadio) savedRadio.checked = true;
+                const theme = e.target.value;
 
-        guardarBtn.addEventListener("click", () => {
-            const selectedTheme = document.querySelector('input[name="tema"]:checked').value;
-            sessionStorage.setItem("theme", selectedTheme);
-            applyTheme(selectedTheme);
+                applyTheme(theme);
 
-            const modal = bootstrap.Modal.getInstance(document.getElementById('ajustesModal'));
-            modal.hide();
+                localStorage.setItem("theme", theme);
+            });
         });
-    }
+}
+
+/* TAMAÑO DE LA LETRA */
+function aplicarTamanoFuente(size) {
+    document.documentElement.style.fontSize =
+        `${size}rem`;
+}
+
+function actualizarLabel(size, label) {
+    if (!label) return;
+    label.textContent = `${size}rem`;
 }
 
 function inicializarTamanoLetra() {
-    const ajustesModal = document.getElementById("ajustesModal");
-    const fontSizeRange = document.getElementById("fontSizeRange");
-    const fontSizeValue = document.getElementById("fontSizeValue");
-    const guardarCambiosBtn = document.getElementById("guardarCambios");
+    const range = document.getElementById("fontSizeRange");
 
-    if (ajustesModal) {
-        let tamanoOriginal = null;
-        let cambiosGuardados = false;
+    const valueLabel = document.getElementById("fontSizeValue");
 
-        // Aplicamos el tamaño nuevo según el slider
-        function aplicarTamanoFuente(valor) {
-            const baseSize = parseFloat(valor);
-            fontSizeValue.textContent = `${baseSize}rem`;
+    const savedSize = localStorage.getItem("fontSize") || "1.2";
 
-            // Elementos normales
-            document.querySelectorAll("p, li, a, span, label, button").forEach(el => {
-                el.style.fontSize = `${baseSize}rem`;
-            });
+    aplicarTamanoFuente(savedSize);
+    range.value = savedSize;
+    actualizarLabel(savedSize, valueLabel);
 
-            // Encabezados
-            document.querySelectorAll("h1, h2, h3, h4, h5, h6, strong, b").forEach(el => {
-                let factor;
-                switch (el.tagName.toLowerCase()) {
-                    case "h1": factor = 2.5; break;
-                    case "h2": factor = 2; break;
-                    case "h3": factor = 1.75; break;
-                    case "h4": factor = 1.5; break;
-                    case "h5": factor = 1.25; break;
-                    case "h6": factor = 1.1; break;
-                    case "strong":
-                    case "b": factor = 1.05; break;
-                    default: factor = 1;
-                }
-                el.style.fontSize = `${(baseSize * factor).toFixed(2)}rem`;
-            });
-        }
+    range.addEventListener("input", (e) => {
+        const size = e.target.value;
+        aplicarTamanoFuente(size);
+        actualizarLabel(size, valueLabel);
+        localStorage.setItem("fontSize", size);
+    });
+}
 
-        // Restauramos el tamaño original
-        function restaurarTamanoOriginal() {
-            aplicarTamanoFuente(tamanoOriginal);
-            fontSizeRange.value = tamanoOriginal;
-        }
+/* SHORTCUTS */
 
-        // Guardamos el valor al abrir el modal
-        ajustesModal.addEventListener("show.bs.modal", () => {
-            tamanoOriginal = parseFloat(fontSizeRange.value);
-            cambiosGuardados = false;
-        });
+function obtenerShortcuts() {
+    return {
+        inicio: localStorage.getItem("shortcutInicio") || "i",
+        vehiculos: localStorage.getItem("shortcutVehiculos") || "v",
+        reservar: localStorage.getItem("shortcutReservar") || "r",
+        misReservas: localStorage.getItem("shortcutMisReservas") || "m",
+        admin: localStorage.getItem("shortcutAdmin") || "a",
+        ajustes: localStorage.getItem("shortcutAjustes") || "s"
+    };
+}
 
-        // Cambiamos el tamaño de la letra como vista previa
-        fontSizeRange.addEventListener("input", () => {
-            aplicarTamanoFuente(fontSizeRange.value);
-        });
+function guardarShortcut(nombre, valor) {
+    localStorage.setItem(`shortcut${nombre}`, valor.toLowerCase());
+}
 
-        // Guardamos los cambios si son definitivos
-        guardarCambiosBtn.addEventListener("click", () => {
-            cambiosGuardados = true;
-            const valor = fontSizeRange.value;
-            aplicarTamanoFuente(valor);
-            sessionStorage.setItem("fontSize", valor);
+function hayDuplicados(shortcuts) {
+    const values = Object.values(shortcuts)
+        .map(v => v.toLowerCase().trim())
+        .filter(v => v !== "");
 
-            // cerrar modal con bootstrap
-            const modal = bootstrap.Modal.getInstance(ajustesModal);
-            modal.hide();
-        });
+    return new Set(values).size !== values.length;
+}
 
-        // Pero si se cierra sin guardar entonces los revertimos
-        ajustesModal.addEventListener("hidden.bs.modal", () => {
-            if (!cambiosGuardados) {
-                restaurarTamanoOriginal();
-            }
-        });
+function validarShortcuts() {
+    const inputs = document.querySelectorAll(".form-control[id^='shortcut']");
+    const values = [];
+    let hayDuplicados = false;
 
-        const fontSizeGuardado = sessionStorage.getItem("fontSize");
-        if (fontSizeGuardado) {
-            fontSizeRange.value = fontSizeGuardado;
-            aplicarTamanoFuente(fontSizeGuardado);
+    inputs.forEach(input => {
+        input.classList.remove("is-invalid");
+        const value = input.value.toLowerCase().trim();
+        if (!value) return;
+        if (values.includes(value)) {
+            hayDuplicados = true;
+            input.classList.add("is-invalid");
         } else {
-            // aplicar valor del slider por defecto
-            aplicarTamanoFuente(fontSizeRange.value);
+            values.push(value);
         }
-    }
+    });
+
+    return !hayDuplicados;
+}
+
+function inicializarDefaultsShortcuts() {
+    const defaults = {
+        shortcutInicio: "i",
+        shortcutVehiculos: "v",
+        shortcutReservar: "r",
+        shortcutMisReservas: "m",
+        shortcutAdmin: "a",
+        shortcutAjustes: "s"
+    };
+
+    Object.entries(defaults).forEach(([key, value]) => {
+        if (!localStorage.getItem(key)) {
+            localStorage.setItem(key, value);
+        }
+    });
 }
 
 function inicializarAtajosTeclado() {
-    // Verificar que los elementos del DOM existen antes de acceder a ellos
-    const shortcutInicioElement = document.getElementById('shortcutInicio');
-    const shortcutVehiculosElement = document.getElementById('shortcutVehiculos');
-    const shortcutReservarElement = document.getElementById('shortcutReservar');
-    const shortcutMisReservasElement = document.getElementById('shortcutMisReservas');
+    const shortcuts = obtenerShortcuts();
 
-    const guardarCambiosBtn = document.getElementById("guardarCambios");
-    const modal = document.getElementById('ajustesModal');
+    const fields = [
+        "Inicio",
+        "Vehiculos",
+        "Reservar",
+        "MisReservas",
+        "Admin",
+        "Ajustes"
+    ];
 
-    const shortcutInicio = (sessionStorage.getItem('shortcutInicio') || 'i').toLowerCase();
-    const shortcutVehiculos = (sessionStorage.getItem('shortcutVehiculos') || 'v').toLowerCase();
-    const shortcutReservar = (sessionStorage.getItem('shortcutReservar') || 'r').toLowerCase();
-    const shortcutMisReservas = (sessionStorage.getItem('shortcutMisReservas') || 'm').toLowerCase();
-
-    let initialShortcuts = {
-        inicio: shortcutInicio,
-        vehiculos: shortcutVehiculos,
-        reservar: shortcutReservar,
-        misReservas: shortcutMisReservas,
-    };
-
-    if (shortcutInicioElement) document.getElementById('shortcutInicio').value = initialShortcuts.inicio;
-    if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
-    if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
-    if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
-
-    const linkInicio = document.querySelector('a[aria-label="Ir a inicio"]');
-    const linkVehiculos = document.querySelector('a[aria-label="Ir a Vehículos"]');
-    const linkReservar = document.querySelector('a[aria-label="Ir a Reservas"]');
-    const linkMisReservas = document.querySelector('a[aria-label="Ir a Mis Reservas"]');
-
-    function actualizarAtajos() {
-        if (linkInicio) linkInicio.setAttribute('accesskey', shortcutInicio);
-        if (linkVehiculos) linkVehiculos.setAttribute('accesskey', shortcutVehiculos);
-        if (linkReservar) linkReservar.setAttribute('accesskey', shortcutReservar);
-        if (linkMisReservas) linkMisReservas.setAttribute('accesskey', shortcutMisReservas);
-    }
-
-    function verificarAtajosDuplicados() {
-        const atajos = [
-        ];
-
-        if (shortcutInicioElement) {
-            const nuevoShortcutInicio = document.getElementById('shortcutInicio').value.toLowerCase();
-            atajos.push(nuevoShortcutInicio);
+    fields.forEach(name => {
+        const el = document.getElementById(`shortcut${name}`);
+        const key = name.charAt(0).toLowerCase() + name.slice(1);
+        const value = shortcuts[key];
+        if (el && value !== undefined) {
+            el.value = value;
         }
-        if (shortcutVehiculosElement) {
-            const nuevoShortcutVehiculos = document.getElementById('shortcutVehiculos').value.toLowerCase();
-            atajos.push(nuevoShortcutVehiculos);
-        }
-        if (shortcutReservarElement) {
-            const nuevoShortcutReservar = document.getElementById('shortcutReservar').value.toLowerCase();
-            atajos.push(nuevoShortcutReservar);
-        }
-        if (shortcutMisReservasElement) {
-            const nuevoShortcutMisReservas = document.getElementById('shortcutMisReservas').value.toLowerCase();
-            atajos.push(nuevoShortcutMisReservas);
-        }
+    });
 
-        const atajosUnicos = new Set(atajos);
-        return atajosUnicos.size !== atajos.length; // true entonces hay duplicados
-    }
+    document.querySelectorAll(".form-control[id^='shortcut']")
+        .forEach(input => {
 
-    actualizarAtajos();
+            input.addEventListener("input", (e) => {
 
-    function reactivarAtajos() {
-        document.removeEventListener('keydown', onKeyDown);
-        document.addEventListener('keydown', onKeyDown);
+                const id = e.target.id.replace("shortcut", "");
+                const value = e.target.value.toLowerCase();
 
-        function onKeyDown(event) {
-            if (!event.altKey) return;
-            const key = event.key.toLowerCase();
-            if (key === shortcutInicio) {
+                guardarShortcut(id, value);
+                validarShortcuts();
+            });
+        });
+
+    document.addEventListener("keydown", (event) => {
+
+        const key = event.key.toLowerCase();
+
+        const tag = event.target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+        if (!validarShortcuts()) return;
+
+        const s = obtenerShortcuts();
+
+        /* CTRL SHORTCUTS */
+        if (event.ctrlKey) {
+            if (key === s.admin) {
+                event.preventDefault();
+                window.location.href = "/admin";
+                return;
+            }
+
+            else if (key === s.ajustes) {
+                event.preventDefault();
+                const modal = document.getElementById("ajustesModal");
+                bootstrap.Modal.getOrCreateInstance(modal).show();
+                return;
+            }
+
+            else if (key === s.inicio) {
                 event.preventDefault();
                 window.location.href = "/";
-            } else if (key === shortcutVehiculos) {
+            }
+
+            else if (key === s.vehiculos) {
                 event.preventDefault();
                 window.location.href = "/vehiculos";
-            } else if (key === shortcutReservar) {
+            }
+
+            else if (key === s.reservar) {
                 event.preventDefault();
                 window.location.href = "/reserva";
-            } else if (key === shortcutMisReservas) {
+            }
+
+            else if (key === s.misReservas) {
                 event.preventDefault();
                 window.location.href = "/misReservas";
             }
-        }
-    }
 
-    guardarCambiosBtn.addEventListener("click", () => {
-        // Verificar si los atajos son duplicados
-        if (verificarAtajosDuplicados()) {
-            alert("No puedes asignar la misma tecla a varios atajos. Por favor, elige teclas diferentes.");
-            return; // Evitar que continúe si hay duplicados
+            return;
         }
-
-        if (shortcutInicioElement) sessionStorage.setItem('shortcutInicio', shortcutInicioElement.value.toLowerCase());
-        if (shortcutVehiculosElement) sessionStorage.setItem('shortcutVehiculos', shortcutVehiculosElement.value.toLowerCase());
-        if (shortcutReservarElement) sessionStorage.setItem('shortcutReservar', shortcutReservarElement.value.toLowerCase());
-        if (shortcutMisReservasElement) sessionStorage.setItem('shortcutMisReservas', shortcutMisReservasElement.value.toLowerCase());
-        actualizarAtajos();
-        reactivarAtajos();
-
-        // Cerrar el modal
-        if (modal) {
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-        }
-        location.reload();
     });
-
-    modal.addEventListener('hidden.bs.modal', () => {
-        if (shortcutInicioElement) document.getElementById('shortcutInicio').value = initialShortcuts.inicio;
-        if (shortcutVehiculosElement) document.getElementById('shortcutVehiculos').value = initialShortcuts.vehiculos;
-        if (shortcutReservarElement) document.getElementById('shortcutReservar').value = initialShortcuts.reservar;
-        if (shortcutMisReservasElement) document.getElementById('shortcutMisReservas').value = initialShortcuts.misReservas;
-    });
-    reactivarAtajos();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    inicializarDefaultsShortcuts();
     inicializarAtajosTeclado();
     inicializarLanguageToggle();
     inicializarTema();

@@ -1,94 +1,284 @@
 /* ---------- TEMAS ---------- */
 
-/* Tema claro por default */
+/* =======================================================
+   TEMA CLARO
+======================================================= */
+
 :root,
-[data-theme="default"] {
-  --background-color: #f8f9fa;
-  --text-color: #212529;
-  --card-bg: #fff;
-  --card-border: rgba(0, 0, 0, 0.1);
-  --modal-bg: #fff;
-  --modal-text: #212529;
-  --input-bg: #fff;
-  --input-text: #212529;
-  --input-border: #ced4da;
-  --navbar-link-color: #333;
+[data-bs-theme="light"] {
+
+  --bs-body-bg: #f8f9fa;
+  --bs-body-color: #212529;
+
+  --bs-card-bg: #ffffff;
+  --bs-card-border-color: #e9ecef;
+
+  --bs-modal-bg: #ffffff;
+  --bs-modal-color: #212529;
+
+  --bs-border-color: #dee2e6;
+
+  --navbar-link-color: #333333;
   --navbar-link-hover-color: #007bff;
+
   --footer-background: #24303b;
-  --footer-text-color: #fff;
-  --fieldset-background: #fff;
-  --bs-btn-close-color: #212529;
-  --fieldset-border: rgba(0, 0, 0, 0.1);
+  --footer-text-color: #ffffff;
+
+  --fieldset-background: #ffffff;
+  --fieldset-border: #dee2e6;
+
+  --navbar-bg: #ffffff;
 }
 
-/* Tema oscuro */
-[data-theme="dark"] {
-  --background-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --bs-btn-close-color: #e0e0e0;
-  --card-border: rgba(255, 255, 255, 0.1);
-  --modal-bg: #212121;
-  --modal-text: #e0e0e0;
-  --input-bg: #1c1c1c;
-  --input-text: #e0e0e0;
-  --input-border: rgba(255, 255, 255, 0.2);
-  --navbar-link-color: #bbb;
-  --navbar-link-hover-color: #1a73e8;
-  --footer-background: #212121;
-  --footer-text-color: #e0e0e0;
-  --fieldset-background: #333;
-  --fieldset-border: rgba(255, 255, 255, 0.2);
+
+/* =======================================================
+   TEMA OSCURO
+======================================================= */
+
+[data-bs-theme="dark"] {
+
+  --bs-body-bg: #121212;
+  --bs-body-color: #e9ecef;
+
+  --bs-card-bg: #1e1e1e;
+  --bs-card-border-color: #343a40;
+
+  --bs-modal-bg: #1f1f1f;
+  --bs-modal-color: #e9ecef;
+
+  --bs-border-color: #343a40;
+
+  --navbar-link-color: #d0d0d0;
+  --navbar-link-hover-color: #4dabf7;
+
+  --footer-background: #1a1a1a;
+  --footer-text-color: #e9ecef;
+
+  --fieldset-background: #1b1b1b;
+  --fieldset-border: #343a40;
+
+  --navbar-bg: #1a1a1a;
 }
 
-/* Tema alto contraste */
-[data-theme="high-contrast"] {
-  --background-color: #000;
-  --text-color: #ff0;
-  --card-bg: #000;
-  --card-border: #ff0;
-  --modal-bg: #000;
-  --modal-text: #ff0;
-  --input-bg: #000;
-  --input-text: #ff0;
-  --input-border: #ff0;
-  --navbar-link-color: #ffcc00;
-  --navbar-link-hover-color: #ff0000;
-  --footer-background: #000;
-  --footer-text-color: #ff0;
-  --fieldset-background: #000;
-  --fieldset-border: #ff0;
+
+/* =======================================================
+   TEMA ALTO CONTRASTE
+======================================================= */
+
+[data-bs-theme="high-contrast"] {
+
+  --bs-body-bg: #000000;
+  --bs-body-color: #ffff00;
+
+  --bs-card-bg: #000000;
+  --bs-card-border-color: #ffff00;
+
+  --bs-modal-bg: #000000;
+  --bs-modal-color: #ffff00;
+
+  --bs-border-color: #ffff00;
+
+  --navbar-link-color: #ffff00;
+  --navbar-link-hover-color: #ff8800;
+
+  --footer-background: #000000;
+  --footer-text-color: #ffff00;
+
+  --fieldset-background: #000000;
+  --fieldset-border: #ffff00;
+
+  --navbar-bg: #000000;
 }
 
-/* Ajuste de botones según el tema */
-[data-theme="dark"] .btn-outline-secondary {
+
+/* =======================================================
+   AJUSTES GENERALES PARA TEMA
+======================================================= */
+
+body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+
+/* Cards */
+.card {
+  background-color: var(--bs-card-bg);
+  border-color: var(--bs-card-border-color);
+}
+
+
+/* Modales */
+.modal-content {
+  background-color: var(--bs-modal-bg);
+  color: var(--bs-modal-color);
+}
+
+
+/* Inputs */
+.form-control,
+.form-select {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+}
+
+
+/* Fieldsets */
+fieldset {
+  background-color: var(--fieldset-background);
+  border: 1px solid var(--fieldset-border);
+}
+
+
+/* Footer */
+footer {
+  background-color: var(--footer-background);
+  color: var(--footer-text-color);
+}
+
+
+/* Navbar links */
+.navbar .nav-link {
+  color: var(--navbar-link-color);
+}
+
+.navbar .nav-link:hover {
+  color: var(--navbar-link-hover-color);
+}
+
+
+/* Botón cerrar modal */
+.btn-close {
+  filter: var(--bs-btn-close-white-filter, none);
+}
+
+
+/* =======================================================
+   BOTONES SECUNDARIOS
+======================================================= */
+
+[data-bs-theme="dark"] .btn-outline-secondary {
   color: #e0e0e0;
-  border-color: #aaa;
+  border-color: #aaaaaa;
 }
 
-[data-theme="dark"] .btn-outline-secondary:hover {
+[data-bs-theme="dark"] .btn-outline-secondary:hover {
   background-color: #e0e0e0;
-  color: #000;
+  color: #000000;
 }
 
-[data-theme="dark"] .btn-close {
-  background-color: var(--bs-btn-close-color);
+
+[data-bs-theme="high-contrast"] .btn-outline-secondary {
+  color: #ffff00;
+  border-color: #ffff00;
 }
 
-[data-theme="high-contrast"] .btn-outline-secondary {
-  color: #ff0;
-  border-color: #ff0;
+[data-bs-theme="high-contrast"] .btn-outline-secondary:hover {
+  background-color: #ffff00;
+  color: #000000;
 }
 
-[data-theme="high-contrast"] .btn-outline-secondary:hover {
-  background-color: #ff0;
-  color: #000;
+/* =======================================================
+   ALERTAS - LIGHT
+======================================================= */
+
+[data-bs-theme="light"] .alert-secondary {
+  background-color: #f1f3f5;
+  border-color: #dee2e6;
+  color: #495057;
+}
+
+[data-bs-theme="light"] .alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffe69c;
+  color: #664d03;
+}
+
+[data-bs-theme="light"] .alert-info {
+  background-color: #cff4fc;
+  border-color: #9eeaf9;
+  color: #055160;
+}
+
+[data-bs-theme="light"] .alert-success {
+  background-color: #d1e7dd;
+  border-color: #a3cfbb;
+  color: #0f5132;
+}
+
+
+/* =======================================================
+   ALERTAS - DARK
+======================================================= */
+
+[data-bs-theme="dark"] .alert-secondary {
+  background-color: #2b3035;
+  border-color: #495057;
+  color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .alert-warning {
+  background-color: #3b2f0b;
+  border-color: #664d03;
+  color: #ffd966;
+}
+
+[data-bs-theme="dark"] .alert-info {
+  background-color: #0c3440;
+  border-color: #087990;
+  color: #6edff6;
+}
+
+[data-bs-theme="dark"] .alert-success {
+  background-color: #112e21;
+  border-color: #146c43;
+  color: #75d88a;
+}
+
+
+/* =======================================================
+   ALERTAS - HIGH CONTRAST
+======================================================= */
+
+[data-bs-theme="high-contrast"] .alert-secondary,
+[data-bs-theme="high-contrast"] .alert-warning,
+[data-bs-theme="high-contrast"] .alert-info,
+[data-bs-theme="high-contrast"] .alert-success {
+
+  background-color: #000000;
+
+  border: 2px solid #ffff00;
+
+  color: #ffff00;
+}
+
+
+/* =======================================================
+   ESTILO GENERAL ALERTAS
+======================================================= */
+
+.alert {
+  border-radius: 0.75rem;
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* ---------- General ---------- */
+html {
+  font-size: 1.2rem;
+}
+
 body {
-  background-color: var(--background-color);
-  color: var(--text-color);
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -108,12 +298,8 @@ section {
   padding: 2rem;
 }
 
-.badge {
-  font-size: 1em;
-}
-
+/* PARA LA CAMPANA DE NOTIFICACIONES*/
 .bell-icon {
-  font-size: 1.3rem;
   color: var(--bs-secondary);
   transition: color 0.2s ease;
 }
@@ -179,36 +365,26 @@ header p {
 }
 
 header h1 {
-  font-size: 3rem;
   margin-bottom: 1rem;
 }
 
 header h2 {
-  font-size: 1.8rem;
   margin-bottom: 1.5rem;
 }
 
-header p {
-  font-size: 1.2rem;
-}
 
 /* Barra de navegación */
 .navbar {
+  background-color: var(--navbar-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .navbar-nav .nav-link {
-  color: var(--navbar-link-color) !important;
   transition: color 0.3s ease;
   padding: 0.5rem 1rem;
   font-weight: 500;
   transition: color 0.3s ease;
-}
-
-.navbar-nav .nav-link:hover {
-  color: var(--navbar-link-hover-color) !important;
-
 }
 
 .navbar-brand img {
@@ -226,8 +402,8 @@ section h2,
 section h3 {
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  color: var(--text-color);
-  border-bottom: 2px solid var(--card-border);
+  color: var(--bs-body-color);
+  border-bottom: 2px solid var(--bs-border-color);
 }
 
 section ol,
@@ -249,11 +425,11 @@ section th,
 section td {
   padding: 0.75rem;
   text-align: left;
-  color: var(--text-color);
+  color: var(--bs-body-color);
 }
 
 #usuarioBtn p {
-  color: var(--text-color);
+  color: var(--bs-body-color);
   margin-left: 5px;
   margin-top: 0;
   margin-bottom: 0;
@@ -262,10 +438,11 @@ section td {
 /* Formularios */
 .form-control,
 .form-select {
-  background-color: var(--input-bg);
-  color: var(--input-text);
-  border-color: var(--input-border);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+
   padding: 0.75rem;
   margin-bottom: 0.5rem;
 }
@@ -281,13 +458,15 @@ section td {
 }
 
 fieldset {
-  border: 2px solid var(--fieldset-border);
+  border: 1px solid var(--fieldset-border);
   padding: 2rem;
   background-color: var(--fieldset-background);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   margin: 1rem auto;
-  transition: background-color 0.3s ease, border 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Botones */
@@ -314,9 +493,9 @@ footer a:hover {
 
 /* Cartas de vehículos y filtrado*/
 .filter-container {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border: 1px solid var(--card-border);
+  background-color: var(--bs-card-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-card-border-color);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 30px;
@@ -345,10 +524,15 @@ footer a:hover {
 }
 
 .card {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border-color: var(--card-border);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  background-color: var(--bs-card-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-card-border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .card-img-top {
@@ -358,10 +542,12 @@ footer a:hover {
 
 /* Modal */
 .modal-content {
-  background-color: var(--modal-bg);
-  color: var(--modal-text);
-  border-color: var(--card-border);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bs-modal-bg);
+  color: var(--bs-modal-color);
+  border-color: var(--bs-border-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .modal section {

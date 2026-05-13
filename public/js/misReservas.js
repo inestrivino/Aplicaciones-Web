@@ -29,7 +29,7 @@ function renderFeedback(r) {
 
     if (!hayPuntuacion && !hayComentario) {
         return `
-            <div class="mt-2 p-2 border rounded bg-light text-muted">
+            <div class="mt-2 p-2 border rounded text-muted">
                 No se ha proporcionado una reseña
             </div>
         `;
@@ -38,7 +38,7 @@ function renderFeedback(r) {
     const estrellas = hayPuntuacion ? "⭐".repeat(r.puntuacion) : "";
 
     return `
-        <div class="mt-2 p-2 border rounded bg-light">
+        <div class="mt-2 p-2 border rounded">
             ${hayPuntuacion ? `<strong>Valoración:</strong> ${estrellas}<br>` : ""}
             ${hayComentario ? `<em>${r.comentario}</em>` : ""}
         </div>
