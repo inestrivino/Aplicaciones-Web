@@ -23,20 +23,26 @@
 </script>
 
 <!-- BARRA DE NAVEGACION -->
+
 <nav class="navbar navbar-expand-md fixed-top">
   <div class="container-fluid">
     <!-- Logo -->
-    <a href="/" class="navbar-brand align-items-center" aria-label="Ir a la página de inicio de EcoMóvil">
+    <a href="/" class="navbar-brand align-items-center">
       <img src="/img/Logo.svg" alt="Logo de EcoMóvil">
     </a>
 
-    <!-- Toggler -->
+    <!-- Botón burger -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-      aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar menú de navegación">
-      <span class="navbar-toggler-icon"></span>
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar navegación">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar navegación">
+
+        <i class="bi bi-list"></i>
+      </button>
     </button>
 
-    <!-- Contenido -->
+    <!-- Menú -->
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
@@ -103,6 +109,7 @@
         </button>
       </div>
     </div>
+
   </div>
 </nav>
 
@@ -223,11 +230,13 @@
               <form action="/user/login" method="POST">
                 <div>
                   <label for="signInEmail" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Correo electrónico" required autocomplete="email">
+                  <input type="email" class="form-control" name="signInEmail" id="signInEmail"
+                    placeholder="Correo electrónico" required autocomplete="email">
                 </div>
                 <div>
                   <label for="signInPassword" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Contraseña" required autocomplete="current-password">
+                  <input type="password" class="form-control" name="signInPassword" id="signInPassword"
+                    placeholder="Contraseña" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
               </form>
@@ -252,13 +261,17 @@
                 </div>
                 <div>
                   <label for="signUpEmail" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" name="signUpEmail" id="signUpEmail" placeholder="Correo electrónico" required maxlength="100" aria-describedby="signUpEmailError">
-                  <div id="signUpEmailError" class="text-danger" style="display: none;" aria-live="polite">El correo electrónico debe
+                  <input type="email" class="form-control" name="signUpEmail" id="signUpEmail"
+                    placeholder="Correo electrónico" required maxlength="100" aria-describedby="signUpEmailError">
+                  <div id="signUpEmailError" class="text-danger" style="display: none;" aria-live="polite">El correo
+                    electrónico debe
                     terminar en @ucm.</div>
                 </div>
                 <div>
                   <label for="signUpPassword" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" name="signUpPassword" id="signUpPassword" placeholder="Contraseña" minlength="8" maxlength="30" required aria-describedby="signUpPasswordError">
+                  <input type="password" class="form-control" name="signUpPassword" id="signUpPassword"
+                    placeholder="Contraseña" minlength="8" maxlength="30" required
+                    aria-describedby="signUpPasswordError">
                   <div id="signUpPasswordError" class="text-danger" style="display: none;" aria-live="polite">
                     La contraseña debe contener al menos una mayúscula, una minúscula y un número.
                   </div>

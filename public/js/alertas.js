@@ -3,63 +3,80 @@ import { fetchUser, fetchMisReservas } from './ajax.js';
 function renderAlertas(alertas) {
     const container = document.getElementById("alertas-container");
     if (!container) return;
+
     container.innerHTML = "";
 
     alertas.forEach(a => {
-        const div = document.createElement("div");
+        const article = document.createElement("article");
 
-        div.className = `
-            alert 
-            ${a.vista ? "alert-secondary" : "alert-warning"} 
-            d-flex align-items-center justify-content-between
-            gap-3
+        article.className = `
+            alert
+            ${a.vista ? "alert-secondary" : "alert-warning"}
+            mb-3
         `;
 
         const icon = a.vista
             ? `<i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>`
             : `<i class="bi bi-exclamation-triangle-fill text-warning fs-4" aria-hidden="true"></i>`;
 
-        div.innerHTML = `
-            <!-- ICONO -->
-            <div class="d-flex align-items-center justify-content-center" style="width: 40px;">
-                ${icon}
-            </div>
+        article.innerHTML = `
+            <div class="d-flex flex-column flex-md-row gap-3 align-items-start">
 
-            <div class="visually-hidden">
-                ${a.vista ? "Alerta leída" : "Alerta no leída"}
-            </div>
+                <!-- ICONO -->
+                <div class="flex-shrink-0 pt-1">
+                    ${icon}
 
-            <!-- CONTENIDO -->
-            <div class="flex-grow-1 text-start">
-                <!-- FECHA ARRIBA -->
-                <div class="text-muted small mb-1">
-                    <i class="bi bi-calendar-event me-1"></i>
-                    <time datetime="${a.fecha}">
-                        ${new Date(a.fecha).toLocaleDateString()}
-                    </time>
+                    <span class="visually-hidden">
+                        ${a.vista ? "Alerta leída" : "Alerta no leída"}
+                    </span>
                 </div>
 
-                <!-- TEXTO -->
-                <div class="fw-medium">
-                    ${a.texto}
+                <!-- CONTENIDO -->
+                <div class="flex-grow-1 w-100">
+
+                    <!-- FECHA -->
+                    <div class="text-muted small mb-1">
+                        <i class="bi bi-calendar-event me-1" aria-hidden="true"></i>
+
+                        <time datetime="${a.fecha}">
+                            ${new Date(a.fecha).toLocaleDateString()}
+                        </time>
+                    </div>
+
+                    <!-- MENSAJE -->
+                    <p class="mb-2 fw-medium">
+                        ${a.texto}
+                    </p>
+
+                    <!-- BOTONES -->
+                    <div class="d-flex flex-wrap gap-2">
+
+                        ${!a.vista ? `
+                            <button
+                                class="btn btn-sm btn-success btn-vista"
+                                data-id="${a.id}"
+                                aria-label="Marcar alerta como leída">
+
+                                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                <span class="ms-1">Marcar leída</span>
+                            </button>
+                        ` : ""}
+
+                        <button
+                            class="btn btn-sm btn-danger btn-delete"
+                            data-id="${a.id}"
+                            aria-label="Eliminar alerta">
+
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            <span class="ms-1">Eliminar</span>
+                        </button>
+
+                    </div>
                 </div>
-            </div>
-
-            <!-- ACCIONES -->
-            <div class="d-flex gap-2">
-                ${!a.vista ? `
-                    <button class="btn btn-sm btn-success btn-vista" data-id="${a.id}" aria-label="Marcar alerta como leída">
-                        <i class="bi bi-check-lg" aria-hidden="true"></i>
-                    </button>
-                ` : ""}
-
-                <button class="btn btn-sm btn-danger btn-delete" data-id="${a.id}" aria-label="Eliminar alerta">
-                    <i class="bi bi-x-lg" aria-hidden="true"></i>
-                </button>
             </div>
         `;
 
-        container.appendChild(div);
+        container.appendChild(article);
     });
 }
 

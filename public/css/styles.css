@@ -153,6 +153,20 @@ footer {
   color: var(--navbar-link-hover-color);
 }
 
+/* Tema claro */
+[data-bs-theme="light"] .navbar-toggler i {
+    color: black;
+}
+
+/* Tema oscuro */
+[data-bs-theme="dark"] .navbar-toggler i {
+    color: white;
+}
+
+/* Tema alto contraste */
+[data-bs-theme="high-contrast"] .navbar-toggler i {
+    color: yellow;
+}
 
 /* Botón cerrar modal */
 .btn-close {

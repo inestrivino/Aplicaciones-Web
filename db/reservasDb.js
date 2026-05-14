@@ -106,6 +106,15 @@ class ReservasDb {
             [id_reserva, puntuacion, comentario]
         );
     }
+
+    //conseguir el num total de reservas
+    getTotalReservas() {
+        return pool.query(
+            `SELECT COUNT(*) AS total_reservas
+            FROM reservas
+            WHERE estado != 'cancelada'`
+        );
+    }
 }
 
 module.exports = new ReservasDb();

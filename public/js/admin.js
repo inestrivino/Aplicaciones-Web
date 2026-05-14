@@ -160,6 +160,38 @@ async function deleteVehiculo(matricula) {
     await renderTablaVehiculos();
 }
 
+async function actualizarConcesionarios(select) {
+    try {
+        // Guardar el concesionario actualmente seleccionado
+        const valorSeleccionado = select.value;
+
+        // Obtener concesionarios actualizados
+        const concesionarios = await fetchConcesionarios();
+
+        // Volver a pintar el select
+        select.innerHTML = concesionarios.map(con => `
+            <option value="${con.id}">
+                ${con.nombre} (${con.ciudad})
+            </option>
+        `).join('');
+
+        // Comprobar si el concesionario seleccionado sigue existiendo
+        const sigueExistiendo = concesionarios.some(
+            con => String(con.id) === String(valorSeleccionado)
+        );
+
+        // Mantener selección si existe; si no, dejar la primera opción
+        if (sigueExistiendo) {
+            select.value = valorSeleccionado;
+        } else if (concesionarios.length > 0) {
+            select.selectedIndex = 0;
+        }
+
+    } catch (error) {
+        console.error("Error al actualizar concesionarios", error);
+    }
+}
+
 async function inicializarAltaVehiculo() {
     const form = document.getElementById("altaVehiculo");
     if (!form) return;
@@ -175,15 +207,16 @@ async function inicializarAltaVehiculo() {
             <option value="${img}">${img}</option>
         `).join('');
 
-        // Obtener concesionarios
-        const concesionarios = await fetchConcesionarios();
-
-        concesionariosSelect.innerHTML = concesionarios.map(con => `
-            <option value="${con.id}">${con.nombre} (${con.ciudad})</option>
-        `).join('');
+        // Primera carga de concesionarios
+        await actualizarConcesionarios(concesionariosSelect);
 
         form.removeEventListener("submit", enviarFormularioVehiculo);
         form.addEventListener("submit", enviarFormularioVehiculo);
+
+        // Actualizar cada 10 segundos
+        setInterval(() => {
+            actualizarConcesionarios(concesionariosSelect);
+        }, 10000);
 
     } catch (error) {
         console.error("Error al cargar los datos del formulario", error);
@@ -542,7 +575,8 @@ async function renderEstadisticas() {
         topConcesionarios,
         topVehiculos,
         mediaVehiculos,
-        kmVehiculos
+        kmVehiculos,
+        totalReservas
     } = data;
 
     document.querySelector('#stats-concesionarios').innerHTML =
@@ -589,6 +623,16 @@ async function renderEstadisticas() {
                 </li>
             `).join('')
             : `<p>No hay datos disponibles.</p>`;
+
+    document.querySelector('#stats-total-reservas').innerHTML = `
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Reservas totales</h5>
+                <p class="display-6 fw-bold">
+                ${totalReservas?.[0]?.total_reservas ?? 0}
+                </p>
+            </div>
+        </div>`;
 }
 
 function initEstadisticas() {
@@ -597,17 +641,23 @@ function initEstadisticas() {
 }
 
 //INCIDENCIAS
+let vehiculoSeleccionado = 'all';
 async function renderIncidencias() {
     const incidencias = await fetchIncidencias();
+
+    //ordeno las incidencias para que se vean bien (las más nuevas primero y luego las siguientes)
+    incidencias.sort((a, b) => b.id - a.id);
 
     const select = document.querySelector('#filtroVehiculo');
     const lista = document.querySelector('#listaIncidencias');
 
     if (!incidencias || !incidencias.length) {
-        lista.innerHTML = `<p>No hay incidencias.</p>`;
         select.innerHTML = `<option value="all">Todos</option>`;
+        lista.innerHTML = `<p>No hay incidencias.</p>`;
         return;
     }
+
+    vehiculoSeleccionado = select.value || 'all';
 
     const vehiculosMap = {};
 
@@ -618,6 +668,7 @@ async function renderIncidencias() {
         };
     });
 
+    // render select
     select.innerHTML = `
         <option value="all">Todos</option>
         ${Object.entries(vehiculosMap).map(([mat, v]) => `
@@ -627,7 +678,12 @@ async function renderIncidencias() {
         `).join('')}
     `;
 
-    const renderLista = (filtro = 'all') => {
+    // restaurar selección si sigue existiendo
+    const existe = [...select.options].some(opt => opt.value === vehiculoSeleccionado);
+
+    select.value = existe ? vehiculoSeleccionado : 'all';
+
+    const renderLista = (filtro = select.value) => {
         const filtradas = filtro === 'all'
             ? incidencias
             : incidencias.filter(i => i.matricula === filtro);
@@ -635,28 +691,20 @@ async function renderIncidencias() {
         lista.innerHTML = filtradas.length
             ? filtradas.map(i => `
                 <li class="list-group-item incidencia-item" data-matricula="${i.matricula}">
-                    <strong>
-                        ${i.modelo} (${i.matricula})
-                    </strong><br>
-
-                    <small class="text-muted">
-                        ${i.fecha}
-                    </small><br>
-
-                    <span>
-                        ${i.comentario}
-                    </span>
+                    <strong>${i.modelo} (${i.matricula})</strong><br>
+                    <small class="text-muted">${i.fecha}</small><br>
+                    <span>${i.comentario}</span>
                 </li>
             `).join('')
             : `<p>No hay incidencias para este vehículo.</p>`;
     };
 
-    select.addEventListener('change', (e) => {
-        renderLista(e.target.value);
-    });
-
-    // Render inicial
     renderLista();
+
+    select.onchange = (e) => {
+        vehiculoSeleccionado = e.target.value;
+        renderLista(vehiculoSeleccionado);
+    };
 }
 
 function initIncidencias() {

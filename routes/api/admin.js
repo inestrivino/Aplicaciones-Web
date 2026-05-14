@@ -11,14 +11,16 @@ router.get("/estadisticas", async (req, res) => {
             reservasDb.getTopConcesionarios(),
             reservasDb.getTopVehiculos(),
             vehiculosDb.getMediaVehiculos(),
-            vehiculosDb.getKilometrosVehiculos()
+            vehiculosDb.getKilometrosVehiculos(),
+            reservasDb.getTotalReservas()
         ]);
 
         const [
             topConcesionariosRaw,
             topVehiculosRaw,
             mediaVehiculosRaw,
-            kmVehiculosRaw
+            kmVehiculosRaw,
+            totalReservasRaw
         ] = results;
 
         const extractRows = (result) => Array.isArray(result) ? result[0] : result;
@@ -27,7 +29,8 @@ router.get("/estadisticas", async (req, res) => {
             topConcesionarios: extractRows(topConcesionariosRaw),
             topVehiculos: extractRows(topVehiculosRaw),
             mediaVehiculos: extractRows(mediaVehiculosRaw),
-            kmVehiculos: extractRows(kmVehiculosRaw)
+            kmVehiculos: extractRows(kmVehiculosRaw),
+            totalReservas: extractRows(totalReservasRaw)
         });
 
     } catch (err) {

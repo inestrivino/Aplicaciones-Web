@@ -1,7 +1,6 @@
 {
     "concesionarios": [
         {
-            "id": 1,
             "nombre": "Concesionario Central",
             "ciudad": "Madrid",
             "direccion": "Calle Gran Vía 1",
@@ -10,7 +9,6 @@
             "longitud": -3.7038
         },
         {
-            "id": 2,
             "nombre": "AutoPlus Norte",
             "ciudad": "Alcobendas",
             "direccion": "Avenida de España 45",
@@ -19,7 +17,6 @@
             "longitud": -3.6370
         },
         {
-            "id": 3,
             "nombre": "Motorama Sur",
             "ciudad": "Getafe",
             "direccion": "Calle Madrid 78",
@@ -28,7 +25,6 @@
             "longitud": -3.7327
         },
         {
-            "id": 4,
             "nombre": "Ruedas del Este",
             "ciudad": "Alcalá de Henares",
             "direccion": "Calle Mayor 12",
@@ -37,7 +33,6 @@
             "longitud": -3.3640
         },
         {
-            "id": 5,
             "nombre": "Garage Oeste",
             "ciudad": "Pozuelo de Alarcón",
             "direccion": "Avenida de Europa 99",

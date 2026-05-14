@@ -72,6 +72,7 @@ async function inicializarFormularioReservas() {
         dateFormat: "Y-m-d",
         minDate: manana,
         maxDate: unAno,
+        disableMobile: true,
         disable: [],
         onChange: onInicioChange
     });
