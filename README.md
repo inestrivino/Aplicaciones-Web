@@ -1,8 +1,8 @@
-# Nombre del Proyecto
+# EcoMóvil
 
 Índice:
 
-- [Nombre del Proyecto](#nombre-del-proyecto)
+- [EcoMóvil](#ecomóvil)
   - [Descripción general](#descripción-general)
   - [Tecnologías utilizadas](#tecnologías-utilizadas)
     - [Frontend](#frontend)
