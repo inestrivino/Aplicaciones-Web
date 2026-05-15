@@ -1,13 +1,13 @@
 {
-    "name": "ecomarket-app",
+    "name": "ecomovil",
     "version": "1.0.0",
-    "description": "Aplicación web desarrollada con Node.js y Express.js basada en el portal EcoMarket",
+    "description": "Aplicación web desarrollada con Node.js y Express.js",
     "main": "app.js",
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js"
     },
-    "author": "Alumno EcoMarket",
+    "author": "Inés Triviño y Néstor García",
     "license": "MIT",
     "dependencies": {
         "bcrypt": "^6.0.0",
