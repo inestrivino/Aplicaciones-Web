@@ -263,7 +263,7 @@ function inicializarTablaVehiculos() {
 
 //CONCESIONARIOS
 async function renderTablaConcesionarios() {
-    concesionarios = await fetchConcesionarios();
+    const concesionarios = await fetchConcesionarios();
     const tbody = document.querySelector('#tabla-concesionarios tbody');
 
     tbody.innerHTML = concesionarios.map(c => `

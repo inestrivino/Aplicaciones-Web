@@ -187,7 +187,7 @@ async function lanzarAlertaDevolucion() {
         const reservas = await fetchMisReservas();
         const alertas = await obtenerAlertas();
 
-        const usuario = fetchUser();
+        const usuario = await fetchUser();
         if (!usuario) return;
         const id_usuario = usuario.id;
 

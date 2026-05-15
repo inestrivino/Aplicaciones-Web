@@ -58,10 +58,7 @@ async function inicializarFormularioReservas() {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-    const manana = new Date(hoy);
-    manana.setDate(manana.getDate() + 1);
-
-    const unAno = new Date(manana);
+    const unAno = new Date(hoy);
     unAno.setFullYear(unAno.getFullYear() + 1);
 
     let fpInicio;
@@ -70,7 +67,7 @@ async function inicializarFormularioReservas() {
 
     fpInicio = flatpickr(inicioInput, {
         dateFormat: "Y-m-d",
-        minDate: manana,
+        minDate: hoy,
         maxDate: unAno,
         disableMobile: true,
         disable: [],

@@ -91,7 +91,7 @@ CREATE TABLE `feedback` (
 
   CONSTRAINT chk_puntuacion
     CHECK (`puntuacion` BETWEEN 1 AND 5)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `incidentes` (
   `id` int(11) AUTO_INCREMENT PRIMARY KEY,
@@ -109,7 +109,7 @@ CREATE TABLE `incidentes` (
     FOREIGN KEY (`matricula`)
     REFERENCES vehiculos(`matricula`)
     ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `alertas` (
   `id` int(11) AUTO_INCREMENT PRIMARY KEY,
@@ -119,7 +119,7 @@ CREATE TABLE `alertas` (
   `texto` varchar(200) NOT NULL,
   `fecha` date NOT NULL,
   `vista` boolean NOT NULL,
-  `tipo`varchar(20) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
 
   CONSTRAINT fk_alerta_usuario
     FOREIGN KEY (`id_usuario`)
@@ -135,7 +135,7 @@ CREATE TABLE `alertas` (
     FOREIGN KEY (`id_reserva`)
     REFERENCES reservas(`id`)
     ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `concesionarios` (`id`, `nombre`, `ciudad`, `direccion`, `telefono`) VALUES
 (1, 'Concesionario Central', 'Madrid', 'Calle Gran Via 1', '912345678');

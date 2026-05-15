@@ -1,0 +1,31 @@
+services:
+  mysql:
+    image: mariadb:10.4.32
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: con1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - appnet
+
+volumes:
+  mysql_data:
+
+networks:
+  appnet:
