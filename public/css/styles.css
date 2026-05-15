@@ -28,6 +28,7 @@
   --fieldset-border: #dee2e6;
 
   --navbar-bg: #ffffff;
+  --bs-secondary-bg: var(--bs-body-bg);
 }
 
 
@@ -58,6 +59,7 @@
   --fieldset-border: #343a40;
 
   --navbar-bg: #1a1a1a;
+  --bs-secondary-bg: var(--bs-body-bg);
 }
 
 
@@ -66,30 +68,46 @@
 ======================================================= */
 
 [data-bs-theme="high-contrast"] {
+  /* Colores base */
+  --bs-body-bg: #000000; 
+  --bs-body-color: #ffffff;
 
-  --bs-body-bg: #000000;
-  --bs-body-color: #ffff00;
-
+  /* Elementos de tarjeta */
   --bs-card-bg: #000000;
-  --bs-card-border-color: #ffff00;
+  --bs-card-border-color: #ffff00; 
 
+  /* Modales */
   --bs-modal-bg: #000000;
-  --bs-modal-color: #ffff00;
+  --bs-modal-color: #ffffff;
 
-  --bs-border-color: #ffff00;
+  /* Bordes */
+  --bs-border-color: #ffff00; 
 
-  --navbar-link-color: #ffff00;
+  /* Barra de navegación */
+  --navbar-bg: #000000;
+  --navbar-link-color: #ffffff;
   --navbar-link-hover-color: #ff8800;
 
+  /* Pie de página */
   --footer-background: #000000;
-  --footer-text-color: #ffff00;
+  --footer-text-color: #ffffff;
 
+  /* Fieldsets */
   --fieldset-background: #000000;
   --fieldset-border: #ffff00;
 
-  --navbar-bg: #000000;
-}
+  /* Colores de énfasis */
+  --bs-emphasis-color: #ff8800;
+  --bs-secondary-bg: #000000;
 
+  /* Colores para botones */
+  --bs-primary: #ff8800;  
+  --bs-secondary: #ffff00;  
+  --bs-success: #00ff00;
+  --bs-danger: #ff0000;  
+  --bs-warning: #ffcc00; 
+  --bs-info: #00ffff;
+}
 
 /* =======================================================
    AJUSTES GENERALES PARA TEMA
@@ -129,6 +147,11 @@ body {
   color: var(--bs-body-color);
 }
 
+.form-control:disabled, .form-control[readonly] {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+}
+
 
 /* Fieldsets */
 fieldset {
@@ -155,17 +178,17 @@ footer {
 
 /* Tema claro */
 [data-bs-theme="light"] .navbar-toggler i {
-    color: black;
+  color: black;
 }
 
 /* Tema oscuro */
 [data-bs-theme="dark"] .navbar-toggler i {
-    color: white;
+  color: white;
 }
 
 /* Tema alto contraste */
 [data-bs-theme="high-contrast"] .navbar-toggler i {
-    color: yellow;
+  color: yellow;
 }
 
 /* Botón cerrar modal */
@@ -337,6 +360,55 @@ section {
   background-color: var(--bs-danger);
   border-radius: 50%;
   border: 1px solid white;
+}
+
+/* Estilo base para el slider */
+.form-range {
+  width: 100%;
+  height: 1.5rem;
+  padding: 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Estilo de la pista en Chrome/Edge/Safari */
+.form-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 0.5rem;
+  background: #ced4da; 
+  border-radius: 0.25rem;
+}
+
+/* Estilo de la pista en Firefox */
+.form-range::-moz-range-track {
+  width: 100%;
+  height: 0.5rem;
+  background: #ced4da;
+  border-radius: 0.25rem;
+}
+
+/* Estilo del thumb en Chrome/Edge/Safari */
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #0d6efd;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Estilo del thumb en Firefox */
+.form-range::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #0d6efd;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }
 
 /* Header */
