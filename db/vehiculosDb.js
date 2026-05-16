@@ -96,18 +96,19 @@ class VehiculosDb {
     //consigue la disponibilidad de un vehiculo entre unas fechas determinadas
     async getDisponibilidadVehiculo(matricula, fechaIni, fechaFin) {
         const [rows] = await pool.query(
-            `SELECT COUNT(*) AS reservas_solapadas
-             FROM reservas
-             WHERE matricula = ?
-             AND estado = 'activa'
-             AND (
-               fecha_ini <= ?
-               AND fecha_fin >= ?
-             )`,
-            [matricula, fechaFin, fechaIni]
+            `
+        SELECT COUNT(*) AS reservas_solapadas
+        FROM reservas
+        WHERE matricula = ?
+        AND estado = 'activa'
+        AND NOT (
+            fecha_fin <= ?
+            OR fecha_ini >= ?
+        )
+        `,
+            [matricula, fechaIni, fechaFin]
         );
-
-        return rows[0].reservas_solapadas === 0;
+        return Number(rows[0].reservas_solapadas) === 0;
     }
 
     //aplica filtros a los vehiculos

@@ -35,47 +35,48 @@ async function inicializarFormularioReservas() {
     const inicioInput = document.getElementById("inicioFecha");
     const finInput = document.getElementById("finFecha");
     const matriculaInput = document.getElementById("vehiculo");
+
     const params = new URLSearchParams(window.location.search);
     const car = params.get("car");
+
     let intervalVehiculos = null;
 
     if (!inicioInput || !finInput || !matriculaInput) return;
 
     await cargarVehiculosSelect(car);
 
-    if (!intervalVehiculos) {
-        intervalVehiculos = setInterval(async () => {
-            const prev = matriculaInput.value;
+    const ahora = new Date();
 
-            await cargarVehiculosSelect();
-
-            if (matriculaInput.value !== prev) {
-                matriculaInput.dispatchEvent(new Event("change"));
-            }
-        }, 10000);
-    }
-
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-
-    const unAno = new Date(hoy);
+    const unAno = new Date();
     unAno.setFullYear(unAno.getFullYear() + 1);
 
     let fpInicio;
     let fpFin;
+
     let rangosOcupados = [];
 
     fpInicio = flatpickr(inicioInput, {
-        dateFormat: "Y-m-d",
-        minDate: hoy,
+        enableTime: true,
+        time_24hr: true,
+
+        dateFormat: "Y-m-d H:i",
+
+        minDate: ahora,
         maxDate: unAno,
+
         disableMobile: true,
+
         disable: [],
+
         onChange: onInicioChange
     });
 
     fpFin = flatpickr(finInput, {
-        dateFormat: "Y-m-d",
+        enableTime: true,
+        time_24hr: true,
+
+        dateFormat: "Y-m-d H:i",
+
         disable: []
     });
 
@@ -84,28 +85,36 @@ async function inicializarFormularioReservas() {
 
         const inicio = selectedDates[0];
 
-        finInput.value = "";
         fpFin.clear();
 
+        // mínimo: 1 hora después
         const minFin = new Date(inicio);
-        minFin.setDate(minFin.getDate() + 1);
+        minFin.setHours(minFin.getHours() + 1);
 
+        // máximo: 3 meses después
         const maxFin = new Date(inicio);
         maxFin.setMonth(maxFin.getMonth() + 3);
 
         fpFin.set("minDate", minFin);
         fpFin.set("maxDate", maxFin);
+
         fpFin.set("disable", rangosOcupados);
     }
 
     async function cargarFechas() {
         if (!matriculaInput.value) return;
 
-        const reservas = await fetchFechasOcupado(matriculaInput.value);
+        const reservas = await fetchFechasOcupado(
+            matriculaInput.value
+        );
 
         rangosOcupados = reservas.map(r => ({
-            from: r.fecha_ini.split("T")[0],
-            to: r.fecha_fin.split("T")[0]
+            from: new Date(
+                r.fecha_ini.replace(" ", "T")
+            ),
+            to: new Date(
+                r.fecha_fin.replace(" ", "T")
+            )
         }));
 
         const inicioActual = fpInicio.selectedDates?.[0];
@@ -114,25 +123,23 @@ async function inicializarFormularioReservas() {
         fpInicio.set("disable", rangosOcupados);
         fpFin.set("disable", rangosOcupados);
 
+        // validar inicio actual
         if (inicioActual) {
-            const valid = !rangosOcupados.some(r => {
-                const from = new Date(r.from);
-                const to = new Date(r.to);
-                return inicioActual >= from && inicioActual <= to;
-            });
-
+            const valid = !rangosOcupados.some(r =>
+                inicioActual >= r.from &&
+                inicioActual <= r.to
+            );
             if (valid) {
                 fpInicio.setDate(inicioActual, false);
             }
         }
 
+        // validar fin actual
         if (finActual) {
-            const valid = !rangosOcupados.some(r => {
-                const from = new Date(r.from);
-                const to = new Date(r.to);
-                return finActual >= from && finActual <= to;
-            });
-
+            const valid = !rangosOcupados.some(r =>
+                finActual >= r.from &&
+                finActual <= r.to
+            );
             if (valid) {
                 fpFin.setDate(finActual, false);
             }
@@ -142,7 +149,7 @@ async function inicializarFormularioReservas() {
     if (car) {
         await cargarVehiculosSelect(car);
         matriculaInput.value = car;
-        cargarFechas();
+        await cargarFechas();
     }
 
     matriculaInput.addEventListener("change", async () => {
@@ -151,11 +158,11 @@ async function inicializarFormularioReservas() {
         const url = new URL(window.location);
         url.searchParams.delete("car");
         window.history.replaceState({}, "", url);
-
         await cargarFechas();
     });
 
     const form = document.getElementById("reservaForm");
+
     if (!form) {
         console.error("No se encontró el formulario");
         return;
@@ -165,12 +172,37 @@ async function inicializarFormularioReservas() {
         e.preventDefault();
 
         if (!inicioInput.value || !finInput.value) {
-            mostrarFeedback("Debes seleccionar ambas fechas de reserva.", "warning");
+            mostrarFeedback(
+                "Debes seleccionar fecha y hora de inicio y fin.",
+                "warning"
+            );
+
             return;
         }
 
         if (!matriculaInput.value) {
-            mostrarFeedback("Debes seleccionar un vehículo.", "warning");
+            mostrarFeedback(
+                "Debes seleccionar un vehículo.",
+                "warning"
+            );
+
+            return;
+        }
+
+        const inicio = new Date(
+            form.fecha_ini.value.replace(" ", "T")
+        );
+
+        const fin = new Date(
+            form.fecha_fin.value.replace(" ", "T")
+        );
+
+        if (fin <= inicio) {
+            mostrarFeedback(
+                "La fecha de fin debe ser posterior a la de inicio.",
+                "warning"
+            );
+
             return;
         }
 
@@ -186,33 +218,50 @@ async function inicializarFormularioReservas() {
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(body)
             });
 
             const data = await res.json();
-
             if (!res.ok || !data.ok) {
-                throw new Error(data.error || "No se pudo realizar la reserva");
+                throw new Error(
+                    data.error ||
+                    "No se pudo realizar la reserva"
+                );
             }
 
-            form.matricula.value = "";
-            form.fecha_fin.value = "";
-            form.fecha_ini.value = "";
-            mostrarFeedback(data.message || "Reserva realizada con éxito", "success");
+            form.reset();
+
+            fpInicio.clear();
+            fpFin.clear();
+
+            mostrarFeedback(
+                data.message || "Reserva realizada con éxito",
+                "success"
+            );
 
         } catch (err) {
-            mostrarFeedback(err.message || "Error al realizar la reserva", "danger");
+            mostrarFeedback(
+                err.message || "Error al realizar la reserva",
+                "danger"
+            );
+
             console.error(err);
         }
     });
 
-    intervalVehiculos = setInterval(async () => {
-        const prev = matriculaInput.value;
-        await cargarVehiculosSelect(prev);
-        if (matriculaInput.value !== prev) {
-            matriculaInput.dispatchEvent(new Event("change"));
-        }
-    }, 10000);
+    if (!intervalVehiculos) {
+        intervalVehiculos = setInterval(async () => {
+            const prev = matriculaInput.value;
+            await cargarVehiculosSelect(prev);
+            if (matriculaInput.value !== prev) {
+
+                matriculaInput.dispatchEvent(
+                    new Event("change")
+                );
+            }
+        }, 10000);
+    }
 }
 
 function reserveCar(matricula) {

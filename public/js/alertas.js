@@ -189,7 +189,7 @@ async function lanzarAlertaDevolucion() {
 
         const usuario = await fetchUser();
         if (!usuario) return;
-        
+
 
         // IDs de reservas que ya tienen alerta de devolución
         const reservasConAlerta = new Set(
@@ -209,32 +209,54 @@ async function lanzarAlertaDevolucion() {
         for (const reserva of reservas) {
             if (reservasConAlerta.has(reserva.id)) continue;
 
-            const fecha_fin = new Date(reserva.fecha_fin);
-            const fecha_ini = new Date(reserva.fecha_ini);
+            const fecha_fin = new Date(
+                reserva.fecha_fin.replace(' ', 'T')
+            );
+            const fecha_ini = new Date(
+                reserva.fecha_ini.replace(' ', 'T')
+            );
             const empezada = fecha_ini <= ahora;
-
-            const diffMs = fecha_fin - ahora;
-            const diasRestantes = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
             const noFinalizada = reserva.estado !== 'finalizada';
 
-            //la reserva ha vencido pero aún no ha sido devuelta ni se ha enviado una notificacion al respecto
-            if (fecha_fin < ahora && noFinalizada && !alertasVencidas.has(reserva.id)) {
+            const diffMs = fecha_fin - ahora;
+
+            const horasRestantes = Math.ceil(diffMs / (1000 * 60 * 60));
+            const diasRestantes = Math.ceil(horasRestantes / 24);
+
+            // reserva vencida
+            if (
+                fecha_fin < ahora &&
+                noFinalizada &&
+                !alertasVencidas.has(reserva.id)
+            ) {
+
                 await crearAlerta({
                     matricula: reserva.matricula,
                     id_reserva: reserva.id,
-                    texto: `La fecha de devolución del vehículo con matrícula ${reserva.matricula} ha sido superada. Acceda a "Mis reservas" lo antes posible.`,
+                    texto: `La fecha y hora de devolución del vehículo con matrícula ${reserva.matricula} han sido superadas. Acceda a "Mis reservas" lo antes posible.`,
                     tipo: "devolucion_vencida"
                 });
+
                 continue;
             }
 
-            //la reserva ha comenzado, le quedan menos de 3 días para ser devuelta
-            if (empezada && diasRestantes > 0 && diasRestantes < 3 && noFinalizada) {
+            // quedan menos de 72 horas
+            if (
+                empezada &&
+                horasRestantes > 0 &&
+                horasRestantes <= 72 &&
+                noFinalizada
+            ) {
+
                 await crearAlerta({
                     matricula: reserva.matricula,
                     id_reserva: reserva.id,
-                    texto: `Recordatorio de devolución: Quedan menos de ${diasRestantes} días para devolver el vehículo con matrícula ${reserva.matricula}.`,
+
+                    texto:
+                        horasRestantes < 24
+                            ? `Recordatorio de devolución: Quedan aproximadamente ${horasRestantes} horas para devolver el vehículo con matrícula ${reserva.matricula}.`
+                            : `Recordatorio de devolución: Quedan aproximadamente ${diasRestantes} días para devolver el vehículo con matrícula ${reserva.matricula}.`,
+
                     tipo: "devolucion"
                 });
             }

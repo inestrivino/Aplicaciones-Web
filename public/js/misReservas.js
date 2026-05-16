@@ -94,6 +94,7 @@ function renderAcciones(r, tipo) {
 }
 
 function renderReservas(reservas) {
+
     const curso = document.getElementById("curso");
     const proximas = document.getElementById("proximas");
     const pasadas = document.getElementById("pasadas");
@@ -105,13 +106,35 @@ function renderReservas(reservas) {
     const hoy = new Date();
 
     reservas.forEach(r => {
-        const inicio = new Date(r.fecha_ini);
-        const fin = new Date(r.fecha_fin);
+        const inicio = new Date(
+            r.fecha_ini.replace(' ', 'T')
+        );
 
-        if (r.estado == "finalizada") {
+        const fin = new Date(
+            r.fecha_fin.replace(' ', 'T')
+        );
+
+        r.inicioDate = inicio;
+        r.finDate = fin;
+
+        r.fecha_ini =
+            inicio.toLocaleString('es-ES', {
+                dateStyle: 'short',
+                timeStyle: 'short'
+            });
+
+        r.fecha_fin =
+            fin.toLocaleString('es-ES', {
+                dateStyle: 'short',
+                timeStyle: 'short'
+            });
+
+        if (r.estado === "finalizada") {
             pasadasArr.push(r);
+
         } else if (inicio > hoy) {
             futuras.push(r);
+
         } else {
             enCurso.push(r);
         }

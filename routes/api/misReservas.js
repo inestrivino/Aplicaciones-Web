@@ -26,33 +26,54 @@ router.get("/", async (req, res) => {
 router.post("/cancelar/:id", async (req, res) => {
     try {
         const idUsuario = req.session.user.id;
-
         const id_reserva = parseInt(req.params.id);
         if (isNaN(id_reserva)) {
-            return res.status(400).json({ ok: false, error: "ID inválido" });
+            return res.status(400).json({
+                ok: false,
+                error: "ID inválido"
+            });
         }
 
-        const [reservas] = await reservasDb.getReservaById(id_reserva);
+        const [reservas] =
+            await reservasDb.getReservaById(id_reserva);
+
         const reserva = reservas[0];
 
-        if (!reserva || reserva.id_usuario != idUsuario) {
-            return res.status(403).json({ ok: false, error: "No autorizado" });
+        if (
+            !reserva ||
+            reserva.id_usuario != idUsuario
+        ) {
+            return res.status(403).json({
+                ok: false,
+                error: "No autorizado"
+            });
         }
 
-        const hoy = new Date();
-        if (new Date(reserva.fecha_ini) < hoy) {
-            return res.status(400).json({ ok: false, error: "No se puede cancelar" });
+        const ahora = new Date();
+        const fechaInicio = new Date(
+            reserva.fecha_ini.replace(" ", "T")
+        );
+
+        // ya ha comenzado
+        if (fechaInicio <= ahora) {
+            return res.status(400).json({
+                ok: false,
+                error: "La reserva ya ha comenzado y no puede cancelarse"
+            });
         }
 
         await reservasDb.cancelReserva(id_reserva);
-
         return res.json({
             ok: true,
             message: "Reserva cancelada correctamente"
         });
 
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+
+        return res.status(500).json({
+            ok: false,
+            error: err.message
+        });
     }
 });
 

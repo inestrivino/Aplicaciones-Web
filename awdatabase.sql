@@ -9,7 +9,7 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone = '+01:00';
 
 CREATE TABLE `concesionarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -62,9 +62,10 @@ CREATE TABLE `reservas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` int(11) NOT NULL,
   `matricula` varchar(20) NOT NULL,
-  `fecha_ini` date NOT NULL,
-  `fecha_fin` date NOT NULL,
+  `fecha_ini` datetime NOT NULL,
+  `fecha_fin` datetime NOT NULL,
   `estado` varchar(50) NOT NULL,
+
   PRIMARY KEY (`id`),
 
   CONSTRAINT fk_reservas_usuario
@@ -153,6 +154,6 @@ VALUES
 INSERT INTO `reservas`
 (`id`, `id_usuario`, `matricula`, `fecha_ini`, `fecha_fin`, `estado`)
 VALUES
-(1, 1, '1234ABC', '2026-05-10', '2026-06-05', 'activa');
+(1, 1, '1234ABC', '2026-05-10 12:00', '2026-06-05 12:00', 'activa');
 
 COMMIT;
