@@ -143,4 +143,16 @@ INSERT INTO `concesionarios` (`id`, `nombre`, `ciudad`, `direccion`, `telefono`)
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `rol`, `id_concesionario`, `accesibilidad`) VALUES
 (1, 'Admin', 'admin@ucm.es', '$2b$10$w5JZSprvOSIi9eZEzakfuurP0F1ikssdVb2DSC5T0UGmjoT92mkj2', 'admin', 1, NULL);
 
+INSERT INTO `vehiculos`
+(`matricula`, `marca`, `modelo`, `fecha`, `plazas`,
+ `autonomia`, `color`, `imagen`, `id_concesionario`, `kilometros`)
+VALUES
+('1234ABC', 'Tesla', 'Model 3', '2025-01-10', 5,
+ 550, 'Blanco', '/img/vehiculos/tesla3.png', 1, 12000);
+
+INSERT INTO `reservas`
+(`id`, `id_usuario`, `matricula`, `fecha_ini`, `fecha_fin`, `estado`)
+VALUES
+(1, 1, '1234ABC', '2026-05-10', '2026-06-05', 'activa');
+
 COMMIT;

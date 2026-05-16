@@ -4,6 +4,9 @@
 
 - [EcoMóvil](#ecomóvil)
   - [Descripción general](#descripción-general)
+  - [Instalación y ejecución](#instalación-y-ejecución)
+    - [Requisitos previos](#requisitos-previos)
+    - [Pasos](#pasos)
   - [Tecnologías utilizadas](#tecnologías-utilizadas)
     - [Frontend](#frontend)
     - [Backend](#backend)
@@ -30,9 +33,6 @@
     - [Accesibilidad](#accesibilidad)
     - [Manejo del sistema](#manejo-del-sistema)
     - [Editar el perfil propio y cerrar sesión](#editar-el-perfil-propio-y-cerrar-sesión)
-  - [Instalación y ejecución](#instalación-y-ejecución)
-    - [Requisitos previos](#requisitos-previos)
-    - [Pasos](#pasos)
   - [Mejoras futuras](#mejoras-futuras)
   - [Autores](#autores)
 
@@ -43,6 +43,41 @@ EcoMóvil es una aplicación web diseñada para la gestión de los concesionario
 Permite a los usuarios buscar vehículos aplicando filtros, reservarlos cuando estén disponibles, y manejar sus reservas en curso, futuras o pasadas.
 
 Existe además un panel de administración desde el que se pueden gestionar vehículos, usuarios y datos del sistema, como estadísticas o incidencias.
+
+## Instalación y ejecución
+
+### Requisitos previos
+
+Debe tener instalado en su máquina:
+
+- Node.js
+- npm
+- XAMPP o Docker con Docker Compose
+- MySQL
+
+### Pasos
+
+1. Iniciar Apache y MySQL desde XAMPP, o usar el comando `docker compose up` en la raíz del proyecto.
+2. En phpMyAdmin, crear una base de datos llamada `awdatabase` e importar el fichero `awdatabase.sql`.
+3. Abrir la carpeta del proyecto en la terminal.
+4. Instalar dependencias:
+
+```bash
+npm install
+```
+
+5. Ejecutar el proyecto:
+
+```bash
+npm start
+```
+
+6. Dirigirse a `localhost:3000`. Para comenzar a utilizar las funcionalidades de administrador, iniciar sesión con el siguiente usuario:
+
+- Email: admin@ucm.es
+- Contraseña: Admin123
+
+7. Dirigirse al panel de administrador, y cargar el fichero JSON `datos.json` que se encuentra en la carpeta `utils` (u otro fichero JSON que cumpla las mismas restricciones de formato).
 
 ## Tecnologías utilizadas
 
@@ -295,41 +330,6 @@ Precondición: El usuario debe estar autenticado con una cuenta de administrador
 Precondición: El usuario debe estar autenticado.
 
 - Desde cualquier página de la aplicación, hace click sobre la imagen de usuario en el menú de navegación. Se abre el modal correspondiente. Puede editar el formulario para cambiar su nombre, email o concesionario. Puede hacer click sobre el botón 'Cerrar sesión' para recargar la página y cerrar su sesión.
-
-## Instalación y ejecución
-
-### Requisitos previos
-
-Debe tener instalado en su máquina:
-
-- Node.js
-- npm
-- XAMPP
-- MySQL
-
-### Pasos
-
-1. Iniciar Apache y MySQL desde XAMPP.
-2. En phpMyAdmin, crear una base de datos llamada `awdatabase` e importar el fichero `awdatabase.sql`.
-3. Abrir la carpeta del proyecto en la terminal.
-4. Instalar dependencias:
-
-```bash
-npm install
-```
-
-5. Ejecutar el proyecto:
-
-```bash
-npm start
-```
-
-6. Dirigirse a `localhost:3000`. Para comenzar a utilizar las funcionalidades de administrador, iniciar sesión con el siguiente usuario:
-
-- Email: admin@ucm.es
-- Contraseña: Admin123
-
-7. Dirigirse al panel de administrador, y cargar el fichero JSON `datos.json` que se encuentra en la carpeta `utils` (u otro fichero JSON que cumpla las mismas restricciones de formato).
 
 ## Mejoras futuras
 

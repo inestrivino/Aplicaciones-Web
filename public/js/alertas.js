@@ -189,7 +189,7 @@ async function lanzarAlertaDevolucion() {
 
         const usuario = await fetchUser();
         if (!usuario) return;
-        const id_usuario = usuario.id;
+        
 
         // IDs de reservas que ya tienen alerta de devolución
         const reservasConAlerta = new Set(

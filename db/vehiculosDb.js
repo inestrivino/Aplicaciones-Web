@@ -99,7 +99,7 @@ class VehiculosDb {
             `SELECT COUNT(*) AS reservas_solapadas
              FROM reservas
              WHERE matricula = ?
-             AND estado != 'cancelada'
+             AND estado = 'activa'
              AND (
                fecha_ini <= ?
                AND fecha_fin >= ?
