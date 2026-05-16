@@ -108,14 +108,13 @@ async function inicializarFormularioReservas() {
             matriculaInput.value
         );
 
-        rangosOcupados = reservas.map(r => ({
-            from: new Date(
-                r.fecha_ini.replace(" ", "T")
-            ),
-            to: new Date(
-                r.fecha_fin.replace(" ", "T")
-            )
-        }));
+        rangosOcupados = reservas.map(r => {
+            const from = new Date(r.fecha_ini.replace(" ", "T"));
+            from.setHours(0, 0, 0, 0);
+            const to = new Date(r.fecha_fin.replace(" ", "T"));
+            to.setHours(23, 59, 59, 999);
+            return { from, to };
+        });
 
         const inicioActual = fpInicio.selectedDates?.[0];
         const finActual = fpFin.selectedDates?.[0];
