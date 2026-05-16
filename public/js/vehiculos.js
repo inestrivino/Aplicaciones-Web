@@ -74,7 +74,7 @@ async function inicializarFormularioReservas() {
     fpFin = flatpickr(finInput, {
         enableTime: true,
         time_24hr: true,
-
+        disableMobile: true,
         dateFormat: "Y-m-d H:i",
 
         disable: []
