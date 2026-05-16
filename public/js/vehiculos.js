@@ -109,18 +109,46 @@ async function inicializarFormularioReservas() {
         );
 
         rangosOcupados = reservas.map(r => {
+            // Fecha inicio
             const from = new Date(r.fecha_ini.replace(" ", "T"));
+
+            // Inicio del día
             from.setHours(0, 0, 0, 0);
+
+            // Fecha fin
             const to = new Date(r.fecha_fin.replace(" ", "T"));
+
+            // Final del día
             to.setHours(23, 59, 59, 999);
+
             return { from, to };
         });
 
         const inicioActual = fpInicio.selectedDates?.[0];
         const finActual = fpFin.selectedDates?.[0];
 
-        fpInicio.set("disable", rangosOcupados);
-        fpFin.set("disable", rangosOcupados);
+        fpInicio.set("disable", [
+            function (date) {
+                const d = new Date(date);
+                d.setHours(12, 0, 0, 0);
+
+                return rangosOcupados.some(r =>
+                    d >= r.from &&
+                    d <= r.to
+                );
+            }
+        ]);
+        fpFin.set("disable", [
+            function (date) {
+                const d = new Date(date);
+                d.setHours(12, 0, 0, 0);
+
+                return rangosOcupados.some(r =>
+                    d >= r.from &&
+                    d <= r.to
+                );
+            }
+        ]);
 
         // validar inicio actual
         if (inicioActual) {

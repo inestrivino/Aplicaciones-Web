@@ -82,7 +82,7 @@ router.post("/", async function (request, response) {
 
         if (!disponible) {
             throw new Error(
-                "El vehículo no está disponible en ese intervalo horario"
+                "Las fechas seleccionadas se sobrelapan con otra reserva del vehículo seleccionado"
             );
         }
 
